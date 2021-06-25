@@ -10,6 +10,8 @@ Sonogram visible speech has been programmed at the German Research Center for Ar
 * [Download](https://github.com/Christoph-Lauer/Sonogram/raw/main/bin/SonogramWindows.zip) Sonogram for **Windows**
 * [Download](https://github.com/Christoph-Lauer/Sonogram/raw/main/bin/SonogramUnix.zip) Sonogram for **Unix/linux**
 
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NJ7YC6GJT5QJA) (please support the further Development of Sonogram Visible Speech)
+
 ## Screenshots
 ![alt text](images/1.png)
 ![alt text](images/2.png)

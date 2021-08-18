@@ -81,11 +81,12 @@
 			<Mp3Confirm               value="true"/>
 			<PerKeysConfirm           value="false"/>
 			<RecorderLedColors        value="0"/>
+			<LastOpenedFile           value="file:/Users/christoph/Library/Application Support/Tracktion/Waveform/Factory Loops/140 BPM Alex Sanfilippo Fill 2  4 bars.wav"/>
 			<LookAndFeel              value="1"/>
 			<SliderLoudness           value="0"/>
 			<SliderWaveTime           value="4"/>
 			<SliderCepstrumBuffer     value="9"/>
-			<SliderWindowSize         value="9"/>
+			<SliderWindowSize         value="11"/>
 			<SliderWindowFunktion     value="4"/>
 			<SliderOverlapping        value="4"/>
 			<SliderSurfaceDataReduct  value="1"/>

@@ -601,9 +601,6 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
     //====================================================================================================
 
     public void generateSamplesFromURL(String url) {
-
-        
-        url = "http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/Samples/AFsp/M1F1-Alaw-AFsp.wavl";
         
         // Find out URL type
         int  urltype = 0; // 0=error, 1=local file system, 2=http, 3=ftp

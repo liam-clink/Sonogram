@@ -25,7 +25,7 @@ public class HelpDialog extends JDialog
     {
         super(owner,"Sonogram Online Help",false);
         Sonogram reftomain = (Sonogram) owner;
-        setSize(620,800);
+        setSize(630,800);
         Container cp = getContentPane();
         cp.setLayout(new BorderLayout());
         browser = new JEditorPane();

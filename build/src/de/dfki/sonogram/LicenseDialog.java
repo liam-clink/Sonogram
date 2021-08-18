@@ -23,7 +23,7 @@ public class LicenseDialog extends JDialog {
     {
         super(owner,"License",true);
         Sonogram reftomain = (Sonogram) owner;
-        setSize(645,800);
+        setSize(655,800);
 	      setResizable(false);
         Container cp = getContentPane();
         cp.setLayout(new BorderLayout());

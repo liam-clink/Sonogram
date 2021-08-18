@@ -1,6 +1,6 @@
 .mtj.tmp/
-*.class
 *.jar
+*.class
 *.war
 *.ear
 *.nar

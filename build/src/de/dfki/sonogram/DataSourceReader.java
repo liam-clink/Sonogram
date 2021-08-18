@@ -602,21 +602,28 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
 
     public void generateSamplesFromURL(String url) {
 
+        
+        url = "http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/Samples/AFsp/M1F1-Alaw-AFsp.wavl";
+        
         // Find out URL type
         int  urltype = 0; // 0=error, 1=local file system, 2=http, 3=ftp
         if (url.substring(0,4).equals("file")==true) {
             urltype = 1;
             System.out.println("--> File on local file system");
-        } else if (url.substring(0,4).equals("http")==true) {
+        } else if (url.substring(0,5).equals("https")==true) {
+            urltype = 3;
+            System.out.println("--> File on https file system");
+        } else if (url.substring(0,5).equals("http")==true) {
             urltype = 2;
             System.out.println("--> File on http file system");
         } else if (url.substring(0,3).equals("ftp")==true) {
-            urltype = 3;
+            urltype = 4;
             System.out.println("--> File on ftp file system");
         } else {
             reftomain.messageBox("Error while open the URL","<html>This is not a valid URL: <u>"+url,2);
             return;
         }
+        
         // Build specific Progressmonitor
         if (urltype == 1) {
             reftomain.progmon = new SonoProgressMonitor(reftomain,"Open File.","Reading samples from local file system.",0,100);
@@ -625,19 +632,21 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
             reftomain.progmon = new SonoProgressMonitor(reftomain,"Open File","Reading samples from remote file via HTTP protocol.",0,100);
         }
         if (urltype == 3) {
+            reftomain.progmon = new SonoProgressMonitor(reftomain,"Open File","Reading samples from remote file via HTTPS protocol.",0,100);
+        }
+        if (urltype == 4) {
             reftomain.progmon = new SonoProgressMonitor(reftomain,"Open File.","Reading samples from remote file via FTP protocol.",0,100);
         }
         reftomain.progmon.setProgress(1);
         String filename = "";
         try {
             filename = (new java.io.File ((new URL(url)).getFile()).getName());
-
         } catch (Throwable t) {}
         reftomain.filename = filename;
 				if (reftomain.fileisfromurl == true)
 	      	reftomain.progmon.setNote("Read out the Samples from the File  «" + filename + "»  over the Network");
         else
-				  reftomain.progmon.setNote("Read out the Samples from the File  «" + filename + "»  on the local file system");
+			reftomain.progmon.setNote("Read out the Samples from the File  «" + filename + "»  on the local file system");
         // Medialocator from URL
         MediaLocator ml;
         if ((ml = new MediaLocator(url)) == null) {
@@ -650,6 +659,9 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
             reftomain.repaint();
             return;
         }
+        
+        System.out.println(ml.getProtocol());
+        
         reftomain.progmon.setProgress(2);
         DataSource ds = null;
         // Create a DataSource given the media locator.
@@ -662,6 +674,8 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
             if (urltype==2)
                 reftomain.messageBox("Error while open the Network File","<html><i>The remote http <u>file does not exist</u> ! Perhaps the<br>internet connection was broken, or you have <br>prescribed you with in the URL ?<br><br><font size=-3>" + e.getMessage()+ "</font><br><br></i>URL: <u>"+url+"</u>",JOptionPane.WARNING_MESSAGE);
             if (urltype==3)
+                reftomain.messageBox("Error while open the Network File","<html><i>The remote https <u>file does not exist</u> ! Perhaps the<br>internet connection was broken, or you have <br>prescribed you with in the URL ?<br><br><font size=-3>" + e.getMessage()+ "</font><br><br></i>URL: <u>"+url+"</u>",JOptionPane.WARNING_MESSAGE);
+            if (urltype==4)
                 reftomain.messageBox("Error while open the Network File","<html><i>The remote ftp <u>file or does not exist</u> ! Perhaps the<br>internet connection was broken, or you have <br>prescribed you with the URL ?<br><br><font size=-3>" + e.getMessage()+ "</font><br><br></i>URL: <u>"+url+"</u>",JOptionPane.WARNING_MESSAGE);
             System.err.println("--> URL does not exist: " + ml);
             reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.version);

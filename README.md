@@ -20,3 +20,10 @@ Sonogram visible speech has been programmed at the German Research Center for Ar
 ![alt text](images/4.png)
 ![alt text](images/5.png)
 ![alt text](images/7.png)                 
+
+## Build
+You can build Sonogram by you own. First you have to install a java SDK at least in version 16.
+
+`cd build`
+
+`make all`

@@ -601,16 +601,16 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
     //====================================================================================================
 
     public void generateSamplesFromURL(String url) {
-        
+                
         // Find out URL type
-        int  urltype = 0; // 0=error, 1=local file system, 2=http, 3=ftp
+        int  urltype = 0; // 0=error, 1=local file system, 2=https, 3=http, 4=ftp
         if (url.substring(0,4).equals("file")==true) {
             urltype = 1;
             System.out.println("--> File on local file system");
         } else if (url.substring(0,5).equals("https")==true) {
             urltype = 3;
             System.out.println("--> File on https file system");
-        } else if (url.substring(0,5).equals("http")==true) {
+        } else if (url.substring(0,4).equals("http")==true) {
             urltype = 2;
             System.out.println("--> File on http file system");
         } else if (url.substring(0,3).equals("ftp")==true) {
@@ -657,7 +657,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
             return;
         }
         
-        System.out.println(ml.getProtocol());
+        System.out.println("--> PROTOCOLL:" + ml.getProtocol());
         
         reftomain.progmon.setProgress(2);
         DataSource ds = null;

@@ -24,7 +24,7 @@ Note: You have to be Java at least in version 16 installed on your Computer in o
 ![alt text](images/7.png)                 
 
 ## Support
-If you have trouble with the Sonogram settings you can start Sonogram with CAPS-LOCK enabled.
+If you have trouble with the Sonogram settings you can **start Sonogram with CAPS-LOCK enabled**.
 
 ![alt text](images/cl1.jpeg)                 
 

@@ -23,6 +23,13 @@ Note: You have to be Java at least in version 16 installed on your Computer in o
 ![alt text](images/5.png)
 ![alt text](images/7.png)                 
 
+## Support
+If you have trouble with the Sonogram settings you can start Sonogram with CAPS-LOCK enabled.
+![alt text](cl1.jpg)                 
+a reset screen is shown:
+![alt text](cl2.png)                 
+
+
 ## Build
 You can build Sonogram by you own. First you have to install a java SDK at least in version 16.
 

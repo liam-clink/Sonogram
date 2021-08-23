@@ -25,7 +25,7 @@ Note: You have to be Java at least in version 16 installed on your Computer in o
 
 ## Support
 If you have trouble with the Sonogram settings you can start Sonogram with CAPS-LOCK enabled.
-![alt text](images/cl1.jpg)                 
+![alt text](images/cl1.jpeg)                 
 a reset screen is shown:
 ![alt text](images/cl2.png)                 
 

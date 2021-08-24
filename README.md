@@ -14,6 +14,9 @@ Note: You have to be Java at least in version 16 installed on your Computer in o
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NJ7YC6GJT5QJA) (Sonogram is free, but please support the further Development of Sonogram Visible Speech)
 
+## Usage Video
+[![Alt text](images/play.png)](https://www.youtube.com/watch?v=f-4RyKO-Gow)
+
 ## Screenshots
 ![alt text](images/1.png)
 ![alt text](images/2.png)

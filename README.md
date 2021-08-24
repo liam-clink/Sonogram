@@ -4,7 +4,7 @@
 Sonogram visible speech has been programmed at the German Research Center for Artifical Intelligence  (Deutsches Forschungszentrum fuer Kuenstliche Intelligenz DFKI, www.dfki.de), and is a 3D tool to analyze speech and sound signals with FFT and various other algorithms. The new version **requires Java at least in version 16**.
 
 ## Download
-Note: You have to be Java at least in version 16 installed on your Computer in order to use Sonogram.
+Note: You have to be Java at least in version 16 installed on your Computer in order to use Sonogram. See [AdoptOpenJdk](https://adoptopenjdk.net) or [Oracle JDK](https://www.oracle.com/java/technologies/javase-jdk16-downloads.html).
 
 <img align="left" width="109" height="82" padding="10" src="images/SonogramIcon.png">
 

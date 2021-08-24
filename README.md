@@ -1,5 +1,5 @@
 # Sonogram Visible Speech 5.0
-![alt text](images/Splash.png)
+[![Alt text](images/Splash.png)](https://www.youtube.com/watch?v=f-4RyKO-Gow)
 
 Sonogram visible speech has been programmed at the German Research Center for Artifical Intelligence  (Deutsches Forschungszentrum fuer Kuenstliche Intelligenz DFKI, www.dfki.de), and is a 3D tool to analyze speech and sound signals with FFT and various other algorithms. The new version **requires Java at least in version 16**.
 
@@ -13,9 +13,6 @@ Note: You have to be Java at least in version 16 installed on your Computer in o
 * [Download](https://github.com/Christoph-Lauer/Sonogram/releases/download/v5.0/SonogramUnix.zip) Sonogram for **Unix/linux**
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NJ7YC6GJT5QJA) (Sonogram is free, but please support the further Development of Sonogram Visible Speech)
-
-## Usage Video
-[![Alt text](images/play.png)](https://www.youtube.com/watch?v=f-4RyKO-Gow)
 
 ## Screenshots
 ![alt text](images/1.png)

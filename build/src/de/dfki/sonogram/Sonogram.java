@@ -1394,14 +1394,14 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
 				smoothfrbutton.setPreferredSize(buttonSize);
 				smoothfrbutton.setMaximumSize(buttonSize);
 			  toolBar.add(smoothfrbutton);
-			  smoothfrbutton.setToolTipText("<html><b>Smmoth over Frequency</b><br>This function burnish the Sonogram image<br>in the vertical frequency direction");
+			  smoothfrbutton.setToolTipText("<html><b>Smooth over Frequency</b><br>This function burnish the Sonogram image<br>in the vertical frequency direction");
 			  smoothtmbutton = new JButton(new ImageIcon(Sonogram.class.getResource("smoothtm.gif")));
 				if (ismot == true)
 				  smoothtmbutton.setBorder(BorderFactory.createLoweredBevelBorder());
 				smoothtmbutton.setPreferredSize(buttonSize);
 				smoothtmbutton.setMaximumSize(buttonSize);
 			  toolBar.add(smoothtmbutton);
-			  smoothtmbutton.setToolTipText("<html><b>Smmoth over Time</b><br>This function burnish the Sonogram image<br>in the horizontal time direction");
+			  smoothtmbutton.setToolTipText("<html><b>Smooth over Time</b><br>This function burnish the Sonogram image<br>in the horizontal time direction");
         sep3 = new JLabel(new ImageIcon(Sonogram.class.getResource("separator.png")));
         toolBar.add(sep3);
         infobutton = new JButton(new ImageIcon(Sonogram.class.getResource("info.gif")));

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Main-Class: de.dfki.sonogram.Sonogram
 SplashScreen-Image: de/dfki/sonogram/Splash.png
 Permissions: all-permissions
-Codebase: http://www.christoph-lauer.de
+Codebase: https://github.com/Christoph-Lauer/Sonogram
 Application-Name: Sonogram
 Created-By: 16-ea (Oracle Corporation)
 

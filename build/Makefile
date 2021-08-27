@@ -5,7 +5,7 @@ compile:
 	
 
 run:
-	cd bin; java -classpath . -splash:de/dfki/sonogram/Splash.png -showversion -Xms128m -Xmx1536m -Xfuture --add-opens=java.desktop/sun.awt=ALL-UNNAMED de.dfki.sonogram.Sonogram
+	cd bin; java -classpath . -splash:de/dfki/sonogram/Splash.png -showversion -Xms128m -Xmx10240m -Xfuture --add-opens=java.desktop/sun.awt=ALL-UNNAMED de.dfki.sonogram.Sonogram
 	
 
 compileAndRun: compile run

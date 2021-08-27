@@ -10,7 +10,7 @@ Sonogram need java at least in version 16 to run. You must make sure that java i
 ### Run
 You can either run sonogram with the delivered shell script or the the following command.
 ```sh
-$ java -showversion -Xms128m -Xmx1536m --add-opens=java.desktop/sun.awt=ALL-UNNAMED -jar Sonogram.jar
+$ java -showversion -Xms128m -Xmx10240m --add-opens=java.desktop/sun.awt=ALL-UNNAMED -jar Sonogram.jar
 $ ./Sonogram.sh
 ```
 ### Installation

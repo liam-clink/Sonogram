@@ -21,7 +21,7 @@
 		<key>ClassPath</key>		<string>$JAVAROOT/Sonogram.jar</string>
 		<key>MainClass</key>		<string>de.dfki.sonogram.Sonogram</string>
 		<key>SplashFile</key>	    <string>Splash.png</string>
-		<key>VMOptions</key>		<string>-Xms128m -Xmx1536m --add-opens=java.desktop/sun.awt=ALL-UNNAMED</string>
+		<key>VMOptions</key>		<string>-Xms128m -Xmx10240m --add-opens=java.desktop/sun.awt=ALL-UNNAMED</string>
 		<key>WorkingDirectory</key> <string>$APP_PACKAGE/Contents/Resources/Java</string>
 	</dict>
 </dict>

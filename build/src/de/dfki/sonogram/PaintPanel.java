@@ -348,9 +348,9 @@ public class PaintPanel extends JPanel implements MouseMotionListener
                 if (reftosonogram.gad.cslogfr.isSelected()==true) 
 								{
 									double ymax  = (double)(ym-69);                    // the max value
-									double yni   = ymax - yg;  												 // y not inverse
+									double yni   = ymax - yg;  						   // y not inverse
 									double ylog  = Math.log(yni)/Math.log(ymax)*ymax;  // calc log scale
-									yppow        = (int)(ymax - ylog);  							 // reinverse
+									yppow        = (int)(ymax - ylog);  			   // reinverse
                   if (yppow>2)
                         g.drawLine(xm-60,(int)yppow,xm-3,(int)yppow);
                 }
@@ -907,7 +907,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener
                             g.drawLine(x-1,0,x-1,ym-70);
                     // grid over Frequencies
                     for (double y=0;y<ym-69.0;y+=((double)ym-70.0)/10.0)
-                        // GRID:If logarithm Frequency
+                        // GRID: If logarithm Frequency
                         if (reftosonogram.gad.cslogfr.isSelected()==true) 
 												{
 														double ymax  = (double)(ym-69);                    // the max value
@@ -915,6 +915,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener
 														double ylog  = Math.log(yni)/Math.log(ymax)*ymax;  // calc log scale
 														       yppow = (int)(ymax - ylog);  							 // reinverse
                             g.drawLine(40,yppow,xm-60,(int)yppow);
+                        // GRID: If linear Frequency
                         } else
                             g.drawLine(40,(int)y,xm-60,(int)y);
                     g.setComposite(compositeNo);

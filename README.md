@@ -15,7 +15,6 @@ Sonogram visible speech has been programmed at the German Research Center for Ar
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NJ7YC6GJT5QJA) (Sonogram is free, but please support the further Development of Sonogram Visible Speech)
 
 ## Screenshots
-![alt text](images/8.png)                 
 ![alt text](images/1.png)
 ![alt text](images/2.png)
 ![alt text](images/6.png)
@@ -23,6 +22,7 @@ Sonogram visible speech has been programmed at the German Research Center for Ar
 ![alt text](images/4.png)
 ![alt text](images/5.png)
 ![alt text](images/7.png)                 
+![alt text](images/8.png)                 
 
 ## Support
 If you have trouble with the Sonogram settings you can **start Sonogram with CAPS-LOCK enabled**.

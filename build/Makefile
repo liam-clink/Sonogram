@@ -40,4 +40,5 @@ releaseUnix:
 	cp -f installers/UNIX/SonogramUnix.zip ../bin
 
 
-all: jar releaseMac releaseWindows releaseUnix 
+all: jar releaseMac releaseWindows releaseUnix
+	

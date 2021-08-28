@@ -588,7 +588,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
           // and set the LAF to the Windows Frame
           if (laf != 6)
           { 
-            System.out.println(laf);
+            //System.out.println(laf);
             javaWinDeco = true;
             Toolkit.getDefaultToolkit().setDynamicLayout(true);
             JDialog.setDefaultLookAndFeelDecorated(true);

@@ -547,7 +547,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
         System.out.println("     *            Visible Speech              *");
         System.out.println("     *         christoph.lauer@me.com         *");
         System.out.println("     *      License:     FREE  License 1.0    *"); 
-        System.out.println("     * Time-stamp:<08/23/2020 14:31:44 chris> *");
+        System.out.println("     * Time-stamp:<08/28/2021 14:31:44 chris> *");
         System.out.println("     ******************************************");
         System.out.println(" ____                                              ");
         System.out.println("/ ___|  ___  _ __   ___   __ _ _ __ __ _ _ __ ___  ");
@@ -585,9 +585,10 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
         }
         try 
         {
-          // and set the LAF
-          if (laf != 10 && laf != 8 && laf != 1 && laf != 2)
+          // and set the LAF to the Windows Frame
+          if (laf != 6)
           { 
+            System.out.println(laf);
             javaWinDeco = true;
             Toolkit.getDefaultToolkit().setDynamicLayout(true);
             JDialog.setDefaultLookAndFeelDecorated(true);
@@ -746,7 +747,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
   		    javax.swing.plaf.metal.MetalLookAndFeel mlaf = new javax.swing.plaf.metal.MetalLookAndFeel();
   		    mlaf.setCurrentTheme(new javax.swing.plaf.metal.OceanTheme());
   		    UIManager.setLookAndFeel(mlaf);
-  		    System.out.println("--> Change LooAndFeel to METAL");
+  		    System.out.println("--> Change LooAndFeel to OCEAN");
   	    }
   	    ilaf = which;
    	    SwingUtilities.updateComponentTreeUI(this);

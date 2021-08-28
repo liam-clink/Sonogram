@@ -369,7 +369,7 @@ class GeneralAdjustmentDialog extends JFrame {
         copenlastwithzoom.setEnabled(csopenlast.isSelected());
         csarrange = new JCheckBox ("Arrange All Windows while startup",sono.isarr);
         csarrange.setForeground(new Color(122,0,0));
-        csarrange.setToolTipText("<b>All analyze windows</b> are opened and arranged<br>if the last opened file was automatically opened.");
+        csarrange.setToolTipText("<html><b>All analyze windows</b> are opened and arranged<br>if the last opened file was automatically opened.");
         csarrange.setEnabled(csopenlast.isSelected());
         p.add(csarrange);
         csampl    = new JCheckBox ("Open with 8Khz Samplingrate",sono.iopen8);

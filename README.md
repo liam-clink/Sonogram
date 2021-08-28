@@ -22,6 +22,7 @@ Sonogram visible speech has been programmed at the German Research Center for Ar
 ![alt text](images/4.png)
 ![alt text](images/5.png)
 ![alt text](images/7.png)                 
+![alt text](images/8.png)                 
 
 ## Support
 If you have trouble with the Sonogram settings you can **start Sonogram with CAPS-LOCK enabled**.

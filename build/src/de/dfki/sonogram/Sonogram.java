@@ -263,7 +263,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
         }
 
         splash.setProgress(10,"Check ID called from Plugin 10%");
-      	setSize (998,538);
+      	setSize (1025,550);
       	int scw  = (int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
       	int sch  = (int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
       	setLocation(scw/2-getWidth()/2,sch/2-getHeight()/2+100);
@@ -2825,7 +2825,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
               }
 							else
 							{
-                setSize          (998,538);
+                setSize          (1025,550);
  		            int scw  = (int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
  		            int sch = (int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
  		            setLocation(scw/2-getWidth()/2,sch/2-getHeight()/2);
@@ -2935,7 +2935,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
         kv.setVisible(false);
         av.setVisible(false);
         pv.setVisible(false);
-        setSize(998,538);
+        setSize(1025,550);
         setLocationRelativeTo(null);
         return;
       }

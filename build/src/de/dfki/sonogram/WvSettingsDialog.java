@@ -271,7 +271,8 @@ class WvSettingsDialog extends JDialog
     {
       public void stateChanged(ChangeEvent e) 
       {
-        if (sliderx.getValue()*slidery.getValue() <= 110)
+        System.out.println(sliderx.getValue()*slidery.getValue());
+        if (sliderx.getValue()*slidery.getValue() <= 150)
         {
           perButton.setEnabled(true);
           //perButton.setBorder(BorderFactory.createLineBorder(new Color(90,90,160)));
@@ -300,7 +301,8 @@ class WvSettingsDialog extends JDialog
     {
       public void stateChanged(ChangeEvent e) 
       {
-        if (sliderx.getValue() * slidery.getValue() <= 110)
+        System.out.println(sliderx.getValue()*slidery.getValue());
+        if (sliderx.getValue() * slidery.getValue() <= 150)
           perButton.setEnabled(true);
         else
           perButton.setEnabled(false);

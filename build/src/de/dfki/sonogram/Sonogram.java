@@ -27,7 +27,7 @@ import javax.imageio.ImageIO;
 
 public class Sonogram extends JFrame implements ActionListener, MouseListener 
 {
-    static final int         build            = 8510;
+    static final int         build            = 8512;
     static final String      version          = "5.0";
     public boolean 	         firststart       = false; 
     boolean                  infovisible      = false;

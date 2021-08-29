@@ -23,21 +23,21 @@ releaseMac:
 	cp -f installers/Sonogram.jar installers/MACOS/Sonogram.app/Contents/Resources/Java
 	rm -f installers/MACOS/Sonogram.app/Contents/Resources/Java/SonogramConfig.xml
 	cd installers/MACOS; zip -r SonogramMacOS.zip Sonogram.app/*
-	cp -f installers/MACOS/SonogramMacOS.zip ../bin
+	cp -f installers/MACOS/SonogramMacOS.zip ../release
 	
 
 releaseWindows:
 	cp -f installers/Sonogram.jar installers/WINDOWS/Sonogram\ Windows/
 	rm -f installers/WINDOWS/Sonogram\ Windows/SonogramConfig.xml
 	cd installers/WINDOWS; zip -r SonogramWindows.zip Sonogram\ Windows/*
-	cp -f installers/Windows/SonogramWindows.zip ../bin
+	cp -f installers/Windows/SonogramWindows.zip ../release
 
 
 releaseUnix:
 	cp -f installers/Sonogram.jar installers/UNIX/SonogramUnix/
 	rm -f installers/UNIX/SonogramUnix/SonogramConfig.xml
 	cd installers/UNIX; zip -r SonogramUnix.zip SonogramUnix/*
-	cp -f installers/UNIX/SonogramUnix.zip ../bin
+	cp -f installers/UNIX/SonogramUnix.zip ../release
 
 
 all: jar releaseMac releaseWindows releaseUnix

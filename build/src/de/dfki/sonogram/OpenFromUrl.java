@@ -36,9 +36,9 @@ public class OpenFromUrl extends JFrame implements ActionListener
     cp.setLayout(new FlowLayout());
     // generate the demo wave file entries
     Vector<String> demos = new Vector<String>();
-    for (int i=1; i<=11; i++)
+    for (int i=1; i<=25; i++)
     {
-      String s = "http://github.com/Christoph-Lauer/Sonogram/blob/main/build/samples/" + i + ".wav";
+      String s = "http://github.com/Christoph-Lauer/Sonogram/blob/main/examples/" + i + ".wav";
       if(i == 1)  s += "    (Cat Purr)";
       if(i == 2)  s += "    (Donkey)";
       if(i == 3)  s += "    (Hedgehog)";
@@ -48,13 +48,22 @@ public class OpenFromUrl extends JFrame implements ActionListener
       if(i == 7)  s += "    (Fanfare)";
       if(i == 8)  s += "    (Engine Start)";
       if(i == 9)  s += "    (Diphone Speech Synthesis)";
-      if(i == 10) s += "  (Car Dor Close)";
+      if(i == 10) s += "  (Car Door Close)";
       if(i == 11) s += "  (Dolphins)";
-      //if(i == 12) s += "  ()";
-      //if(i == 13) s += "  ()";
-      //if(i == 14) s += "  ()";
-      //if(i == 15) s += "  ()";
-      //if(i == 14) s += "  (Klavier)";
+      if(i == 12) s += "  (Bird Trush)";
+      if(i == 13) s += "  (Orca)";
+      if(i == 14) s += "  (Modem)";
+      if(i == 15) s += "  (Violine)";
+      if(i == 16) s += "  (Trombone)";
+      if(i == 17) s += "  (Whistling)";
+      if(i == 18) s += "  (Police Siren)";
+      if(i == 19) s += "  (Swans)";
+      if(i == 20) s += "  (Human Speech)";
+      if(i == 21) s += "  (TTS french)";
+      if(i == 22) s += "  (Bearing)";
+      if(i == 23) s += "  (Spectogram Art)";
+      if(i == 24) s += "  ()";
+      if(i == 25) s += "  ()";
       demos.add(s);
     } 
 

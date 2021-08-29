@@ -666,8 +666,8 @@ class GeneralAdjustmentDialog extends JFrame {
         h9.put (Integer.valueOf(9), new JLabel("512"));
         h9.put (Integer.valueOf(10), new JLabel("1024"));
         h9.put (Integer.valueOf(11), new JLabel("2048"));
-        h9.put (Integer.valueOf(12), new JLabel("4096"));
-        h9.put (Integer.valueOf(13), new JLabel("8192"));
+        h9.put (Integer.valueOf(12), new JLabel("4k"));
+        h9.put (Integer.valueOf(13), new JLabel("8k"));
         slidercep.setLabelTable (h9);
         slidercep.setBorder(new TitledBorder(new EtchedBorder(),"Samples used for Cepstrum Generation"));
         slidercep.setToolTipText("<html>The buffer size for the cepstal analyse<br>See the Information Window for the resulting time");
@@ -745,11 +745,11 @@ class GeneralAdjustmentDialog extends JFrame {
 	p.add(ps);
 
 	if (sono.isacpmax == 0) sono.isacpmax=400;
-	sliderpitchmax = new JSlider(JSlider.HORIZONTAL, 200, 5000, sono.isacpmax);
+	sliderpitchmax = new JSlider(JSlider.HORIZONTAL, 0, 10000, sono.isacpmax);
         sliderpitchmax.setBorder(new TitledBorder(new EtchedBorder(),"Search Frequency Limiter"));
         sliderpitchmax.setToolTipText("<html><b>Search Frequency Limiter</b><br>Restrict the search range for the pitch detection<br>to the selected max value. This is useful for<br>speech format detection.");
-        sliderpitchmax.setMajorTickSpacing(800);
-        sliderpitchmax.setMinorTickSpacing(100);
+        sliderpitchmax.setMajorTickSpacing(2000);
+        sliderpitchmax.setMinorTickSpacing(200);
         sliderpitchmax.setPaintTicks  (true);
         sliderpitchmax.setPaintLabels (true);
         sliderpitchmax.setSnapToTicks (true);

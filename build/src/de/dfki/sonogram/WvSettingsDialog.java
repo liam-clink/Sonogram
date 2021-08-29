@@ -271,7 +271,7 @@ class WvSettingsDialog extends JDialog
     {
       public void stateChanged(ChangeEvent e) 
       {
-        System.out.println(sliderx.getValue()*slidery.getValue());
+        //System.out.println(sliderx.getValue()*slidery.getValue());
         if (sliderx.getValue()*slidery.getValue() <= 150)
         {
           perButton.setEnabled(true);
@@ -301,7 +301,7 @@ class WvSettingsDialog extends JDialog
     {
       public void stateChanged(ChangeEvent e) 
       {
-        System.out.println(sliderx.getValue()*slidery.getValue());
+        //System.out.println(sliderx.getValue()*slidery.getValue());
         if (sliderx.getValue() * slidery.getValue() <= 150)
           perButton.setEnabled(true);
         else

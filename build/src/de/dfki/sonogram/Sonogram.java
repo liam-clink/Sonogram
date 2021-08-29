@@ -95,7 +95,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
     JButton                  openbutton,adjbutton,helpbutton,quitbutton       // Toolbar Buttons
                              ,playbutton,stopbutton,revbutton,d3button,cepbutton
                              ,zinbutton,zbabutton,forbutton,infobutton,lpcbutton
-	                           ,zprebutton,svgbutton,wavbutton,walbutton,autocorrelationbutton,pitchbutton,arrangebutton,fullbutton,logbutton,smoothfrbutton, smoothtmbutton, wvbutton, recbutton;
+	                           ,zprebutton,svgbutton,wavbutton,walbutton,autocorrelationbutton,pitchbutton,arrangebutton,fullbutton,logbutton,smoothfrbutton, smoothtmbutton, wvbutton, recbutton, gridbutton;
     JMenuItem                quitItem,openItem,aboutItem,adjItem,playItem,revItem,d3Item // Menueitems - MainWindow
                              ,stopItem,helpItem,cepItem,zinItem,zbaItem
                              ,forItem,infoItem,lpcItem,zpreItem,lafItem
@@ -1404,6 +1404,14 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
 			  toolBar.add(smoothtmbutton);
 			  smoothtmbutton.setToolTipText("<html><b>Smooth over Time</b><br>This function burnish the Sonogram image<br>in the horizontal time direction");
         sep3 = new JLabel(new ImageIcon(Sonogram.class.getResource("separator.png")));
+        gridbutton = new JButton(new ImageIcon(Sonogram.class.getResource("gridbut.gif")));
+        if (igrid == true)
+          gridbutton.setBorder(BorderFactory.createLoweredBevelBorder());
+        gridbutton.setPreferredSize(buttonSize);
+        gridbutton.setMaximumSize(buttonSize);
+        toolBar.add(gridbutton);
+        gridbutton.setToolTipText("<html><b>Grid</b><br>Paint the main Sonogram with a Grid<font color=black size=-2>Ctrl-G");
+
         toolBar.add(sep3);
         infobutton = new JButton(new ImageIcon(Sonogram.class.getResource("info.gif")));
       	infobutton.setPreferredSize(buttonSize);
@@ -1462,11 +1470,13 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
         logbutton.addActionListener (this);
         smoothfrbutton.addActionListener (this);
         smoothtmbutton.addActionListener (this);
+        gridbutton.addActionListener (this);
 	      
 				logbutton.addMouseListener(this);
 				smoothfrbutton.addMouseListener(this);
 				smoothtmbutton.addMouseListener(this);
         wvbutton.addMouseListener(this);
+        gridbutton.addMouseListener(this);
 
         colorLabel = new JLabel();
         colorLabel.setMaximumSize(new Dimension(60,28));
@@ -1604,6 +1614,16 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
 // this is only for the buttons which can be disabled
 		public void mousePressed(MouseEvent e) 
 		{
+      if (e.getSource()==gridbutton) 
+      {
+           gad.p1.setSelectedIndex(3);
+           gridItem.setSelected(!gridItem.isSelected());
+           gad.cgrid.setSelected(gridItem.isSelected());
+           if (gridItem.isSelected() == true)
+              gridbutton.setBorder(BorderFactory.createLoweredBevelBorder());
+           else
+              gridbutton.setBorder(BorderFactory.createEmptyBorder());//fullbutton.getBorder());
+      }
 			if (e.getSource()==logbutton) 
 			{
 				   gad.p1.setSelectedIndex(15);

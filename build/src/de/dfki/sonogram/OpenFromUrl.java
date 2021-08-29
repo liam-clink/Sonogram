@@ -38,7 +38,7 @@ public class OpenFromUrl extends JFrame implements ActionListener
     Vector<String> demos = new Vector<String>();
     for (int i=1; i<=11; i++)
     {
-      String s = "https://github.com/Christoph-Lauer/Sonogram/blob/master/build/samples/" + i + ".wav";
+      String s = "http://github.com/Christoph-Lauer/Sonogram/blob/main/build/samples/" + i + ".wav";
       if(i == 1)  s += "    (Cat Purr)";
       if(i == 2)  s += "    (Donkey)";
       if(i == 3)  s += "    (Hedgehog)";
@@ -64,8 +64,8 @@ public class OpenFromUrl extends JFrame implements ActionListener
     tf.setPreferredSize(new Dimension(900,21));
     tf.setEditable(true);
     tf.setSelectedIndex(5);
- 	tf.setToolTipText("<html><b>Preconfigured Demo Files</b><br>Preconfigured demo files can be found at the adress:<br><tt>http://www.christoph-lauer.de/demo1.wav ... demo6.wav</tt></html>");
-	tf.addActionListener(this);
+ 	  tf.setToolTipText("<html><b>Preconfigured Demo Files</b><br>Preconfigured demo files can be found at the adress:<br><tt>http://www.christoph-lauer.de/demo1.wav ... demo6.wav</tt></html>");
+	  tf.addActionListener(this);
     cp.add(tf);
     JButton button = new JButton("Open");
     button.setMargin(new Insets(0,0,0,0));

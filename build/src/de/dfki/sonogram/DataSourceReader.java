@@ -601,7 +601,9 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
     //====================================================================================================
 
     public void generateSamplesFromURL(String url) {
-                
+
+        //url="http://github.com/Christoph-Lauer/Sonogram/blob/main/build/samples/11.wav";
+        System.out.println("--> DataSourceReader.generateSamplesFromUrl: " + url);    
         // Find out URL type
         int  urltype = 0; // 0=error, 1=local file system, 2=https, 3=http, 4=ftp
         if (url.substring(0,4).equals("file")==true) {
@@ -674,7 +676,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
                 reftomain.messageBox("Error while open the Network File","<html><i>The remote https <u>file does not exist</u> ! Perhaps the<br>internet connection was broken, or you have <br>prescribed you with in the URL ?<br><br><font size=-3>" + e.getMessage()+ "</font><br><br></i>URL: <u>"+url+"</u>",JOptionPane.WARNING_MESSAGE);
             if (urltype==4)
                 reftomain.messageBox("Error while open the Network File","<html><i>The remote ftp <u>file or does not exist</u> ! Perhaps the<br>internet connection was broken, or you have <br>prescribed you with the URL ?<br><br><font size=-3>" + e.getMessage()+ "</font><br><br></i>URL: <u>"+url+"</u>",JOptionPane.WARNING_MESSAGE);
-            System.err.println("--> URL does not exist: " + ml);
+            System.err.println("--> ERROR:" +  e.getMessage());
             reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.version);
             reftomain.spektrumExist = false;
             reftomain.updateimageflag=true;

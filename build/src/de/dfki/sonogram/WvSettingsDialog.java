@@ -254,12 +254,12 @@ class WvSettingsDialog extends JDialog
     Hashtable h2 = new Hashtable();
     h2.put (Integer.valueOf(8),  new JLabel("256"));
     h2.put (Integer.valueOf(9),  new JLabel("512"));
-    h2.put (Integer.valueOf(10),  new JLabel("1024"));
+    h2.put (Integer.valueOf(10), new JLabel("1024"));
     h2.put (Integer.valueOf(11), new JLabel("2048"));
     h2.put (Integer.valueOf(12), new JLabel("4096"));
     h2.put (Integer.valueOf(13), new JLabel("8192"));
-    h2.put (Integer.valueOf(14), new JLabel("16384"));
-    h2.put (Integer.valueOf(15), new JLabel("32768"));
+    h2.put (Integer.valueOf(14), new JLabel("16k"));
+    h2.put (Integer.valueOf(15), new JLabel("32k"));
     sliderx.setLabelTable (h2);
     sliderx.setPaintLabels (true);
     sliderx.setSnapToTicks(true);

@@ -41,4 +41,7 @@ releaseUnix:
 
 
 all: jar releaseMac releaseWindows releaseUnix
-	
+
+
+clean:
+	find bin/de/dfki -name "*.class" -exec rm -rfv {} \;

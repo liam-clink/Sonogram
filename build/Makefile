@@ -50,5 +50,5 @@ clean:
 installMacos: jar
 	cp -fv installers/Sonogram.jar installers/MACOS/Sonogram.app/Contents/Resources/Java
 	rm -fv installers/MACOS/Sonogram.app/Contents/Resources/Java/SonogramConfig.xml
-	sudo rm -rfv /Applications/Sonogram.app
+	rm -rfv /Applications/Sonogram.app
 	cp -rv installers/MACOS/Sonogram.app /Applications

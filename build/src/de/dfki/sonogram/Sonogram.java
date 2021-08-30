@@ -2144,7 +2144,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
       Runnable r = new Runnable() {
         @Override
         public void run() {
-          for (int i = 0; i < 5; i++) {
+          for (int i = 0; i < 2; i++) {
            try {
               moveButton(new Point(point1.x, point1.y + 3),zinbutton);
               moveButton(new Point(point2.x, point2.y + 3),wvbutton);

@@ -45,3 +45,10 @@ all: jar releaseMac releaseWindows releaseUnix
 
 clean:
 	find bin/de/dfki -name "*.class" -exec rm -rfv {} \;
+
+
+installMacos:
+	cp -f installers/Sonogram.jar installers/MACOS/Sonogram.app/Contents/Resources/Java
+	rm -f installers/MACOS/Sonogram.app/Contents/Resources/Java/SonogramConfig.xml
+	sudo rm -rfv /Applications/Sonogram.app
+	sudo cp -r installers/MACOS/Sonogram.app /Applications

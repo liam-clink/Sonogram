@@ -40,6 +40,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
     boolean                  autoopened       = false;  // set when file is autoopened and unset from DataSourceReader
     boolean                  playbuttonpressed= false;
     boolean                  stopbuttonpressed= false;
+    Boolean                  shaking          = false;  // flag stores if the ZinButton shaking
     static boolean           java3disinstalled= true;
     public boolean           d3ison           = false;
     short                    timewindowlength = 0;     // length of Timewindow to Transform
@@ -179,9 +180,9 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
     boolean        ipraway;
     boolean        ipsmo;
     boolean        iprsil;
-    boolean 	   ipclin;
-    boolean 	   iptrack;
-    boolean 	   ipfog;
+    boolean 	     ipclin;
+    boolean 	     iptrack;
+    boolean 	     ipfog;
     boolean        i3dpolygons;
     boolean        mp3confirm;
     boolean        perkeysconfirm;
@@ -1258,37 +1259,37 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
       openbutton.setToolTipText("<html>Open local <b>Audio</b> or <b>Video</b> File      <font color=black size=-2>Ctrl-O");
   		adjbutton = new JButton(new ImageIcon(Sonogram.class.getResource("adj.gif")));
 			adjbutton.setPreferredSize(buttonSize);
-	adjbutton.setMaximumSize(buttonSize);
-  toolBar.add(adjbutton);
-  adjbutton.setToolTipText("<html>All Sonogram settings are justified<br> in the <b>Sonogram-Settings-Dialog</b>      <font color=black size=-2>Ctrl-A");
-  recbutton = new JButton(new ImageIcon(Sonogram.class.getResource("rec.png")));
-	recbutton.setPreferredSize(buttonSize);
-	recbutton.setMaximumSize(buttonSize);
-  toolBar.add(recbutton);
-  recbutton.setToolTipText("<html><b>Record and preview</b> a Wave Wile");
-  arrangebutton = new JButton(new ImageIcon(Sonogram.class.getResource("arr.gif")));
-	arrangebutton.setPreferredSize(buttonSize);
-	arrangebutton.setMaximumSize(buttonSize);
-  arrangebutton.setToolTipText("<html>Open <b>all analyze windows</b> and arrange them<br>"+
+	    adjbutton.setMaximumSize(buttonSize);
+      toolBar.add(adjbutton);
+      adjbutton.setToolTipText("<html>All Sonogram settings are justified<br> in the <b>Sonogram-Settings-Dialog</b>      <font color=black size=-2>Ctrl-A");
+      recbutton = new JButton(new ImageIcon(Sonogram.class.getResource("rec.png")));
+	    recbutton.setPreferredSize(buttonSize);
+	    recbutton.setMaximumSize(buttonSize);
+      toolBar.add(recbutton);
+      recbutton.setToolTipText("<html><b>Record and preview</b> a Wave Wile");
+      arrangebutton = new JButton(new ImageIcon(Sonogram.class.getResource("arr.gif")));
+    	arrangebutton.setPreferredSize(buttonSize);
+	    arrangebutton.setMaximumSize(buttonSize);
+      arrangebutton.setToolTipText("<html>Open <b>all analyze windows</b> and arrange them<br>"+
                                "automatically to the optimal screen position.Press<br>"+
                                "this button a scond time disable all analyze windows."+
                                "<br><font color=black size=-2>F12");
-  toolBar.add(arrangebutton);
-  fullbutton = new JButton(new ImageIcon(Sonogram.class.getResource("full.gif")));
-	fullbutton.setPreferredSize(buttonSize);
-	fullbutton.setMaximumSize(buttonSize);
-  fullbutton.setToolTipText("<html>Zoom the main sonogram<br>Window to <b>Fullscreen</b>      <font color=black size=-2><br><i>doubleclick</i> or <b>F11");
-  toolBar.add(fullbutton);
+      toolBar.add(arrangebutton);
+      fullbutton = new JButton(new ImageIcon(Sonogram.class.getResource("full.gif")));
+	    fullbutton.setPreferredSize(buttonSize);
+	    fullbutton.setMaximumSize(buttonSize);
+      fullbutton.setToolTipText("<html>Zoom the main sonogram<br>Window to <b>Fullscreen</b>      <font color=black size=-2><br><i>doubleclick</i> or <b>F11");
+      toolBar.add(fullbutton);
 
-  svgbutton = new JButton(new ImageIcon(Sonogram.class.getResource("svg.gif")));
-	//svgbutton.setPreferredSize(buttonSize);
-	//svgbutton.setMaximumSize(buttonSize);
-  //	toolBar.add(svgbutton);
-  //svgbutton.setToolTipText("Save spectrum as Scalable Vector Graphic (SVG file) Crtl-V");
-  //javax.swing.JToolBar.Separator sep1 = new javax.swing.JToolBar.Separator();
-  //toolBar.add(sep1);
+      svgbutton = new JButton(new ImageIcon(Sonogram.class.getResource("svg.gif")));
+	    //svgbutton.setPreferredSize(buttonSize); 
+    	//svgbutton.setMaximumSize(buttonSize);
+      //	toolBar.add(svgbutton);
+      //svgbutton.setToolTipText("Save spectrum as Scalable Vector Graphic (SVG file) Crtl-V");
+      //javax.swing.JToolBar.Separator sep1 = new javax.swing.JToolBar.Separator();
+      //toolBar.add(sep1);
   
-  sep4 = new JLabel(new ImageIcon(Sonogram.class.getResource("separator.png")));
+      sep4 = new JLabel(new ImageIcon(Sonogram.class.getResource("separator.png")));
         toolBar.add(sep4);
 
         playbutton = new JButton(new ImageIcon(Sonogram.class.getResource("play.gif")));
@@ -2064,7 +2065,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
         walItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H,java.awt.event.InputEvent.CTRL_DOWN_MASK));
         wavItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W,java.awt.event.InputEvent.CTRL_DOWN_MASK));
         fulItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11,0));
-	    arrItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F12,0));
+	      arrItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F12,0));
         autocorrelationItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A,java.awt.event.InputEvent.CTRL_DOWN_MASK));
         pitchItem.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P,java.awt.event.InputEvent.CTRL_DOWN_MASK));
 
@@ -2129,7 +2130,58 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
         pitchItem.addActionListener(this);
         feedbackItem.addActionListener(this);
     }
-    //-------------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------   
+
+    public void shakeButtons() {
+      if (shaking == true)
+        return;
+      else
+        shaking = true;
+      final Point point1 = zinbutton.getLocation();
+      final Point point2 = wvbutton.getLocation();
+      final int delay = 100;
+      Runnable r = new Runnable() {
+        @Override
+        public void run() {
+          for (int i = 0; i < 5; i++) {
+           try {
+              moveButton(new Point(point1.x, point1.y + 3),zinbutton);
+              moveButton(new Point(point2.x, point2.y + 3),wvbutton);
+              Thread.sleep(delay);
+              moveButton(point1,zinbutton);
+              moveButton(point2,wvbutton);
+              Thread.sleep(delay);
+              moveButton(new Point(point1.x, point1.y - 3),zinbutton);
+              moveButton(new Point(point2.x, point2.y - 3),wvbutton);
+              Thread.sleep(delay);
+              moveButton(point1,zinbutton);
+              moveButton(point2,wvbutton);
+              Thread.sleep(delay);
+            }  
+            catch (InterruptedException ex) {
+              ex.printStackTrace();
+            }
+          }
+          shaking = false;
+        }
+      };
+      Thread t = new Thread(r);
+      t.start();
+    }
+
+//----------------------------------------------------------------------------------------------------------------   
+
+    private void moveButton(final Point p, JButton b) {
+      SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        b.setLocation(p);
+        }
+      });
+    }
+
+//-------------------------------------------------------------------------------------------------------------------------
     /**
      * Enable/disable toolbar and menueitems
      * @param enable Buttons and Items on/off (true = on)
@@ -3225,7 +3277,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
         iinv       = false;
         iloga      = true;
         igrid      = true;
-	itooltip   = true;
+	      itooltip   = true;
         iautowinl  = true;
         inorsi     = false;
         ismof      = false;

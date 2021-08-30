@@ -172,6 +172,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener
                 double pos = (double)(x-40) / (double)(xm-100);
                 plstart = plstop = plbegin = plbutton = pos;
                 paintTimeSlider(null);
+                reftosonogram.shakeButtons();
             }
           }
           /*public void mouseEntered(MouseEvent e) 

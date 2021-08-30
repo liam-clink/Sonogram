@@ -172,7 +172,6 @@ public class PaintPanel extends JPanel implements MouseMotionListener
                 double pos = (double)(x-40) / (double)(xm-100);
                 plstart = plstop = plbegin = plbutton = pos;
                 paintTimeSlider(null);
-                reftosonogram.shakeButtons();
             }
           }
           /*public void mouseEntered(MouseEvent e) 
@@ -306,6 +305,8 @@ public class PaintPanel extends JPanel implements MouseMotionListener
             {
               reftosonogram.zinbutton.setEnabled(true);
               reftosonogram.revbutton.setEnabled(true);
+              if (xe-xb > 10)                                    // paint only if the selected length is more than 10px 
+                reftosonogram.shakeButtons();
             }
         }
     }

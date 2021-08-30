@@ -2147,16 +2147,20 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
           for (int i = 0; i < 1; i++) {
            try {
               moveButton(new Point(point1.x, point1.y + 3),zinbutton);
-              moveButton(new Point(point2.x, point2.y + 3),wvbutton);
+              if (wvbutton.isEnabled() == true)
+                moveButton(new Point(point2.x, point2.y + 3),wvbutton);
               Thread.sleep(delay);
               moveButton(point1,zinbutton);
-              moveButton(point2,wvbutton);
+              if (wvbutton.isEnabled() == true)
+                moveButton(point2,wvbutton);
               Thread.sleep(delay);
               moveButton(new Point(point1.x, point1.y - 3),zinbutton);
-              moveButton(new Point(point2.x, point2.y - 3),wvbutton);
+              if (wvbutton.isEnabled() == true)
+                moveButton(new Point(point2.x, point2.y - 3),wvbutton);
               Thread.sleep(delay);
               moveButton(point1,zinbutton);
-              moveButton(point2,wvbutton);
+              if (wvbutton.isEnabled() == true)
+                moveButton(point2,wvbutton);
               Thread.sleep(delay);
             }  
             catch (InterruptedException ex) {

@@ -9,7 +9,7 @@
 9     Diphone Speech Synthesis
 10    Car Door Close)
 11    Dolphins
-12    Bird Trush)";
+12    Bird Trush
 13    Orca
 14    Modem
 15    Violine
@@ -22,4 +22,9 @@
 22    Bearing
 23    Spectogram Art
 24    Bee
-
+25    Bird Red-breasted Nuthatch
+26    Bird Blackcap
+27    Bird Nightingale
+28    Orthoptera Rhacocleis
+29    Green Toad
+30    Bird Chaffinch

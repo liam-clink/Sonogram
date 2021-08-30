@@ -56,7 +56,7 @@ class WvSettingsDialog extends JDialog
   private int widthOffset;
   private JCheckBox cb1, cb2, cb3, cb4;
   private JRadioButton rb1, rb2;
-  private JButton perButton;
+  private JButton perButton, okButton;
   static  private Color linealBgColor;
   static  private Color linealFgColor;
   public  enum    RenderType { RENDER_2D, RENDER_3D, RENDER_IMAGE }
@@ -315,7 +315,7 @@ class WvSettingsDialog extends JDialog
     // BUTTON PANEL
     JPanel p4 = new JPanel();
     p4.setLayout(new GridLayout(1,3));
-    JButton okButton = new JButton("Render");
+    okButton = new JButton("Render");
     okButton.addActionListener
     (
       new ActionListener()
@@ -919,6 +919,45 @@ class WvSettingsDialog extends JDialog
       jScrollPane.getViewport().setView(ip);
     }
   }
+
+//----------------------------------------------------------------------------------------------------------------   
+    
+  public void shakeButton() {
+    final Point point = okButton.getLocation();
+    final int delay = 75;
+    Runnable r = new Runnable() {
+    @Override
+    public void run() {
+      for (int i = 0; i < 10; i++) {
+        try {
+          moveButton(new Point(point.x + 5, point.y));
+          Thread.sleep(delay);
+          moveButton(point);
+          Thread.sleep(delay);
+          moveButton(new Point(point.x - 5, point.y));
+          Thread.sleep(delay);
+          moveButton(point);
+          Thread.sleep(delay);
+        } catch (InterruptedException ex) {
+          ex.printStackTrace();
+        }
+      }
+    }
+  };
+  Thread t = new Thread(r);
+  t.start();
+}
+
+//----------------------------------------------------------------------------------------------------------------   
+
+private void moveButton(final Point p) {
+  SwingUtilities.invokeLater(new Runnable() {
+  @Override
+  public void run() {
+    okButton.setLocation(p);
+  }
+  });
+}
 
 //----------------------------------------------------------------------------------------------------------------   
 

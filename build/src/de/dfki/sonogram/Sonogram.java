@@ -1676,6 +1676,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
 			 else if (wvbutton.isEnabled()==true)
 	     {
 	       wvconfig.setVisible(true);
+         wvconfig.shakeButton();
 	     }
 		 }		
 	

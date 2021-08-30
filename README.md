@@ -47,3 +47,4 @@ You can build Sonogram by you own. First you have to install a java SDK at least
 * http://www.birdsongs.it
 * http://www.naturesound.it
 * https://www.web3.lu/spectrogram-speech-processing/
+* https://www.youtube.com/watch?v=YQFOLmYhq50?t=460

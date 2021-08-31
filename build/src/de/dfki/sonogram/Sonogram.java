@@ -2532,7 +2532,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
                 pp.plstop     = 1.0;
                 selectedstart = selectedstartold;
                 selecedwidth  = selecedwidthold;
-                pp.paintTimeSlider(null);
+                pp.paintTimeSlider(null, false);
                 infod.update();
                 pp.updateWvButton();
             }

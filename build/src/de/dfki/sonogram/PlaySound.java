@@ -81,7 +81,7 @@ public class PlaySound implements ControllerListener, Runnable {
     public void stop() {
         timeSliderFlag = false;
         reftomain.pp.plbutton = oldsliderpos;
-        reftomain.pp.paintTimeSlider(null);
+        reftomain.pp.paintTimeSlider(null, false);
         player.stop();
         oneplayerisrunning = false;
         // When loop is selected.
@@ -134,7 +134,7 @@ public class PlaySound implements ControllerListener, Runnable {
                             if (reftomain.gad.csspecwhileplaying.isSelected()==true) 
                             {
                                 reftomain.pp.paintOneSpektrum(true);
-                                reftomain.pp.paintTimeSlider(null);
+                                reftomain.pp.paintTimeSlider(null, false);
                             }
                         }
                     }

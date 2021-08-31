@@ -171,7 +171,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener
             {
                 double pos = (double)(x-40) / (double)(xm-100);
                 plstart = plstop = plbegin = plbutton = pos;
-                paintTimeSlider(null);
+                paintTimeSlider(null, true);
             }
           }
           /*public void mouseEntered(MouseEvent e) 
@@ -224,7 +224,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener
             }
             reftosonogram.selectedstart = reftosonogram.selectedstartold + plstart * reftosonogram.selecedwidthold;
             reftosonogram.selecedwidth  = reftosonogram.selecedwidthold  * (plstop - plstart);
-            paintTimeSlider(null);
+            paintTimeSlider(null, true);
             if (reftosonogram.infovisible==true)
                 reftosonogram.infod.update();
                         
@@ -272,7 +272,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener
      * Updates the Sliderpicture at bottom.
      * @param g Grapgics-Object to paint up. Is g = null so this Method recive it from "this"
      */
-    public void paintTimeSlider(Graphics g) 
+    public void paintTimeSlider(Graphics g, boolean shake) 
     {
         if (reftosonogram.spektrumExist == true) 
         {
@@ -305,8 +305,9 @@ public class PaintPanel extends JPanel implements MouseMotionListener
             {
               reftosonogram.zinbutton.setEnabled(true);
               reftosonogram.revbutton.setEnabled(true);
-              if (xe-xb > 10)                                    // paint only if the selected length is more than 10px 
-                reftosonogram.shakeButtons();
+              if (xe-xb > 10)                                    // paint only if the selected length is more than 10px
+                if (shake == true) 
+                    reftosonogram.shakeButtons();
             }
         }
     }
@@ -1097,7 +1098,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener
         // And the single spectrum too
         if (reftosonogram.spektrumExist==true && reftosonogram.openingflag == false) {
             paintOneSpektrum(false);
-            paintTimeSlider(gr);
+            paintTimeSlider(gr, false);
         }
         // paint the 8KHz marker
         if (reftosonogram.gad.csampl.isSelected() == true && reftosonogram.spektrumExist == true)

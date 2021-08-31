@@ -1,3 +1,19 @@
+# @file         Makefile
+# @version      1.0
+# @date         2021
+# @author       Christoph Lauer
+# @client       none
+# @contributors none
+# @biref        the makefile for build and run 
+# @shell        make
+# @requires     GNU make utility
+# @usage        make all...
+# @arguments    
+# @see          https://www.gnu.org/software/make/
+# @notes        none
+# @todo         replace commands with variables
+# @copyright    Christoph Lauer
+# @license      GPL 3.0
 
 
 compile:

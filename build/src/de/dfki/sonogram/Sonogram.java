@@ -2140,23 +2140,55 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener
         shaking = true;
       final Point point1 = zinbutton.getLocation();
       final Point point2 = wvbutton.getLocation();
-      final int delay = 100;
+      final int delay = 25;
       Runnable r = new Runnable() {
         @Override
         public void run() {
           for (int i = 0; i < 1; i++) {
            try {
+              moveButton(new Point(point1.x, point1.y + 1),zinbutton);
+              if (wvbutton.isEnabled() == true)
+                moveButton(new Point(point2.x, point2.y + 1),wvbutton);
+              Thread.sleep(delay);
+              moveButton(new Point(point1.x, point1.y + 2),zinbutton);
+              if (wvbutton.isEnabled() == true)
+                moveButton(new Point(point2.x, point2.y + 2),wvbutton);
+              Thread.sleep(delay);
               moveButton(new Point(point1.x, point1.y + 3),zinbutton);
               if (wvbutton.isEnabled() == true)
                 moveButton(new Point(point2.x, point2.y + 3),wvbutton);
+              Thread.sleep(delay);
+              moveButton(new Point(point1.x, point1.y + 2),zinbutton);
+              if (wvbutton.isEnabled() == true)
+                moveButton(new Point(point2.x, point2.y + 2),wvbutton);
+              Thread.sleep(delay);
+              moveButton(new Point(point1.x, point1.y + 1),zinbutton);
+              if (wvbutton.isEnabled() == true)
+                moveButton(new Point(point2.x, point2.y + 1),wvbutton);
               Thread.sleep(delay);
               moveButton(point1,zinbutton);
               if (wvbutton.isEnabled() == true)
                 moveButton(point2,wvbutton);
               Thread.sleep(delay);
+              moveButton(new Point(point1.x, point1.y - 1),zinbutton);
+              if (wvbutton.isEnabled() == true)
+                moveButton(new Point(point2.x, point2.y - 1),wvbutton);
+              Thread.sleep(delay);
+              moveButton(new Point(point1.x, point1.y - 2),zinbutton);
+              if (wvbutton.isEnabled() == true)
+                moveButton(new Point(point2.x, point2.y - 2),wvbutton);
+              Thread.sleep(delay);
               moveButton(new Point(point1.x, point1.y - 3),zinbutton);
               if (wvbutton.isEnabled() == true)
                 moveButton(new Point(point2.x, point2.y - 3),wvbutton);
+              Thread.sleep(delay);
+              moveButton(new Point(point1.x, point1.y - 2),zinbutton);
+              if (wvbutton.isEnabled() == true)
+                moveButton(new Point(point2.x, point2.y - 2),wvbutton);
+              Thread.sleep(delay);
+              moveButton(new Point(point1.x, point1.y - 1),zinbutton);
+              if (wvbutton.isEnabled() == true)
+                moveButton(new Point(point2.x, point2.y - 1),wvbutton);
               Thread.sleep(delay);
               moveButton(point1,zinbutton);
               if (wvbutton.isEnabled() == true)

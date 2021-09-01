@@ -372,6 +372,8 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     boolean capsLock = false;
     try {
       capsLock = kit.getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
+      if (capsLock == true)
+        System.out.println("--> CAPSLOCKCAPSLOCKCAPSLOCKCAPSLOCKCAPSLOCKCAPSLOCKCAPSLOCKCAPSLOCKCAPSLOCK");
     } catch (java.lang.Throwable t) {
       System.out.println("--> Error while get the CapsLock state" + t.toString());
     }
@@ -2707,7 +2709,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       if (spektrumExist == true) readerIsBack();
     }
     if (e.getSource() == gridItem) {
-      gad.p1.setSelectedIndex(14);
+      gad.p1.setSelectedIndex(15);
       gad.cgrid.setSelected(gridItem.isSelected());
       gad.cgrid2.setSelected(gridItem.isSelected());
       updateimageflag = true;

@@ -1609,6 +1609,9 @@ class GeneralAdjustmentDialog extends JFrame {
             sono.updateimageflag = true;
             System.out.println("--> Update from Grid Select");
             sono.repaint();
+            if (sono.gridItem.isSelected() == true)
+              sono.gridbutton.setBorder(BorderFactory.createLoweredBevelBorder());
+            else sono.gridbutton.setBorder(sono.fullbutton.getBorder());
           }
         }
       }
@@ -1622,6 +1625,9 @@ class GeneralAdjustmentDialog extends JFrame {
             sono.updateimageflag = true;
             System.out.println("--> Update from Grid Select");
             sono.repaint();
+            if (sono.gridItem.isSelected() == true)
+              sono.gridbutton.setBorder(BorderFactory.createLoweredBevelBorder());
+            else sono.gridbutton.setBorder(sono.fullbutton.getBorder());
           }
         }
       }

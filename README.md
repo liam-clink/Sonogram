@@ -1,5 +1,5 @@
 # Sonogram Visible Speech 5.0
-[![Alt text](images/Splash.png)](https://youtu.be/mOgIMWdScxU)
+[![Alt text](images/Splash.png)](https://youtu.be/jDCRvBTwXuE)
 
 Sonogram visible speech has been programmed at the German Research Center for Artifical Intelligence  (Deutsches Forschungszentrum fuer Kuenstliche Intelligenz DFKI, www.dfki.de), and is a 3D tool to analyze speech and sound signals with FFT and various other algorithms. The origin of the project was to build my own speech recognizer. The new version **requires Java at least in version 16**.
 

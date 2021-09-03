@@ -68,3 +68,7 @@ installMacos: jar
 	rm -fv installers/MACOS/Sonogram.app/Contents/Resources/Java/SonogramConfig.xml
 	rm -rfv /Applications/Sonogram.app
 	cp -rv installers/MACOS/Sonogram.app /Applications
+
+
+runMacos:
+	open -a Sonogram

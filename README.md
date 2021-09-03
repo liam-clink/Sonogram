@@ -46,6 +46,7 @@ You can build Sonogram by you own. First you have to install a java SDK at least
 
 `make all`
 
+**Note:** If you determine memory problems (for example in the 3D generator) give the java VM more heap memory with the **xmx** flag in the corresponding startup scrips and the makefile.
 
 ## Pages who use Sonogram
 * http://www.birdsongs.it

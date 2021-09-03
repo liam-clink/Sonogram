@@ -25,7 +25,7 @@ import javax.swing.event.*;
 import javax.swing.plaf.*;
 
 public class Sonogram extends JFrame implements ActionListener, MouseListener {
-  static final int build = 8514;
+  static final int build = 8515;
   static final String version = "5.0";
   public boolean firststart = false;
   boolean infovisible = false;

@@ -53,4 +53,4 @@ You can build Sonogram by you own. First you have to install a java SDK at least
 * https://www.youtube.com/watch?v=YQFOLmYhq50?t=460
 * https://www.dfki.de/nite/anviltools/Sonogram.pdf
 
-![](https://komarev.com/ghpvc/?username=Christoph-Lauer&color=red)
+![](https://komarev.com/ghpvc/?username=Christoph-Lauer&color=red&label=PAGE+VIEWS)

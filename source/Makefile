@@ -21,7 +21,7 @@ compile:
 	
 
 run:
-	cd bin; java -classpath . -splash:de/dfki/sonogram/Splash.png -showversion -Xms128m -Xmx10240m -Xfuture --add-opens=java.desktop/sun.awt=ALL-UNNAMED de.dfki.sonogram.Sonogram
+	cd bin; java -classpath . -splash:de/dfki/sonogram/Splash.png -showversion -Xms128m -Xmx2048m -Xfuture --add-opens=java.desktop/sun.awt=ALL-UNNAMED de.dfki.sonogram.Sonogram
 	
 
 compileAndRun: compile run
@@ -56,7 +56,7 @@ releaseUnix:
 	cp -f installers/UNIX/SonogramUnix.zip ../release
 
 
-all: jar releaseMac releaseWindows releaseUnix
+all: jar releaseMac releaseWindows releaseUnix installMacos
 
 
 clean:

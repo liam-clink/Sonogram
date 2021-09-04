@@ -5,8 +5,6 @@ Sonogram visible speech has been programmed at the German Research Center for Ar
 
 Contact: [Christoph Lauer](https://christoph-lauer.github.io), christophlauer@me.com 
 
-
-
 ## Download
 **Note:** You have to be Java at least in version 16 installed on your Computer in order to use Sonogram. See [AdoptOpenJdk](https://adoptopenjdk.net) or [Oracle JDK](https://www.oracle.com/java/technologies/javase-jdk16-downloads.html). __Apple Silicon (ARM)__ users should use the native [Azul Zulu](https://www.azul.com/downloads/) JDK or JRE. 
 
@@ -54,3 +52,5 @@ You can build Sonogram by you own. First you have to install a java SDK at least
 * https://www.web3.lu/spectrogram-speech-processing/
 * https://www.youtube.com/watch?v=YQFOLmYhq50?t=460
 * https://www.dfki.de/nite/anviltools/Sonogram.pdf
+
+![](https://komarev.com/ghpvc/?username=Christoph-Lauer&color=red)

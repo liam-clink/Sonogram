@@ -40,7 +40,7 @@ a reset screen is shown:
 ## Build
 You can build Sonogram by you own. First you have to install a java SDK at least in version 16.
 
-`cd build`
+`cd source`
 
 `make all`
 

@@ -835,7 +835,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
           kunststoffLF.setCurrentTheme(
               new com.incors.plaf.kunststoff.themes.KunststoffPresentationTheme());
         if (which == 5)
-          kunststoffLF.setCurrentTheme(new com.incors.plaf.kunststoff.KunststoffThemeDark());
+          kunststoffLF.setCurrentTheme(new com.incors.plaf.kunststoff.KunststoffTheme());
         UIManager.setLookAndFeel(kunststoffLF);
         System.out.println("--> Change LookAndFeel to PLASTIC");
       } else if (which == 6) {
@@ -3399,9 +3399,6 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     if (e.getSource() == arrangebutton) {
       arrangeWindows();
     }
-    if (e.getSource() == feedbackItem) {
-      FeedbackMessage message = new FeedbackMessage(this);
-    }
   }
   // -------------------------------------------------------------------------------------------------------------------------
   /**
@@ -3576,7 +3573,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
                 "Convert MP3 to WAVE file",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.INFORMATION_MESSAGE);
-        if (askAgain.isSelected() == true) mp3confirm = true;
+        if (askAgain.isSelected()) mp3confirm = true;
         if (confirm == JOptionPane.NO_OPTION) return;
       }
       String wavFileName = fn.filename() + ".wav";
@@ -3594,9 +3591,9 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       } catch (Throwable throwable) {
         JOptionPane.showMessageDialog(
             null,
-            "<html>An Error occoured while the MP3 Convertion.<br>The selected MP3 File can not be"
+            "<html>An Error occoured while the MP3 Conversion.<br>The selected MP3 File can not be"
                 + " opened !",
-            "MP3 Convertion ERROR",
+            "MP3 Conversion ERROR",
             JOptionPane.ERROR_MESSAGE);
       }
       fp = wavFileName;
@@ -3612,9 +3609,9 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     filepath = fp;
     // Some Stuff
     repaint();
-    if (fp.substring(0, 3).equals("ftp") == true || fp.substring(0, 4).equals("http") == true)
+    if (fp.substring(0, 3).equals("ftp") || fp.substring(0, 4).equals("http"))
       url = fp; // network
-    else if (fp.substring(0, 4).equals("file") == true) url = fp; // local
+    else if (fp.substring(0, 4).equals("file")) url = fp; // local
     else url = "file:" + fp; // local
 
     System.out.println("--> Opening URL: " + url);

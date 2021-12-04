@@ -25,8 +25,8 @@ import javax.swing.event.*;
 import javax.swing.plaf.*;
 
 public class Sonogram extends JFrame implements ActionListener, MouseListener {
-  static final int build = 8515;
-  static final String version = "5.0";
+  static final int BUILD = 8515;
+  static final String VERSION = "5.0";
   public boolean firststart = false;
   boolean infovisible = false;
   boolean spektrumExist = false; // Flag that prevent painting bevore Transformation
@@ -46,7 +46,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
   int samplestotal = 0; // Number of used samples
   int samplesall = 0; // Number of all samples obtain from DataSourceReader
   int peakx = 0; // Peak in Time in Spec-Units
-  int peaky = 0; // Peak in Frequency in Frequ-Diff Units;
+  int peaky = 0; // Peak in Frequency in Frequ-Diff Units
   int samplerate = 0; // Set from GAD
   int zoompreviousindex = 0; // For Zoomback
   int gadx = 200;
@@ -90,96 +90,112 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
   PlaySound player;
   WvSettingsDialog wvconfig;
   JLabel colorLabel;
-  JLabel sep1, sep2, sep3, sep4, sep5, sep6, sep7;
-  JButton openbutton,
-      adjbutton,
-      helpbutton,
-      quitbutton // Toolbar Buttons
-      ,
-      playbutton,
-      stopbutton,
-      revbutton,
-      d3button,
-      cepbutton,
-      zinbutton,
-      zbabutton,
-      forbutton,
-      infobutton,
-      lpcbutton,
-      zprebutton,
-      svgbutton,
-      wavbutton,
-      walbutton,
-      autocorrelationbutton,
-      pitchbutton,
-      arrangebutton,
-      fullbutton,
-      logbutton,
-      smoothfrbutton,
-      smoothtmbutton,
-      wvbutton,
-      recbutton,
-      gridbutton;
-  JMenuItem quitItem,
-      openItem,
-      aboutItem,
-      adjItem,
-      playItem,
-      revItem,
-      d3Item // Menuitems - MainWindow
-      ,
-      stopItem,
-      helpItem,
-      cepItem,
-      zinItem,
-      zbaItem,
-      forItem,
-      infoItem,
-      lpcItem,
-      zpreItem,
-      lafItem,
-      delhistItem,
-      printItem,
-      saveItem,
-      logfrItem,
-      csvItem,
-      svgItem,
-      sysItem,
-      memItem,
-      impItem,
-      defaultItem,
-      webItem,
-      wavItem,
-      fulItem,
-      walItem,
-      arrItem,
-      closeItem,
-      autocorrelationItem,
-      pitchItem,
-      feedbackItem,
-      licenseItem,
-      welcomeItem,
-      recordItem,
-      splashItem;
+
+  JLabel sep1;
+  JLabel sep2;
+  JLabel sep3;
+  JLabel sep4;
+  JLabel sep5;
+  JLabel sep6;
+  JLabel sep7;
+
+  JButton openbutton;
+  JButton adjbutton;
+  JButton helpbutton;
+  JButton quitbutton;
+  
+  // Toolbar Buttons
+  JButton playbutton;
+  JButton stopbutton;
+  JButton revbutton;
+  JButton d3button;
+  JButton cepbutton;
+  JButton zinbutton;
+  JButton zbabutton;
+  JButton forbutton;
+  JButton infobutton;
+  JButton lpcbutton;
+  JButton zprebutton;
+  JButton svgbutton;
+  JButton wavbutton;
+  JButton walbutton;
+  JButton autocorrelationbutton;
+  JButton pitchbutton;
+  JButton arrangebutton;
+  JButton fullbutton;
+  JButton logbutton;
+  JButton smoothfrbutton;
+  JButton smoothtmbutton;
+  JButton wvbutton;
+  JButton recbutton;
+  JButton gridbutton;
+      
+  JMenuItem quitItem;
+  JMenuItem openItem;
+  JMenuItem aboutItem;
+  JMenuItem adjItem;
+  JMenuItem playItem;
+  JMenuItem revItem;
+  JMenuItem d3Item;
+  
+  // Menuitems - MainWindow
+  JMenuItem stopItem;
+  JMenuItem helpItem;
+  JMenuItem cepItem;
+  JMenuItem zinItem;
+  JMenuItem zbaItem;
+  JMenuItem forItem;
+  JMenuItem infoItem;
+  JMenuItem lpcItem;
+  JMenuItem zpreItem;
+  JMenuItem lafItem;
+  JMenuItem delhistItem;
+  JMenuItem printItem;
+  JMenuItem saveItem;
+  JMenuItem logfrItem;
+  JMenuItem csvItem;
+  JMenuItem svgItem;
+  JMenuItem sysItem;
+  JMenuItem memItem;
+  JMenuItem impItem;
+  JMenuItem defaultItem;
+  JMenuItem webItem;
+  JMenuItem wavItem;
+  JMenuItem fulItem;
+  JMenuItem walItem;
+  JMenuItem arrItem;
+  JMenuItem closeItem;
+  JMenuItem autocorrelationItem;
+  JMenuItem pitchItem;
+  JMenuItem feedbackItem;
+  JMenuItem licenseItem;
+  JMenuItem welcomeItem;
+  JMenuItem recordItem;
+  JMenuItem splashItem;
   JMenuItem[] hotlist;
   JMenu menuFile;
-  JRadioButtonMenuItem hamItem,
-      rectItem,
-      blaItem,
-      hanItem,
-      triItem,
-      welItem,
-      gauItem,
-      flaItem,
-      harItem,
-      cosItem,
-      asyItem; // Menueitems - submenue WinFunkt
-  JRadioButtonMenuItem colItem,
-      bwItem,
-      firecItem,
-      fireItem,
-      rainItem,
-      greenItem; // Menueitems - Radiobattons MW
+
+  // Menuitems - submenu WinFunkt
+  JRadioButtonMenuItem hamItem;
+  JRadioButtonMenuItem rectItem;
+  JRadioButtonMenuItem blaItem;
+  JRadioButtonMenuItem hanItem;
+  JRadioButtonMenuItem triItem;
+  JRadioButtonMenuItem welItem;
+  JRadioButtonMenuItem gauItem;
+  JRadioButtonMenuItem flaItem;
+  JRadioButtonMenuItem harItem;
+  JRadioButtonMenuItem cosItem;
+  JRadioButtonMenuItem asyItem;
+  
+  // Menuitems - Radiobattons MW
+  JRadioButtonMenuItem colItem;
+  JRadioButtonMenuItem bwItem;
+  JRadioButtonMenuItem firecItem;
+  JRadioButtonMenuItem fireItem;
+  JRadioButtonMenuItem rainItem;
+  JRadioButtonMenuItem greenItem;
+
   JCheckBoxMenuItem negItem; // toogle negative View
   JCheckBoxMenuItem gridItem; // toogle Gridview
   JCheckBoxMenuItem logItem; // logartihm view
@@ -436,7 +452,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     UIManager.put("ToolTip.foreground", new ColorUIResource(Color.red));
     UIManager.put("ToolTip.background", new ColorUIResource(new Color(194, 251, 0)));
     splash.setProgress(35, "35% Add the Paint Panel to Main Window.");
-    setTitle("Sonogram Visible Speech - version " + version);
+    setTitle("Sonogram Visible Speech - version " + VERSION);
     getContentPane().add(pp);
 
     // instanciate further  GUI elements
@@ -627,10 +643,10 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     startTime = System.nanoTime();
     welcome = new WelcomeScreen(false);
     String openpath;
-    splash.setProgress(1, "This is Sonogram " + version + " BUILD" + build + " 1%");
+    splash.setProgress(1, "This is Sonogram " + VERSION + " BUILD" + BUILD + " 1%");
     System.out.println("\n     ******************************************");
-    System.out.println("     *             SONOGRAM " + version + "               *");
-    System.out.println("     *              BUILD " + build + "                *");
+    System.out.println("     *             SONOGRAM " + VERSION + "               *");
+    System.out.println("     *              BUILD " + BUILD + "                *");
     System.out.println("     *            Visible Speech              *");
     System.out.println("     *         christoph.lauer@me.com         *");
     System.out.println("     *      License:     FREE  License 1.0    *");
@@ -908,7 +924,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         System.out.println("--> CANCEL Button is pressed while Transformation.");
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         progmon.close();
-        setTitle("Sonogram Visible Speech - version " + version);
+        setTitle("Sonogram Visible Speech - version " + VERSION);
         spektrumExist = false;
         updateimageflag = true;
         repaint();
@@ -1364,7 +1380,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         gad.csampl.setEnabled(true);
       }
       pp.updateWvButton();
-      setTitle("Sonogram Visible Speech - version " + version + " - " + filename);
+      setTitle("Sonogram Visible Speech - version " + VERSION + " - " + filename);
       // And then EXCEPTIONHANDLING for all EXCEPTIONS
     } catch (Exception e) {
       System.out.println(e);
@@ -1662,17 +1678,17 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     colorLabel = new JLabel();
     colorLabel.setMaximumSize(new Dimension(60, 28));
     colorLabel.setMinimumSize(new Dimension(60, 28));
-    if (firecItem.isSelected() == true)
+    if (firecItem.isSelected())
       colorLabel.setIcon(new ImageIcon(Sonogram.class.getResource("firecMenu.png")));
-    if (fireItem.isSelected() == true)
+    if (fireItem.isSelected())
       colorLabel.setIcon(new ImageIcon(Sonogram.class.getResource("fireMenu.png")));
-    if (colItem.isSelected() == true)
+    if (colItem.isSelected())
       colorLabel.setIcon(new ImageIcon(Sonogram.class.getResource("exteMenu.png")));
-    if (rainItem.isSelected() == true)
+    if (rainItem.isSelected())
       colorLabel.setIcon(new ImageIcon(Sonogram.class.getResource("rainMenu.png")));
-    if (greenItem.isSelected() == true)
+    if (greenItem.isSelected())
       colorLabel.setIcon(new ImageIcon(Sonogram.class.getResource("greeMenu.png")));
-    if (bwItem.isSelected() == true)
+    if (bwItem.isSelected())
       colorLabel.setIcon(new ImageIcon(Sonogram.class.getResource("whitMenu.png")));
 
     colorSlider.setMaximumSize(new Dimension(100, 30));
@@ -2643,7 +2659,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == closeItem) {
       setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-      setTitle("Sonogram Visible Speech - version " + version);
+      setTitle("Sonogram Visible Speech - version " + VERSION);
       spektrumExist = false;
       updateimageflag = true;
       repaint();
@@ -2837,7 +2853,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       String yearStr = Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
 
       messageBox(
-          "SONOGRAM VISIBLE SPEECH version " + version + " BUILD " + build,
+          "SONOGRAM VISIBLE SPEECH version " + VERSION + " BUILD " + BUILD,
           "<html>The SPWVD based SuperZOOM function extracts the so far best known<br>resolution in"
               + " the time and frequency domain. Sonogram can also display<br>display so called"
               + " three dimensional Perspectograms if Java3D is installed.<br><br><font color ="
@@ -2845,10 +2861,10 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
               + " border=0><tr><td><font size =5 color = #222266>LICENSE:</td><td><font size ="
               + " 5>FREE FULLVERSION</td></tr><br><td><font size =5 color ="
               + " #222266>VERSION:</td><td><font size = 5>"
-              + version
+              + VERSION
               + "</td>"
               + "<tr><td><font size = 5 color = #222266>BUILD: </td><td><font size = 5>"
-              + build
+              + BUILD
               + "</td></tr></font></table>"
               + "<hr><br><i><font size=3><center>programed from 2000 to "
               + yearStr
@@ -3154,8 +3170,8 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         String value = prop.getProperty(key);
         System.out.println(key + " = " + value);
       }
-      sysopt = "<html><font size=-2 color=#110033>SONOGRAM VERSION: <i>" + version;
-      sysopt += "</i><br>BUILD: <i>" + build;
+      sysopt = "<html><font size=-2 color=#110033>SONOGRAM VERSION: <i>" + VERSION;
+      sysopt += "</i><br>BUILD: <i>" + BUILD;
       sysopt += "</i><br>OS name: <i>" + prop.getProperty("os.name");
       sysopt += "</i><br>OS version: <i>" + prop.getProperty("os.version");
       sysopt += "</i><br>Architecture: <i>" + prop.getProperty("os.arch");
@@ -3553,7 +3569,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     if (fn.extension().equals("mp3") || fn.extension().equals("MP3")) {
       System.out.println("--> Convert MP3 to WAV");
       // show the mp3 information dialog
-      if (mp3confirm == false) {
+      if (!mp3confirm) {
         JCheckBox askAgain =
             new JCheckBox("<html><i><font size = -2>Do not show this information message again");
         Object[] message = new Object[2];
@@ -3604,7 +3620,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
 
     File file = new File(fp.substring(5));
     chooser.setFile(file);
-    setTitle("Sonogram Visible Speech - version " + version + " - " + file.getName());
+    setTitle("Sonogram Visible Speech - version " + VERSION + " - " + file.getName());
     openingflag = true;
     filepath = fp;
     // Some Stuff

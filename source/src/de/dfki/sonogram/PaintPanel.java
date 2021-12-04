@@ -644,8 +644,8 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         g.setColor(new Color(60, 60, 60));
         g.setFont(new Font("Tahoma", Font.BOLD, 9));
         // build the strings
-        String versionString = "Version: " + Sonogram.version;
-        String buildString = "Build: " + Sonogram.build;
+        String versionString = "Version: " + Sonogram.VERSION;
+        String buildString = "Build: " + Sonogram.BUILD;
         String licenString = "Licensed to: " + Licenses.zoda1.replaceAll("\\s+$", "");
         String copyrightString =
             "Copyright "

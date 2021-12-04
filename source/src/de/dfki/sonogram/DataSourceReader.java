@@ -66,7 +66,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       reftomain.spektrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();
-      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.version);
+      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
       return false;
     }
     reftomain.progmon.setProgress(6);
@@ -86,7 +86,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           JOptionPane.WARNING_MESSAGE);
       System.err.println("--> Error: configure the JMF-PROCESSORS");
       reftomain.spektrumExist = false;
-      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.version);
+      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
       reftomain.updateimageflag = true;
       reftomain.repaint();
       return false;
@@ -119,7 +119,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           "<html>The JMF-Processor <u>cannot convert this file</u> to specific format !",
           JOptionPane.WARNING_MESSAGE);
       System.err.println("--> ERROR: the JMF-PROCESSOR cant convert this file");
-      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.version);
+      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
       reftomain.spektrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();
@@ -139,7 +139,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           "Cannot hadle Datasource",
           "<html>The JMF-Processot <u>cannot handel the datasource</u> !",
           JOptionPane.WARNING_MESSAGE);
-      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.version);
+      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
       System.err.println("--> ERROR: the JMF-PROCESSOR cant handel this datasource: " + ods);
       reftomain.spektrumExist = false;
       reftomain.updateimageflag = true;
@@ -158,7 +158,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           "<html>The JMF-Processor <u>cannot prefetch the audio data</u> !",
           JOptionPane.WARNING_MESSAGE);
       System.err.println("--> ERROR: prefetch audio data with JMF-PROCESSOR");
-      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.version);
+      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
       reftomain.spektrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();
@@ -494,7 +494,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
             System.out.println("--> CANCEL Button is pressed while read Samples from File.");
             reftomain.progmon.close();
             reftomain.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.version);
+            reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
             reftomain.spektrumExist = false;
             reftomain.updateimageflag = true;
             reftomain.repaint();
@@ -680,7 +680,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           "<html><u>Cannot build the MediaLocator",
           JOptionPane.WARNING_MESSAGE);
       System.err.println("--> ERROR: Can't Build MediaLocator: " + url);
-      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.version);
+      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
       reftomain.spektrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();
@@ -737,7 +737,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
                 + "</u>",
             JOptionPane.WARNING_MESSAGE);
       System.err.println("--> ERROR:" + e.getMessage());
-      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.version);
+      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
       reftomain.spektrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();

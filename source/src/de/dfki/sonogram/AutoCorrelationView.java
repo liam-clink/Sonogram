@@ -1,10 +1,7 @@
 package de.dfki.sonogram;
 
-import de.dfki.maths.*;
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.*;
 
 /**
  * Copyright (c) 2001 Christoph Lauer @ DFKI, All Rights Reserved. clauer@dfki.de - www.dfki.de
@@ -33,29 +30,42 @@ public class AutoCorrelationView extends JFrame {
   }
 
   public void update() {
-    if (isVisible() == true && refToMain.openingflag == false && refToMain.spektrumExist == true) {
+    if (isVisible() && !refToMain.openingflag && refToMain.spektrumExist) {
       repaint();
     }
   }
   /** Inner Panel CLass for the AutoCorrelationView. */
   class AutoCorrelationPanel extends JPanel {
     /**
-     * Overwritten function for the painting if the component.
+     * Overwritten function for the painting of the component.
      *
      * @param gr the pen.
      */
+    @Override
     public void paintComponent(Graphics gr) {
       Graphics2D g = (Graphics2D) gr;
-      if (refToMain.gad.cantialise.isSelected() == true)
+      if (refToMain.gad.cantialise.isSelected())
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       Dimension size = getSize(); // Windowsize
       int xm = (short) size.getWidth();
       int ym = (short) size.getHeight();
-      int y, x, startp, winlenall, xa, ya, winlensamples, winshiftsamples;
-      int maxfrequenspos = 0;
+      
+      int y;
+      int x;
+      int startp;
+      int winlenall;
+      int xa;
+      int ya;
+      int winlensamples;
+      int winshiftsamples;
+
       String str;
-      double tmp, fakt, diff;
-      boolean delinearise, mouseisintimespan = false;
+
+      double tmp;
+      double fakt;
+      double diff;
+      
+      boolean mouseisintimespan = false;
       Byte tempbyte;
       // Get setted values
       int sliderwl = refToMain.gad.slideracwinlength.getValue();
@@ -68,7 +78,7 @@ public class AutoCorrelationView extends JFrame {
       else if (sliderwl == 6) windowlength = 1000;
       else if (sliderwl == 7) windowlength = 2500;
       else windowlength = 5000;
-      winlensamples = (int) ((double) windowlength / 1000.0 * (double) refToMain.samplerate);
+      winlensamples = (int) (windowlength / 1000.0 * refToMain.samplerate);
       int sliderws = refToMain.gad.slideracwinshift.getValue();
       if (sliderws == 0) windowshift = 2.5;
       else if (sliderws == 1) windowshift = 5;
@@ -79,7 +89,7 @@ public class AutoCorrelationView extends JFrame {
       else if (sliderws == 6) windowshift = 250;
       else if (sliderws == 7) windowshift = 500;
       else windowshift = 1000;
-      winshiftsamples = (int) ((double) windowshift / 1000.0 * (double) refToMain.samplerate);
+      winshiftsamples = (int) (windowshift / 1000.0 * refToMain.samplerate);
       winlenall = winlensamples + winshiftsamples;
       // Coords and Grid and background
       g.setColor(new Color(15, 50, 20));
@@ -87,13 +97,13 @@ public class AutoCorrelationView extends JFrame {
       g.setColor(new Color(100, 80, 90));
       // Grid over amplitude
       for (double a = 0.0; a <= 1.0; a += 0.1) {
-        y = (int) (a * ((double) ym - 30.0) + 15.0);
+        y = (int) (a * ((double) ym - 30) + 15.0);
         g.drawLine(21, y, xm - 4, y);
       }
       g.setFont(new Font("Dialog", 0, 9));
       // Grid over time
       for (double a = 0.0; a <= 1.0; a += 0.2) {
-        x = 21 + (int) (a * ((double) xm - 25.0));
+        x = 21 + (int) (a * ((double) xm - 25));
         g.drawLine(x, 15, x, ym - 16);
         tmp = Math.round(a * windowlength);
         str = tmp + "ms";
@@ -105,8 +115,8 @@ public class AutoCorrelationView extends JFrame {
       // Copy Timelinearray to buffer
       float[] buffer = new float[winlenall];
       double start =
-          refToMain.selectedstartold + (double) refToMain.pp.wnf * refToMain.selecedwidthold;
-      startp = (int) (start * (double) refToMain.samplesall);
+          refToMain.selectedstartold + refToMain.pp.wnf * refToMain.selecedwidthold;
+      startp = (int) (start * refToMain.samplesall);
       if (startp > (refToMain.samplesall - (winlenall))) {
         startp = refToMain.samplesall - (winlenall);
         mouseisintimespan = true;
@@ -119,16 +129,15 @@ public class AutoCorrelationView extends JFrame {
       float[] acor =
           de.dfki.maths.AutoCorrelation.autoCorrelate(buffer, winlensamples, winshiftsamples);
       // Smooth the autocorrelation
-      if (refToMain.gad.cacsmooth.isSelected() == true)
+      if (refToMain.gad.cacsmooth.isSelected())
         acor = de.dfki.maths.VectorSmoother.smoothWithDegreeThree(acor);
       // Find the min and max peaks
       float maxpeak = 0.0f;
       float minpeak = 0.0f;
-      float peak = 0.0f;
+      float peak;
       for (int i = 0; i < acor.length; i++) {
         if (maxpeak < acor[i]) {
           maxpeak = acor[i];
-          maxfrequenspos = i;
         }
         if (minpeak > acor[i]) minpeak = acor[i];
       }
@@ -139,44 +148,44 @@ public class AutoCorrelationView extends JFrame {
       diff = ((double) winlensamples / (double) (xm - 25));
       g.setStroke(new BasicStroke(3));
       g.setColor(new Color(50, 100, 40));
-      for (double f = diff; f < (float) (winlensamples); f += diff) {
-        y = (int) (acor[(int) f] / peak * (((float) ym - 15.0f) / 2.0));
-        ya = (int) (acor[(int) (f - diff)] / peak * (((float) ym - 15.0f) / 2.0));
+      for (double f = diff; f < winlensamples; f += diff) {
+        y = (int) (acor[(int) f] / peak * (((float) ym - 15) / 2.0));
+        ya = (int) (acor[(int) (f - diff)] / peak * (((float) ym - 15) / 2.0));
         x = (int) (f * fakt);
         xa = (int) ((f - diff) * fakt);
-        if (refToMain.gad.cacpoints.isSelected() == true)
+        if (refToMain.gad.cacpoints.isSelected())
           g.drawLine(xa + 21, ym / 2 - ya, x + 21, ym / 2 - y);
         else g.drawLine(xa + 21, ym / 2 - y, x + 21, ym / 2 - y);
       }
       g.setStroke(new BasicStroke(1));
       g.setColor(new Color(200, 255, 10));
-      for (double f = diff; f < (float) (winlensamples); f += diff) {
-        y = (int) (acor[(int) f] / peak * (((float) ym - 15.0f) / 2.0));
-        ya = (int) (acor[(int) (f - diff)] / peak * (((float) ym - 15.0f) / 2.0));
+      for (double f = diff; f < winlensamples; f += diff) {
+        y = (int) (acor[(int) f] / peak * (((float) ym - 15) / 2.0));
+        ya = (int) (acor[(int) (f - diff)] / peak * (((float) ym - 15) / 2.0));
         x = (int) (f * fakt);
         xa = (int) ((f - diff) * fakt);
-        if (refToMain.gad.cacpoints.isSelected() == true)
+        if (refToMain.gad.cacpoints.isSelected())
           g.drawLine(xa + 21, ym / 2 - ya, x + 21, ym / 2 - y);
         else g.drawLine(xa + 21, ym / 2 - y, x + 21, ym / 2 - y);
       }
       // Draw status line
       g.setColor(new Color(100, 80, 90));
       tmp =
-          ((double) refToMain.selectedstartold
-                  + (double) refToMain.pp.wnf * (double) refToMain.selecedwidthold)
-              * (double) refToMain.samplesall
-              / (double) refToMain.samplerate;
+          (refToMain.selectedstartold
+                  + refToMain.pp.wnf * refToMain.selecedwidthold)
+              * refToMain.samplesall
+              / refToMain.samplerate;
       tmp = Math.round(tmp * 1000.0) / 1000.0;
       str = "Begin time = " + tmp + " Seconds";
       g.drawString(str, 20, 12);
       str = "Window Loop Shift = " + windowshift + " Seconds";
       g.drawString(str, 180, 12);
       g.setColor(new Color(255, 0, 0));
-      if (mouseisintimespan == true) g.drawString("Mouse in time span", xm - 110, 15);
+      if (mouseisintimespan) g.drawString("Mouse in time span", xm - 110, 15);
       ptime = 0.0; // For the info dialog
       pfrequency = 0.0; // For the info dialog
       // Search the Periodic Peaks in the Signal and mark the highest
-      if (refToMain.gad.cacpitch.isSelected() == true) {
+      if (refToMain.gad.cacpitch.isSelected()) {
         de.dfki.maths.PeakSearcher peaksearcher =
             new de.dfki.maths.PeakSearcher(acor, 0.2f * peak, 5, 0);
         int[] lm = peaksearcher.getLoacMaximas();
@@ -194,7 +203,7 @@ public class AutoCorrelationView extends JFrame {
           g.setColor(new Color(150, 0, 0));
           for (int i = 0; i < winlensamples; i++) {
             if (lm[i] < 2) continue;
-            y = (int) (acor[i] / peak * (((float) ym - 15.0f) / 2.0));
+            y = (int) (acor[i] / peak * (((float) ym - 15) / 2.0));
             x = (int) (i * fakt);
             if (lm[i] == 999999) {
               g.setColor(new Color(255, 0, 0));
@@ -222,13 +231,13 @@ public class AutoCorrelationView extends JFrame {
                               / (double) refToMain.samplerate)
                           * 10000.0)
                   / 10.0;
-          pfrequency = Math.round(1.0 / (ptime / 1000.0) * 10) / 10;
+          pfrequency = (double) Math.round(1.0 / (ptime / 1000.0) * 10) / 10;
           String tooltiptext = "PITCH: T=" + ptime + "ms; f=" + pfrequency + "Hz";
-          paintToopTip(g, tooltipx, tooltipy, xm, tooltiptext, false);
+          paintToolTip(g, tooltipx, tooltipy, xm, tooltiptext, false);
         }
         // If no pitch is found
         else {
-          paintToopTip(g, 0, 0, 0, "", true);
+          paintToolTip(g, 0, 0, 0, "", true);
         }
         refToMain.infod.update();
       }
@@ -246,7 +255,7 @@ public class AutoCorrelationView extends JFrame {
      * @param defaulttooltip - if the default flag is enabled all other values are ignored and the
      *     default tooltip "No Pitch found" will be displayed on the predefined position.
      */
-    private void paintToopTip(
+    private void paintToolTip(
         Graphics2D g, int posX, int posY, int maxX, String text, boolean defaulttooltip) {
       AlphaComposite alphacomposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f);
       g.setComposite(alphacomposite);
@@ -255,13 +264,26 @@ public class AutoCorrelationView extends JFrame {
       int x1 = 40; // From left to begin triangle.
       int x2 = 8; // Triangle width.
       int x3 = 90; // From the triangle to the right.
-      int trix1, triy1, trix2, triy2;
-      int recx1, recy1, recx2, recy2, recx3, recy3, recx4, recy4;
+      
+      int trix1;
+      int triy1;
+      int trix2;
+      int triy2;
+
+      int recx1;
+      int recy1;
+      int recx2;
+      int recy2;
+      int recx3;
+      int recy3;
+      int recx4;
+      int recy4;
+      
       Color fillcolor = new Color(100, 100, 100);
       Color bordercolor = new Color(255, 255, 255);
       Color textcolor = new Color(255, 255, 255);
       // The non default tooltip
-      if (defaulttooltip == false) {
+      if (!defaulttooltip) {
         // Callculate the positions of the tooltip corresponds to the given coordinates
         triy1 = triy2 = recy1 = recy2 = posY + y1;
         recy3 = recy4 = posY + y1 + y2;
@@ -291,7 +313,11 @@ public class AutoCorrelationView extends JFrame {
       }
       // The default tooltip
       else {
-        int x = 30, y = 30, w = 100, h = 15;
+        int x = 30;
+        int y = 30;
+        int w = 100;
+        int h = 15;
+
         g.setColor(fillcolor);
         g.fillRect(x, y, w, h);
         g.setColor(bordercolor);

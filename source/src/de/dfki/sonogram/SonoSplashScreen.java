@@ -232,8 +232,8 @@ public class SonoSplashScreen {
       g2.setFont(new Font("Tahoma", Font.BOLD, 9));
       metrics = g2.getFontMetrics();
       // build the strings
-      String versionString = "Version: " + Sonogram.version;
-      String buildString = "Build: " + Sonogram.build;
+      String versionString = "Version: " + Sonogram.VERSION;
+      String buildString = "Build: " + Sonogram.BUILD;
       String licenString = "Licensed to:";
       if (Licenses.zoda1.equals("HIRN1HIRN1HIRN1HIRN1HIRN1HIRN1HI") == true)
         licenString = /*Integer.toString(Sonogram.isetu) + " Minute*/ "Trial Version";

@@ -9,7 +9,7 @@ import javax.media.format.*;
 /**
  * Copyright (c) 2001 Christoph Lauer @ DFKI, All Rights Reserved. clauer@dfki.de - www.dfki.de
  *
- * <p>This Class prents an audio player for every media file (video od audiofile) that is supportet
+ * <p>This Class prents an audio player for every media file (video or audiofile) that is supported
  * by Java Media Framework (JMF)
  *
  * @author Christoph Lauer
@@ -65,7 +65,7 @@ public class PlaySound implements ControllerListener, Runnable {
   }
   // ----------------------------------------------------------------------------
   public void play() {
-    if (oneplayerisrunning == true) return;
+    if (oneplayerisrunning) return;
     oneplayerisrunning = true;
     oldsliderpos = reftomain.pp.plstart;
     player.start();
@@ -136,7 +136,7 @@ public class PlaySound implements ControllerListener, Runnable {
       try {
         Thread.currentThread().sleep(10);
       } catch (InterruptedException ie) {
-        System.out.println("--> Interupt Exception in Play-Thread");
+        System.out.println("--> Interrupt Exception in Play-Thread");
       }
     } // end of the endless loop
   }

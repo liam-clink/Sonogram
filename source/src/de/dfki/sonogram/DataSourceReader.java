@@ -507,7 +507,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
             try {
               audioStream.addElement(Byte.valueOf(buf[i]));
             } catch (Throwable t) {
-              if (error == true) return;
+              if (error) return;
               error = true;
               reftomain.messageBox(
                   "Error while reading the Samples",
@@ -533,7 +533,6 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
         reftomain.updateimageflag = true;
         reftomain.repaint();
         reftomain.progmon.close();
-        return;
       }
     }
     // ---------------------------------------------------------------------------------------------------
@@ -666,7 +665,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
     } catch (Throwable t) {
     }
     reftomain.filename = filename;
-    if (reftomain.fileisfromurl == true)
+    if (reftomain.fileisfromurl)
       reftomain.progmon.setNote(
           "Read out the Samples from the File  «" + filename + "»  over the Network");
     else
@@ -680,7 +679,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           "Error from Medialocator",
           "<html><u>Cannot build the MediaLocator",
           JOptionPane.WARNING_MESSAGE);
-      System.err.println("--> ERROR: Cant Build MediaLocator: " + url);
+      System.err.println("--> ERROR: Can't Build MediaLocator: " + url);
       reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.version);
       reftomain.spektrumExist = false;
       reftomain.updateimageflag = true;
@@ -688,7 +687,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       return;
     }
 
-    System.out.println("--> PROTOCOLL:" + ml.getProtocol());
+    System.out.println("--> PROTOCOL:" + ml.getProtocol());
 
     reftomain.progmon.setProgress(2);
     DataSource ds = null;
@@ -699,7 +698,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       reftomain.progmon.close();
       if (urltype == 1)
         reftomain.messageBox(
-            "Error while open the Local File",
+            "Error while opening the Local File",
             "<html><i>The File on the local file system <u>does not exist</u> !<br><br></i>File:"
                 + " <u>"
                 + url,

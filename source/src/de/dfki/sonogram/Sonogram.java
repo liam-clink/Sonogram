@@ -819,7 +819,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
             new javax.swing.plaf.metal.MetalLookAndFeel();
         mlaf.setCurrentTheme(new javax.swing.plaf.metal.DefaultMetalTheme());
         UIManager.setLookAndFeel(mlaf);
-        System.out.println("--> Change LooAndFeel to METAL");
+        System.out.println("--> Change LookAndFeel to METAL");
       } else if (which >= 1 && which <= 5) {
         com.incors.plaf.kunststoff.KunststoffLookAndFeel kunststoffLF =
             new com.incors.plaf.kunststoff.KunststoffLookAndFeel();
@@ -837,16 +837,16 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         if (which == 5)
           kunststoffLF.setCurrentTheme(new com.incors.plaf.kunststoff.KunststoffThemeDark());
         UIManager.setLookAndFeel(kunststoffLF);
-        System.out.println("--> Change LooAndFeel to PLASTIC");
+        System.out.println("--> Change LookAndFeel to PLASTIC");
       } else if (which == 6) {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        System.out.println("--> Change LookAndFeel to nativ OS");
+        System.out.println("--> Change LookAndFeel to native OS");
       } else if (which == 7) {
         javax.swing.plaf.metal.MetalLookAndFeel mlaf =
             new javax.swing.plaf.metal.MetalLookAndFeel();
         mlaf.setCurrentTheme(new javax.swing.plaf.metal.OceanTheme());
         UIManager.setLookAndFeel(mlaf);
-        System.out.println("--> Change LooAndFeel to OCEAN");
+        System.out.println("--> Change LookAndFeel to OCEAN");
       }
       ilaf = which;
       SwingUtilities.updateComponentTreeUI(this);
@@ -2651,62 +2651,62 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     if (e.getSource() == rectItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(1);
-      if (spektrumExist == true) readerIsBack();
+      if (spektrumExist) readerIsBack();
     }
     if (e.getSource() == blaItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(2);
-      if (spektrumExist == true) readerIsBack();
+      if (spektrumExist) readerIsBack();
     }
     if (e.getSource() == triItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(3);
-      if (spektrumExist == true) readerIsBack();
+      if (spektrumExist) readerIsBack();
     }
     if (e.getSource() == hamItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(4);
-      if (spektrumExist == true) readerIsBack();
+      if (spektrumExist) readerIsBack();
     }
     if (e.getSource() == welItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(5);
-      if (spektrumExist == true) readerIsBack();
+      if (spektrumExist) readerIsBack();
     }
     if (e.getSource() == gauItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(6);
-      if (spektrumExist == true) readerIsBack();
+      if (spektrumExist) readerIsBack();
     }
     if (e.getSource() == hanItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(7);
-      if (spektrumExist == true) readerIsBack();
+      if (spektrumExist) readerIsBack();
     }
     if (e.getSource() == flaItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(8);
-      if (spektrumExist == true) readerIsBack();
+      if (spektrumExist) readerIsBack();
     }
     if (e.getSource() == harItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(9);
-      if (spektrumExist == true) readerIsBack();
+      if (spektrumExist) readerIsBack();
     }
     if (e.getSource() == cosItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(10);
-      if (spektrumExist == true) readerIsBack();
+      if (spektrumExist) readerIsBack();
     }
     if (e.getSource() == asyItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(11);
-      if (spektrumExist == true) readerIsBack();
+      if (spektrumExist) readerIsBack();
     }
     if (e.getSource() == logItem) {
       gad.p1.setSelectedIndex(14);
       gad.clog.setSelected(logItem.isSelected());
-      if (spektrumExist == true) readerIsBack();
+      if (spektrumExist) readerIsBack();
     }
     if (e.getSource() == gridItem) {
       gad.p1.setSelectedIndex(15);

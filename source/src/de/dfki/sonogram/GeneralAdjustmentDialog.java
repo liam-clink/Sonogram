@@ -11,7 +11,7 @@ import javax.swing.event.*;
 /**
  * Copyright (c) 2001 Christoph Lauer @ DFKI, All Rights Reserved. clauer@dfki.de - www.dfki.de
  *
- * <p>The Oprions Dialog for Sonogram
+ * <p>The Options Dialog for Sonogram
  *
  * @author Christoph Lauer
  * @version 1.0, Current 26/09/2002
@@ -123,7 +123,10 @@ class GeneralAdjustmentDialog extends JFrame {
   JTabbedPane p1;
   JButton cb;
   JComboBox wcb;
-  JLabel imgLin, imgLog;
+
+  JLabel imgLin;
+  JLabel imgLog;
+  
   Color bgcol;
   int highlightedbutton = 0;
   int walwindowlength = 0;
@@ -1470,7 +1473,7 @@ class GeneralAdjustmentDialog extends JFrame {
         sono.pp.repaint();
       }
       if (e.getSource() == sliderwaltl) {
-        walwindowlength = (int) Math.pow(2.0, (double) sliderwaltl.getValue());
+        walwindowlength = (int) Math.pow(2.0, sliderwaltl.getValue());
         tf3.setText("Window Length: " + walwindowlength);
         sono.av.update();
         sono.infod.update();
@@ -1481,19 +1484,13 @@ class GeneralAdjustmentDialog extends JFrame {
         repaint();
       }
       if (e.getSource() == sliderwinsize) highLightButton(2);
-      if (e.getSource() == sliderlog) if (clog.isEnabled() == true) highLightButton(2);
-      if (e.getSource() == cauto && cauto.isEnabled() == true) {
-        if (cauto.isSelected() == sliderwinsize.isEnabled()) {
-          highLightButton(2);
-          if (cauto.isSelected() == true) {
-            sliderwinsize.setEnabled(false);
-          } else {
-            sliderwinsize.setEnabled(true);
-          }
-        }
+      if (e.getSource() == sliderlog && clog.isEnabled()) highLightButton(2);
+      if (e.getSource() == cauto && cauto.isEnabled() && cauto.isSelected() == sliderwinsize.isEnabled()) {
+        highLightButton(2);
+        sliderwinsize.setEnabled(!cauto.isSelected());
       }
       if (e.getSource() == sliderwinspeed) {
-        if (coverlapping.isEnabled() == true) highLightButton(2);
+        if (coverlapping.isEnabled()) highLightButton(2);
         if (sliderwinspeed.getValue() == 0) sliderwinspeed.setValue(1);
       }
       if (e.getSource() == slidersurface) {
@@ -1507,7 +1504,7 @@ class GeneralAdjustmentDialog extends JFrame {
       }
       if (e.getSource() == sliderformantlen) {
         int len = 0;
-        if (sono.spektrumExist == true) {
+        if (sono.spektrumExist) {
           switch (sliderformantlen.getValue()) {
             case 1:
               len = 512;
@@ -1579,92 +1576,92 @@ class GeneralAdjustmentDialog extends JFrame {
         }
       }
       if (e.getSource() == csmooth) { // Smooth-Checker Y Event
-        if (csmooth.isSelected() == true)
+        if (csmooth.isSelected())
           sono.smoothfrbutton.setBorder(BorderFactory.createLoweredBevelBorder());
-        else if (sono.fullbutton
-            != null) // prevents error wen fullbutto is not instanciated while startup
-        sono.smoothfrbutton.setBorder(sono.fullbutton.getBorder());
-        if (csmooth.isSelected() != marksmothy && sono.spektrumExist == true) {
+        // prevents error when fullbutton is not instantiated during startup
+        else if (sono.fullbutton != null) 
+          sono.smoothfrbutton.setBorder(sono.fullbutton.getBorder());
+        if (csmooth.isSelected() != marksmothy && sono.spektrumExist) {
           marksmothy = csmooth.isSelected();
           applyChanges();
           sono.readerIsBack();
         }
       }
       if (e.getSource() == csmoothx) { // Smooth-Checker X Event
-        if (csmoothx.isSelected() == true)
+        if (csmoothx.isSelected())
           sono.smoothtmbutton.setBorder(BorderFactory.createLoweredBevelBorder());
-        else if (sono.fullbutton
-            != null) // prevents error wen fullbutto is not instanciated while startup
-        sono.smoothtmbutton.setBorder(sono.fullbutton.getBorder());
-        if (csmoothx.isSelected() != marksmothx && sono.spektrumExist == true) {
+        // prevents error when fullbutton is not instantiated while startup
+        else if (sono.fullbutton != null) 
+          sono.smoothtmbutton.setBorder(sono.fullbutton.getBorder());
+        if (csmoothx.isSelected() != marksmothx && sono.spektrumExist) {
           marksmothx = csmoothx.isSelected();
           applyChanges();
           sono.readerIsBack();
         }
       }
       if (e.getSource() == clog) sono.logItem.setSelected(clog.isSelected());
-      if (e.getSource() == clog && clog.isEnabled() == true) { // Logrithm-Checker Event
+      if (e.getSource() == clog && clog.isEnabled()) { // Logrithm-Checker Event
         sliderlog.setEnabled(clog.isSelected());
-        if (clog.isSelected() != marklog && sono.spektrumExist == true) {
+        if (clog.isSelected() != marklog && sono.spektrumExist) {
           marklog = clog.isSelected();
           applyChanges();
           System.out.println("--> Update from Logarithm Select");
           sono.readerIsBack();
         }
       }
-      if (e.getSource() == cgrid2) { // Grid-Checker Event
-        if (cgrid2.isSelected() != markgrid) {
-          markgrid = cgrid2.isSelected();
-          cgrid.setSelected(markgrid);
-          sono.gridItem.setSelected(markgrid);
-          if (sono.spektrumExist == true) {
-            applyChanges();
-            sono.updateimageflag = true;
-            System.out.println("--> Update from Grid Select");
-            sono.repaint();
-            if (sono.gridItem.isSelected() == true)
-              sono.gridbutton.setBorder(BorderFactory.createLoweredBevelBorder());
-            else sono.gridbutton.setBorder(sono.fullbutton.getBorder());
-          }
+
+      // Grid-Checker Event
+      if (e.getSource() == cgrid2 && cgrid2.isSelected() != markgrid) {
+        markgrid = cgrid2.isSelected();
+        cgrid.setSelected(markgrid);
+        sono.gridItem.setSelected(markgrid);
+        if (sono.spektrumExist) {
+          applyChanges();
+          sono.updateimageflag = true;
+          System.out.println("--> Update from Grid Select");
+          sono.repaint();
+          if (sono.gridItem.isSelected())
+            sono.gridbutton.setBorder(BorderFactory.createLoweredBevelBorder());
+          else sono.gridbutton.setBorder(sono.fullbutton.getBorder());
         }
       }
-      if (e.getSource() == cgrid) { // Grid-Checker Event
-        if (cgrid.isSelected() != markgrid) {
-          markgrid = cgrid.isSelected();
-          cgrid2.setSelected(markgrid);
-          sono.gridItem.setSelected(markgrid);
-          if (sono.spektrumExist == true) {
-            applyChanges();
-            sono.updateimageflag = true;
-            System.out.println("--> Update from Grid Select");
-            sono.repaint();
-            if (sono.gridItem.isSelected() == true)
-              sono.gridbutton.setBorder(BorderFactory.createLoweredBevelBorder());
-            else sono.gridbutton.setBorder(sono.fullbutton.getBorder());
-          }
+
+      // Grid-Checker Event
+      if (e.getSource() == cgrid && cgrid.isSelected() != markgrid) {
+        markgrid = cgrid.isSelected();
+        cgrid2.setSelected(markgrid);
+        sono.gridItem.setSelected(markgrid);
+        if (sono.spektrumExist) {
+          applyChanges();
+          sono.updateimageflag = true;
+          System.out.println("--> Update from Grid Select");
+          sono.repaint();
+          if (sono.gridItem.isSelected())
+            sono.gridbutton.setBorder(BorderFactory.createLoweredBevelBorder());
+          else sono.gridbutton.setBorder(sono.fullbutton.getBorder());
         }
       }
       if (e.getSource() == rfft || e.getSource() == rlpc) { // Transformation Select
-        if (rlpc.isSelected() == true) {
+        if (rlpc.isSelected()) {
           Border redlineborder = BorderFactory.createLineBorder(Color.red);
           sliderlpccoef.setBorder(
               BorderFactory.createTitledBorder(redlineborder, "LPC Coefficients"));
           sliderlpcsamfutur.setBorder(
               BorderFactory.createTitledBorder(redlineborder, "Prediction Buffer"));
         }
-        if (rfft.isSelected() == true) {
+        if (rfft.isSelected()) {
           sliderlpcsamfutur.setBorder(new TitledBorder(new EtchedBorder(), "Prediction Buffer"));
           sliderlpccoef.setBorder(new TitledBorder(new EtchedBorder(), "LPC Coefficents"));
         }
-        if (rfft.isSelected() != marktrans && sono.spektrumExist == false) {
+        if (rfft.isSelected() != marktrans && !sono.spektrumExist) {
           marktrans = rfft.isSelected();
         }
-        if (rfft.isSelected() != marktrans && sono.spektrumExist == true) {
+        if (rfft.isSelected() != marktrans && sono.spektrumExist) {
           marktrans = rfft.isSelected();
-          if (rfft.isSelected() == true) System.out.println("--> FFT Transformation Selected.");
+          if (rfft.isSelected()) System.out.println("--> FFT Transformation Selected.");
           else System.out.println("--> LPC Transformation Selected");
           sono.readerIsBack();
-          if (rlpc.isSelected() == true) {
+          if (rlpc.isSelected()) {
             p1.setSelectedIndex(7);
             sono.messageBox(
                 "Information",

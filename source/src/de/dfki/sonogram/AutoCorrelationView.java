@@ -242,14 +242,15 @@ public class AutoCorrelationView extends JFrame {
         refToMain.infod.update();
       }
     }
+
     /**
      * Plots a tool tip with the given String and the postion on the screen. The tooltip wil be
      * painted under the coordinates given by function call.
      *
      * @param g - the pen.
-     * @param posX - coordinate X of the triangle of the baloon.
-     * @param posY - coordinate Y of the triangle of the baloon.
-     * @param maxX - The maximum width of the window is needed to set the tooltip on the regth
+     * @param posX - coordinate X of the tip of the triangle of the balloon.
+     * @param posY - coordinate Y of the tip of the triangle of the balloon.
+     * @param maxX - The maximum width of the window is needed to set the tooltip in the right
      *     place.
      * @param text - the text of to be written in the tooltip.
      * @param defaulttooltip - if the default flag is enabled all other values are ignored and the
@@ -259,38 +260,58 @@ public class AutoCorrelationView extends JFrame {
         Graphics2D g, int posX, int posY, int maxX, String text, boolean defaulttooltip) {
       AlphaComposite alphacomposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f);
       g.setComposite(alphacomposite);
-      int y1 = 25; // From top to tooltip begin.
-      int y2 = 15; // Tooltip height.
-      int x1 = 40; // From left to begin triangle.
-      int x2 = 8; // Triangle width.
-      int x3 = 90; // From the triangle to the right.
+      int y1 = 25; // Height of triangle.
+      int y2 = 15; // Tooltip rectangle height.
+      int x1 = 40; // From left edge of rectangle to left bottom of triangle.
+      int x2 = 8; // Triangle base width.
+      int x3 = 90; // From the tip of the triangle to the right edge of the rectangle.
       
-      int trix1;
-      int triy1;
-      int trix2;
-      int triy2;
+      int trix1; // x coordinate of bottom left of triangle
+      int triy1; // y coordinate of bottom left of triangle
+      int trix2; // x coordinate of bottom right of triangle
+      int triy2; // y coordinate of bottom right of triangle
 
-      int recx1;
-      int recy1;
-      int recx2;
-      int recy2;
-      int recx3;
-      int recy3;
-      int recx4;
-      int recy4;
+      int recx1; // top left of rectangle
+      int recy1; // top left of rectangle
+      int recx2; // top right of rectangle
+      int recy2; // top right of rectangle
+      int recx3; // bottom left of rectangle
+      int recy3; // bottom left of rectangle
+      int recx4; // bottom right of rectangle
+      int recy4; // bottom right of rectangle
       
       Color fillcolor = new Color(100, 100, 100);
       Color bordercolor = new Color(255, 255, 255);
       Color textcolor = new Color(255, 255, 255);
       // The non default tooltip
       if (!defaulttooltip) {
-        // Callculate the positions of the tooltip corresponds to the given coordinates
+        // Calculate the positions of the tooltip corresponding to the given coordinates
         triy1 = triy2 = recy1 = recy2 = posY + y1;
         recy3 = recy4 = posY + y1 + y2;
         recx1 = recx3 = posX - x2 - x1;
         trix1 = posX - x2 / 2;
         trix2 = posX + x2;
         recx2 = recx4 = posX + x3;
+
+        // Adjust tooltip horizontally to be within window
+        if (recx3 >= maxX) {
+          int offset = recx3 - maxX;
+          trix1 -= offset;
+          trix2 -= offset;
+          recx1 -= offset;
+          recx2 -= offset;
+          recx3 -= offset;
+          recx4 -= offset;
+        }
+        else if (recx1 < 0) {
+          trix1 -= recx1;
+          trix2 -= recx1;
+          recx1 -= recx1;
+          recx2 -= recx1;
+          recx3 -= recx1;
+          recx4 -= recx1;
+        }
+
         // The rectangle for the text
         g.setColor(fillcolor);
         g.fillRect(recx1, recy1, recx2 - recx1, recy4 - recy2);
@@ -311,6 +332,7 @@ public class AutoCorrelationView extends JFrame {
         g.setColor(textcolor);
         g.drawString(text, posX - x1 - x2 + 3, posY + y1 + y2 - 3);
       }
+
       // The default tooltip
       else {
         int x = 30;

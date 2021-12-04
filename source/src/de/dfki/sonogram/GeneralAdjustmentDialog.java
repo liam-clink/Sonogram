@@ -19,7 +19,12 @@ import javax.swing.event.*;
 class GeneralAdjustmentDialog extends JFrame {
   Sonogram sono;
   GeneralAdjustmentDialog gethis = this;
-  JButton btcl, btap, btrd, btro;
+  
+  JButton btcl;
+  JButton btap;
+  JButton btrd;
+  JButton btro;
+  
   JSlider sliderwinsize;
   JSlider sliderwinfunktion;
   JSlider sliderwinspeed;
@@ -44,61 +49,77 @@ class GeneralAdjustmentDialog extends JFrame {
   JSlider sliderpwinshift;
   JSlider sliderpitchmax;
   JSlider slidersmoothfft;
-  JTextField tf1, tf2, tf3;
-  JRadioButton r0, r1, r2, r3, r4, r5, rfft, rlpc;
-  JRadioButton s1, s2, s3;
-  JCheckBox cinv,
-      clog,
-      cgrid,
-      cauto,
-      cback,
-      csmooth,
-      cacpoints,
-      csmoothsi,
-      cenergy,
-      cllog,
-      clfor,
-      csampl,
-      csmoothx,
-      cspitch,
-      cspitchlimitation,
-      coverlapping,
-      csavehist,
-      cspitchonely,
-      cspitchblack,
-      cspitchsmooth,
-      csspecwhileplaying,
-      csloop,
-      cscolsi,
-      cslogfr,
-      cgrid2,
-      csavescreepos,
-      cssaveconf,
-      csopenlast,
-      copenlastwithzoom,
-      ccep,
-      cceplog,
-      cwavelines,
-      cmute,
-      clocalpeak,
-      cuniverse,
-      clogwal,
-      csarrange,
-      cacsmooth,
-      cacpitch,
-      cantialise,
-      cwfnorm,
-      ccepsmooth,
-      cppoints,
-      cplimitfr,
-      cpsmooth,
-      cscrennsaver,
-      cperantialias,
-      cpercoord,
-      cpraway,
-      cptrack,
-      cpfog,
-      ctooltip;
+
+  JTextField tf1;
+  JTextField tf2;
+  JTextField tf3;
+
+  JRadioButton r0;
+  JRadioButton r1;
+  JRadioButton r2;
+  JRadioButton r3;
+  JRadioButton r4;
+  JRadioButton r5;
+  JRadioButton rfft;
+  JRadioButton rlpc;
+
+  JRadioButton s1;
+  JRadioButton s2;
+  JRadioButton s3;
+  
+  JCheckBox cinv;
+  JCheckBox clog;
+  JCheckBox cgrid;
+  JCheckBox cauto;
+  JCheckBox cback;
+  JCheckBox csmooth;
+  JCheckBox cacpoints;
+  JCheckBox csmoothsi;
+  JCheckBox cenergy;
+  JCheckBox cllog;
+  JCheckBox clfor;
+  JCheckBox csampl;
+  JCheckBox csmoothx;
+  JCheckBox cspitch;
+  JCheckBox cspitchlimitation;
+  JCheckBox coverlapping;
+  JCheckBox csavehist;
+  JCheckBox cspitchonely;
+  JCheckBox cspitchblack;
+  JCheckBox cspitchsmooth;
+  JCheckBox csspecwhileplaying;
+  JCheckBox csloop;
+  JCheckBox cscolsi;
+  JCheckBox cslogfr;
+  JCheckBox cgrid2;
+  JCheckBox csavescreepos;
+  JCheckBox cssaveconf;
+  JCheckBox csopenlast;
+  JCheckBox copenlastwithzoom;
+  JCheckBox ccep;
+  JCheckBox cceplog;
+  JCheckBox cwavelines;
+  JCheckBox cmute;
+  JCheckBox clocalpeak;
+  JCheckBox cuniverse;
+  JCheckBox clogwal;
+  JCheckBox csarrange;
+  JCheckBox cacsmooth;
+  JCheckBox cacpitch;
+  JCheckBox cantialise;
+  JCheckBox cwfnorm;
+  JCheckBox ccepsmooth;
+  JCheckBox cppoints;
+  JCheckBox cplimitfr;
+  JCheckBox cpsmooth;
+  JCheckBox cscrennsaver;
+  JCheckBox cperantialias;
+  JCheckBox cpercoord;
+  JCheckBox cpraway;
+  JCheckBox cptrack;
+  JCheckBox cpfog;
+  JCheckBox ctooltip;
+  
   JTabbedPane p1;
   JButton cb;
   JComboBox wcb;
@@ -139,7 +160,7 @@ class GeneralAdjustmentDialog extends JFrame {
     // Initialize Status-change-flags
     color = (byte) sono.isc;
     markcolor = (byte) sono.isc;
-    ;
+    
     winfunktion = (byte) sono.islwf;
     inv = sono.iinv;
     grid = sono.igrid;
@@ -703,7 +724,7 @@ class GeneralAdjustmentDialog extends JFrame {
     p.add(pl1);
     p.add(pl2);
     p1.addTab("LPC", new ImageIcon(Sonogram.class.getResource("small_lpc.gif")), p);
-    if (sono.iffttrans == false) {
+    if (!sono.iffttrans) {
       Border redlineborder = BorderFactory.createLineBorder(Color.red);
       sliderlpccoef.setBorder(BorderFactory.createTitledBorder(redlineborder, "LPC Coefficients"));
       sliderlpcsamfutur.setBorder(
@@ -969,7 +990,7 @@ class GeneralAdjustmentDialog extends JFrame {
     group2.add(rlpc);
     p.add(rlpc);
     p1.addTab("Transformation", new ImageIcon(Sonogram.class.getResource("tra.gif")), p);
-    if (sono.iffttrans == true) rfft.setSelected(true);
+    if (sono.iffttrans) rfft.setSelected(true);
     else rlpc.setSelected(true);
 
     // FFT Pitchdetection
@@ -1005,7 +1026,7 @@ class GeneralAdjustmentDialog extends JFrame {
     cspitchsmooth.setToolTipText("Generate Peak with smoothed Spectrum");
     pcs.add(cspitchsmooth);
     p1.addTab("Amplitude Peak", new ImageIcon(Sonogram.class.getResource("pit.gif")), p);
-    if (cspitch.isSelected() == false) {
+    if (!cspitch.isSelected()) {
       cspitchlimitation.setEnabled(false);
       sliderpitch.setEnabled(false);
       cspitchsmooth.setEnabled(false);
@@ -1022,7 +1043,7 @@ class GeneralAdjustmentDialog extends JFrame {
     plo1.setLayout(new GridLayout(3, 2));
     plo1.setBorder(
         new TitledBorder(new EtchedBorder(), "General Logarithm Amplitude Scale Settings"));
-    clog = new JCheckBox("Enalble the Logarithm Amplitude Scaling", sono.iloga);
+    clog = new JCheckBox("Enable the Logarithm Amplitude Scaling", sono.iloga);
     clog.setToolTipText("Logarithmize amplitude in sonogramview");
     plo1.add(clog);
     sliderlog = new JSlider(JSlider.HORIZONTAL, 1, 5, sono.islla);
@@ -1043,7 +1064,7 @@ class GeneralAdjustmentDialog extends JFrame {
     p.add(plo1);
     p.add(sliderlog);
     p1.addTab("Logarithm Amplitude", new ImageIcon(Sonogram.class.getResource("small_log.gif")), p);
-    if (clog.isSelected() == false) sliderlog.setEnabled(false);
+    if (!clog.isSelected()) sliderlog.setEnabled(false);
 
     // Logarithm Frequency
     p = new JPanel();
@@ -1085,7 +1106,7 @@ class GeneralAdjustmentDialog extends JFrame {
     plof2.setBorder(new TitledBorder(new EtchedBorder(), "Linear and Logarithm Scale"));
     imgLin = new JLabel(new ImageIcon(Sonogram.class.getResource("imgLin.png")));
     imgLog = new JLabel(new ImageIcon(Sonogram.class.getResource("imgLog.png")));
-    if (marklogfr == true) {
+    if (marklogfr) {
       imgLog.setEnabled(true);
       imgLin.setEnabled(false);
     } else {
@@ -1094,7 +1115,7 @@ class GeneralAdjustmentDialog extends JFrame {
     }
     c = new GridBagConstraints();
     c.ipadx = 88;
-    ;
+    
     c.ipady = 5;
     c.gridy = 3;
     p.add(plof2, c);
@@ -1308,19 +1329,15 @@ class GeneralAdjustmentDialog extends JFrame {
     if (color == 4) r4.setSelected(true);
     if (color == 5) r5.setSelected(true);
     sliderwinfunktion.setValue(winfunktion);
-    if (inv == true) cinv.setSelected(true);
-    else cinv.setSelected(false);
-    if (grid == true) {
-      cgrid.setSelected(true);
-      cgrid2.setSelected(true);
-    } else {
-      cgrid.setSelected(false);
-      cgrid2.setSelected(false);
-    }
-    if (log == true) clog.setSelected(true);
-    else clog.setSelected(false);
-    if (cauto.isSelected() == true) sliderwinsize.setEnabled(false);
-    else sliderwinsize.setEnabled(true);
+    
+    cinv.setSelected(inv);
+    
+    cgrid.setSelected(grid);
+    cgrid2.setSelected(grid);
+
+    clog.setSelected(log);
+
+    sliderwinsize.setEnabled(!cauto.isSelected());
   }
   // -------------------------------------------------------------------------------------------------------------------------
   /** This Funktion gets Options from Sonogram. */
@@ -1362,41 +1379,37 @@ class GeneralAdjustmentDialog extends JFrame {
     if (winfunktion == 10) sono.cosItem.setSelected(true);
     if (winfunktion == 11) sono.asyItem.setSelected(true);
 
-    if (clog.isSelected() == true) sono.logItem.setSelected(true);
-    else sono.logItem.setSelected(false);
-    if (cinv.isSelected() == true) sono.negItem.setSelected(true);
-    else sono.negItem.setSelected(false);
-    if (cgrid.isSelected()) sono.gridItem.setSelected(true);
-    else sono.gridItem.setSelected(false);
-    if (cslogfr.isSelected()) sono.logfrItem.setSelected(true);
-    else sono.logfrItem.setSelected(false);
+    sono.logItem.setSelected(clog.isSelected());
+    sono.negItem.setSelected(cinv.isSelected());
+    sono.gridItem.setSelected(cgrid.isSelected());
+    sono.logfrItem.setSelected(cslogfr.isSelected());
 
-    if (r0.isSelected() == true) {
+    if (r0.isSelected()) {
       sono.firecItem.setSelected(true);
       color = 0;
       sono.colorSlider.setValue(0);
     }
-    if (r1.isSelected() == true) {
+    if (r1.isSelected()) {
       sono.fireItem.setSelected(true);
       color = 1;
       sono.colorSlider.setValue(1);
     }
-    if (r2.isSelected() == true) {
+    if (r2.isSelected()) {
       sono.colItem.setSelected(true);
       color = 2;
       sono.colorSlider.setValue(2);
     }
-    if (r3.isSelected() == true) {
+    if (r3.isSelected()) {
       sono.rainItem.setSelected(true);
       color = 3;
       sono.colorSlider.setValue(3);
     }
-    if (r4.isSelected() == true) {
+    if (r4.isSelected()) {
       sono.greenItem.setSelected(true);
       color = 4;
       sono.colorSlider.setValue(4);
     }
-    if (r5.isSelected() == true) {
+    if (r5.isSelected()) {
       sono.bwItem.setSelected(true);
       color = 5;
       sono.colorSlider.setValue(5);
@@ -1794,7 +1807,7 @@ class GeneralAdjustmentDialog extends JFrame {
       if (e.getSource() == clocalpeak) {
         if (marklocalpeak != clocalpeak.isSelected()) {
           marklocalpeak = clocalpeak.isSelected();
-          if (sono.spektrumExist == true) {
+          if (sono.spektrumExist) {
             sono.updateimageflag = true;
             sono.repaint();
           }
@@ -1803,22 +1816,22 @@ class GeneralAdjustmentDialog extends JFrame {
       if (e.getSource() == cuniverse) {
         cb.setEnabled(!cuniverse.isSelected());
       }
-      if (e.getSource() == cscolsi) {
-        if (sono.spektrumExist == true) sono.pp.paintOneSpektrum(false);
+      if (e.getSource() == cscolsi && sono.spektrumExist) {
+        sono.pp.paintOneSpektrum(false);
       }
-      if (e.getSource() == cback) {
-        if (sono.spektrumExist == true) sono.pp.paintOneSpektrum(false);
+      if (e.getSource() == cback && sono.spektrumExist) {
+        sono.pp.paintOneSpektrum(false);
       }
-      if (e.getSource() == csmoothsi) {
-        if (sono.spektrumExist == true) sono.pp.paintOneSpektrum(false);
+      if (e.getSource() == csmoothsi && sono.spektrumExist) {
+        sono.pp.paintOneSpektrum(false);
       }
       if (e.getSource() == cscrennsaver) {
         sono.irotate = cscrennsaver.isSelected();
       }
       if (e.getSource() == cperantialias) {
-        if (cperantialias.isSelected() == true
-            && cperantialiaslast == false
-            && cperantialiasconfirm == false) {
+        if (cperantialias.isSelected()
+            && !cperantialiaslast
+            && !cperantialiasconfirm) {
           JCheckBox askAgain =
               new JCheckBox("<html><i><font size = -2>Do not show this warning message again");
           Object[] message = new Object[2];
@@ -1834,7 +1847,7 @@ class GeneralAdjustmentDialog extends JFrame {
                   "Antialiasing decreases the 3D Performance",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.WARNING_MESSAGE);
-          if (askAgain.isSelected() == true) {
+          if (askAgain.isSelected()) {
             cperantialiasconfirm = true;
             cperantialias.setSelected(true);
           }
@@ -1854,7 +1867,7 @@ class GeneralAdjustmentDialog extends JFrame {
      * 0 = Reset all buttons to default. 1 = Set redraw button RED 2 = Set redcalculate button RED 3
      * = Set redopen button RED ´
      */
-    if (sono.spektrumExist == false) highlighted = 0;
+    if (!sono.spektrumExist) highlighted = 0;
     if (highlighted == 0) {
       btro.setBorder(btcl.getBorder());
       btap.setBorder(btcl.getBorder());
@@ -1893,7 +1906,7 @@ class GeneralAdjustmentDialog extends JFrame {
       String str = "";
       if (width < 50) return;
       Graphics2D g = (Graphics2D) g1;
-      if (cantialise.isSelected() == true) {
+      if (cantialise.isSelected()) {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(
             RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
@@ -1917,7 +1930,7 @@ class GeneralAdjustmentDialog extends JFrame {
       g.drawLine(width - 25, height - 25, width - 25, height - 35);
 
       // build winfunktion
-      float fktvect[] = null;
+      float[] fktvect = null;
       if (winfunktion == 1) {
         fktvect = WindowFunktion.rectangleWindow(width - 50);
         minimunstoppbandattenuation = -21;
@@ -2069,34 +2082,34 @@ class GeneralAdjustmentDialog extends JFrame {
       g.setColor(new Color(30, 40, 60));
       g.drawRect(4, 5, width - 10, height - 8);
 
-      if (sono.firecItem.isSelected() == true && sono.negItem.isSelected() == false)
+      if (sono.firecItem.isSelected() && !sono.negItem.isSelected())
         colarray = sono.pp.cocFI;
-      if (sono.firecItem.isSelected() == true && sono.negItem.isSelected() == true)
+      if (sono.firecItem.isSelected() && sono.negItem.isSelected())
         colarray = sono.pp.cocFIi;
 
-      if (sono.fireItem.isSelected() == true && sono.negItem.isSelected() == false)
+      if (sono.fireItem.isSelected() && !sono.negItem.isSelected())
         colarray = sono.pp.coFI;
-      if (sono.fireItem.isSelected() == true && sono.negItem.isSelected() == true)
+      if (sono.fireItem.isSelected() && sono.negItem.isSelected())
         colarray = sono.pp.coFIi;
 
-      if (sono.colItem.isSelected() == true && sono.negItem.isSelected() == false)
+      if (sono.colItem.isSelected() && !sono.negItem.isSelected())
         colarray = sono.pp.coCO;
-      if (sono.colItem.isSelected() == true && sono.negItem.isSelected() == true)
+      if (sono.colItem.isSelected() && sono.negItem.isSelected())
         colarray = sono.pp.coCOi;
 
-      if (sono.bwItem.isSelected() == true && sono.negItem.isSelected() == false)
+      if (sono.bwItem.isSelected() && !sono.negItem.isSelected())
         colarray = sono.pp.coSW;
-      if (sono.bwItem.isSelected() == true && sono.negItem.isSelected() == true)
+      if (sono.bwItem.isSelected() && sono.negItem.isSelected())
         colarray = sono.pp.coSWi;
 
-      if (sono.rainItem.isSelected() == true && sono.negItem.isSelected() == false)
+      if (sono.rainItem.isSelected() && !sono.negItem.isSelected())
         colarray = sono.pp.coRA;
-      if (sono.rainItem.isSelected() == true && sono.negItem.isSelected() == true)
+      if (sono.rainItem.isSelected() && sono.negItem.isSelected())
         colarray = sono.pp.coRAi;
 
-      if (sono.greenItem.isSelected() == true && sono.negItem.isSelected() == false)
+      if (sono.greenItem.isSelected() && !sono.negItem.isSelected())
         colarray = sono.pp.coCG;
-      if (sono.greenItem.isSelected() == true && sono.negItem.isSelected() == true)
+      if (sono.greenItem.isSelected() && sono.negItem.isSelected())
         colarray = sono.pp.coCGi;
 
       double colfact = (255.0 / (width - 11.0));
@@ -2118,7 +2131,7 @@ class GeneralAdjustmentDialog extends JFrame {
 
       // grid & rect
       Graphics2D g = (Graphics2D) g1;
-      if (cantialise.isSelected() == true)
+      if (cantialise.isSelected())
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       g.setColor(new Color(25, 45, 15));
       g.fillRect(10, 25, width - 20, height - 35);
@@ -2171,7 +2184,7 @@ class GeneralAdjustmentDialog extends JFrame {
       int middle = 9 + height / 2; // middle of the screen
       int[] thewavelet = new int[250];
       float span = over - under + 1;
-      float step = (float) span / 250.0f;
+      float step = span / 250.0f;
       int counter = 0;
       for (float cut = under; cut < over; cut += step) {
         thewavelet[249 - counter] =
@@ -2184,7 +2197,8 @@ class GeneralAdjustmentDialog extends JFrame {
 
       // draw the Wavelet
       g.setColor(new Color(190, 255, 60));
-      int x1, x2;
+      int x1;
+      int x2;
       g.setStroke(new BasicStroke(3));
       g.setColor(new Color(50, 100, 40));
       for (int count = 1; count < 250; count++) {

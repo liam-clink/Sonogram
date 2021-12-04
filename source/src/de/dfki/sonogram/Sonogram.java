@@ -3,7 +3,7 @@
  *
  * <p>Main class of <b>Sonogramm visible speech</b> Sonogram is an generic and a in many forms
  * configurable acoustical signal processing tool. It uses Java Media Framework and Java3D an
- * external libraries, both are available fron Sun Microsystems. This CLASS implements also the MAIN
+ * external libraries, both are available fron Oracle. This CLASS implements also the MAIN
  * CLASS.
  *
  * @version 2.8.0, Begin 05/01/2002, Current Time-stamp: <2004-10-23 09:03:58 christoph>
@@ -126,7 +126,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       adjItem,
       playItem,
       revItem,
-      d3Item // Menueitems - MainWindow
+      d3Item // Menuitems - MainWindow
       ,
       stopItem,
       helpItem,

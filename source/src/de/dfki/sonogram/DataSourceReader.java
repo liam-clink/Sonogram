@@ -99,7 +99,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
         AudioFormat af = (AudioFormat) traCont[i].getFormat();
         // Set selected Samplingrate
         System.out.println("--> Files orginal audio format:" + af);
-        if (reftomain.gad.csampl.isSelected() == false) samplerate = (int) af.getSampleRate();
+        if (!reftomain.gad.csampl.isSelected()) samplerate = (int) af.getSampleRate();
         else samplerate = 8000;
         traCont[i].setFormat(new AudioFormat("LINEAR", samplerate, 8, 1, 0, 1));
         AudioFormat newaf = (AudioFormat) traCont[i].getFormat();
@@ -249,14 +249,14 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
 
     if (evt instanceof EndOfStreamEvent) {
 
-      if (cancelIsPressed == true) {
+      if (cancelIsPressed) {
         openAllRightFlag = false;
         return;
       }
       openAllRightFlag = true;
       System.err.println("--> Stream ausgelesen: " + audioStream.size() + " Samples");
       evt.getSourceDataSink().close();
-      if (audioStream.size() == 0) {
+      if (audioStream.isEmpty()) {
         reftomain.progmon.close();
         reftomain.messageBox(
             "No Audio Track found",
@@ -267,7 +267,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
         reftomain.repaint();
         return;
       }
-      if (reftomain.autoopened == false) { // if file is not autoopened show in full Span
+      if (!reftomain.autoopened) { // if file is not autoopened show in full Span
         reftomain.selectedstart = 0.0;
         reftomain.selecedwidth = 1.0;
         reftomain.zoompreviousindex = 0;
@@ -299,16 +299,16 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
   // ---------------------------------------------------------------------------------------------------
   class DataSourceHandler implements DataSink, BufferTransferHandler {
     DataSource source;
-    PullBufferStream pullStrms[] = null;
-    PushBufferStream pushStrms[] = null;
+    PullBufferStream[] pullStrms = null;
+    PushBufferStream[] pushStrms = null;
     // Data sink listeners.
     private Vector listeners = new Vector(1);
     // Stored all the streams that are not yet finished (i.e. EOM
     // has not been received.
-    SourceStream unfinishedStrms[] = null;
+    SourceStream[] unfinishedStrms = null;
     // Loop threads to pull data from a PullBufferDataSource.
     // There is one thread per each PullSourceStream.
-    Loop loops[] = null;
+    Loop[] loops = null;
     Buffer readBuffer;
     // ---------------------------------------------------------------------------------------------------
     /** Sets the media source this <code>MediaHandler</code> should use to obtain content. */

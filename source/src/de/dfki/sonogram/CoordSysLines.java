@@ -1,6 +1,5 @@
 package de.dfki.sonogram;
 
-import java.awt.*;
 import javax.media.j3d.*;
 import javax.vecmath.*;
 
@@ -102,7 +101,7 @@ public class CoordSysLines extends Shape3D {
     // 	PointAttributes pointAttrib = new PointAttributes(2,true);
     //         app.setPointAttributes(pointAttrib);
 
-    if (reftomain.iperantialias == true) {
+    if (reftomain.iperantialias) {
       LineAttributes lineAttrib = new LineAttributes(2f, LineAttributes.PATTERN_SOLID, true);
       app.setLineAttributes(lineAttrib);
     }

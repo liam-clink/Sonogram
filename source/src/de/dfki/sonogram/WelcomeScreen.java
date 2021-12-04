@@ -2,7 +2,6 @@ package de.dfki.sonogram;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 import javax.swing.*;
 
 /**
@@ -18,7 +17,6 @@ public class WelcomeScreen extends JPanel {
   public boolean buttonPressed = false;
   private ImageIcon pic;
   private JWindow splash = new JWindow();
-  private int h, w;
   private JButton button;
   // This special Strings fro the Licensing will be later exchanged by the webshop system
   String UponStr = "WelcomeCalledFromStartFirstStart";
@@ -35,7 +33,7 @@ public class WelcomeScreen extends JPanel {
       SwingUtilities.updateComponentTreeUI(this);
     } catch (Throwable t) {
     }
-    if (show == false) return;
+    if (!show) return;
 
     // add the image
     pic = new ImageIcon(Sonogram.class.getResource("Welcome.png"));
@@ -48,7 +46,7 @@ public class WelcomeScreen extends JPanel {
     // add the button
     button =
         new JButton(
-            "« Continue »"); // do not save as UTF8 Format because the special charcter ! Konown to
+            "« Continue »"); // do not save as UTF8 Format because the special charcter ! Known to
                              // be work well --> Iso8859-1(windows) and CRLF(windows)
     button.setLocation(158, 291);
     button.setSize(430, 30);

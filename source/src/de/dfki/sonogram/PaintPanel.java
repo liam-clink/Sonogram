@@ -378,7 +378,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
             g.fillRect(panelWidth - 2 - scaledWidth, yppownext, scaledWidth, Math.abs(yLogPixelPos - yppownext));
         }
         // linear scale
-        else if (yd > 2.0) g.fillRect(panelWidth - 3 - scaledWidth, (int) yd, scaledWidth, (int) yd - (int) ydnext + 1);
+        else if (yd > 2.0) g.fillRect(panelWidth - 3 - scaledWidth, (int) yd, scaledWidth, (int) (yd - ydnext) + 1);
       }
       // Smoothed single spectrum red curve
       if (refToSonogram.gad.csmoothsi.isSelected()) {

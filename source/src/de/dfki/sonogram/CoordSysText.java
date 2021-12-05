@@ -14,19 +14,16 @@ import javax.vecmath.*;
 
 public class CoordSysText extends TransformGroup {
 
-  private Sonogram reftomain;
-
-  public CoordSysText(Sonogram ref) {
-    reftomain = ref;
+  public CoordSysText() {
     addGeometry();
   }
 
   private void addGeometry() {
     // the marking text for the axis...
     Font3D font3d = new Font3D(new Font("SanSerif", Font.BOLD, 5), new FontExtrusion());
-    Text3D textX = new Text3D(font3d, new String("Time"), new Point3f(0.0f, 0.0f, 0.0f));
-    Text3D textY = new Text3D(font3d, new String("Frequency"), new Point3f(0.0f, 0.0f, 0.0f));
-    Text3D textZ = new Text3D(font3d, new String("Amplitude"), new Point3f(0.0f, 0.0f, 0.0f));
+    Text3D textX = new Text3D(font3d, "Time", new Point3f(0.0f, 0.0f, 0.0f));
+    Text3D textY = new Text3D(font3d, "Frequency", new Point3f(0.0f, 0.0f, 0.0f));
+    Text3D textZ = new Text3D(font3d, "Amplitude", new Point3f(0.0f, 0.0f, 0.0f));
     Shape3D x0 = new Shape3D(textX);
     Shape3D y0 = new Shape3D(textY);
     Shape3D z0 = new Shape3D(textZ);

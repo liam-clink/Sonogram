@@ -25,7 +25,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
   Processor p;
   Object waitSync = new Object();
   boolean stateTransitionOK = true;
-  public Vector audioStream = new Vector();
+  public Vector<Byte> audioStream = new Vector<>();
   public boolean openAllRightFlag = false;
   private Sonogram reftomain;
   double duration;
@@ -43,8 +43,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
    * a customed DataSink.
    */
   public boolean open(DataSource ds) {
-    //  	try{
-    // remove poss. old Elements
+    // remove possible old Elements
     audioStream.removeAllElements();
     dstype = ds.getContentType();
     System.out.println("--> Create JMF-PROCESSOR; Data type = " + dstype);
@@ -66,11 +65,12 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       reftomain.spectrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();
-      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
+      reftomain.setTitle("Sonogram Visible Speech - version " + Sonogram.VERSION);
       return false;
     }
     reftomain.progmon.setProgress(6);
     p.addControllerListener(this);
+
     // Put the Processor into configured state.
     p.configure();
     if (!waitForState(p.Configured)) {
@@ -86,12 +86,13 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           JOptionPane.WARNING_MESSAGE);
       System.err.println("--> Error: configure the JMF-PROCESSORS");
       reftomain.spectrumExist = false;
-      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
+      reftomain.setTitle("Sonogram Visible Speech - version " + Sonogram.VERSION);
       reftomain.updateimageflag = true;
       reftomain.repaint();
       return false;
     }
     reftomain.progmon.setProgress(7);
+
     // Hier wird das Ausgabeformat des PROCESSORS Spezifiziert
     javax.media.control.TrackControl traCont[] = p.getTrackControls();
     for (int i = 0; i < traCont.length; i++) {
@@ -109,17 +110,18 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       }
     }
     reftomain.progmon.setProgress(8);
+
     // Get the raw output from the processor.
     p.setContentDescriptor(new ContentDescriptor(ContentDescriptor.RAW));
     p.realize();
-    if (!waitForState(p.Realized)) {
+    if (!waitForState(Controller.Realized)) {
       reftomain.progmon.close();
       reftomain.messageBox(
           "Connot convert Samples from Media File",
           "<html>The JMF-Processor <u>cannot convert this file</u> to specific format !",
           JOptionPane.WARNING_MESSAGE);
       System.err.println("--> ERROR: the JMF-PROCESSOR cant convert this file");
-      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
+      reftomain.setTitle("Sonogram Visible Speech - version " + Sonogram.VERSION);
       reftomain.spectrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();
@@ -127,6 +129,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       return false;
     }
     reftomain.progmon.setProgress(9);
+    
     // Get the output DataSource from the processor and
     // hook it up to the DataSourceHandler.
     DataSource ods = p.getDataOutput();
@@ -139,7 +142,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           "Cannot hadle Datasource",
           "<html>The JMF-Processot <u>cannot handel the datasource</u> !",
           JOptionPane.WARNING_MESSAGE);
-      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
+      reftomain.setTitle("Sonogram Visible Speech - version " + Sonogram.VERSION);
       System.err.println("--> ERROR: the JMF-PROCESSOR cant handel this datasource: " + ods);
       reftomain.spectrumExist = false;
       reftomain.updateimageflag = true;
@@ -151,14 +154,14 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
     handler.start();
     // Prefetch the processor.
     p.prefetch();
-    if (!waitForState(p.Prefetched)) {
+    if (!waitForState(Controller.Prefetched)) {
       reftomain.progmon.close();
       reftomain.messageBox(
           "Cannot Prefetch Audio Date",
           "<html>The JMF-Processor <u>cannot prefetch the audio data</u> !",
           JOptionPane.WARNING_MESSAGE);
       System.err.println("--> ERROR: prefetch audio data with JMF-PROCESSOR");
-      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
+      reftomain.setTitle("Sonogram Visible Speech - version " + Sonogram.VERSION);
       reftomain.spectrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();
@@ -185,7 +188,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
     return true;
   }
   // ---------------------------------------------------------------------------------------------------
-  public void addNotify() {}
+
   // ---------------------------------------------------------------------------------------------------
   /**
    * Change the plugin list to disable the default RawBufferMux thus allowing the RawSyncBufferMux
@@ -218,6 +221,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
             "<html>Error <u>while JMF-Processor Transition</u> !",
             JOptionPane.WARNING_MESSAGE);
         System.out.println("--> ERROR while JMF transition");
+        Thread.currentThread().interrupt();
       }
     }
     return stateTransitionOK;
@@ -278,7 +282,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
     }
   }
   // ---------------------------------------------------------------------------------------------------
-  // Konvertiert eine Byte Variable bitweise in eine Integer Variable (Vorzeichen,bits....)
+  // Converts a Byte Variable bitwise to a  Integer Variable (Vorzeichen,bits....)
   private synchronized int copyByteToIntBitwise(byte b) {
     int i = 0;
     if (b > 0) i = b;
@@ -302,7 +306,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
     PullBufferStream[] pullStrms = null;
     PushBufferStream[] pushStrms = null;
     // Data sink listeners.
-    private Vector listeners = new Vector(1);
+    private Vector<DataSinkListener> listeners = new Vector<>(1);
     // Stored all the streams that are not yet finished (i.e. EOM
     // has not been received.
     SourceStream[] unfinishedStrms = null;
@@ -315,8 +319,8 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
     public void setSource(DataSource source) throws IncompatibleSourceException {
 
       // Different types of DataSources need to handled differently.
-      if (source instanceof PushBufferDataSource) {
-        pushStrms = ((PushBufferDataSource) source).getStreams();
+      if (source instanceof PushBufferDataSource ds) {
+        pushStrms = ds.getStreams();
         unfinishedStrms = new SourceStream[pushStrms.length];
         // Set the transfer handler to receive pushed data from
         // the push DataSource.
@@ -324,8 +328,8 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           pushStrms[i].setTransferHandler(this);
           unfinishedStrms[i] = pushStrms[i];
         }
-      } else if (source instanceof PullBufferDataSource) {
-        pullStrms = ((PullBufferDataSource) source).getStreams();
+      } else if (source instanceof PullBufferDataSource ds) {
+        pullStrms = ds.getStreams();
         unfinishedStrms = new SourceStream[pullStrms.length];
         // For pull data sources, we'll start a thread per
         // stream to pull data from the source.
@@ -342,8 +346,9 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       readBuffer = new Buffer();
     }
     // ---------------------------------------------------------------------------------------------------
-    /** For completeness, DataSink's require this method. But we don't need it. */
-    public void setOutputLocator(MediaLocator ml) {}
+    public void setOutputLocator(MediaLocator ml) {
+      /** For completeness, DataSinks require this method. But we don't need it. */
+    }
     // ---------------------------------------------------------------------------------------------------
     public MediaLocator getOutputLocator() {
       return null;
@@ -353,8 +358,10 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       return source.getContentType();
     }
     // ---------------------------------------------------------------------------------------------------
-    /** Our DataSink does not need to be opened. */
-    public void open() {}
+    
+    public void open() {
+      /** Our DataSink does not need to be opened. */
+    }
     // ---------------------------------------------------------------------------------------------------
     public void start() {
       try {
@@ -404,7 +411,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
     }
     // ---------------------------------------------------------------------------------------------------
     public void addDataSinkListener(DataSinkListener dsl) {
-      if (dsl != null) if (!listeners.contains(dsl)) listeners.addElement(dsl);
+      if (dsl != null && !listeners.contains(dsl)) listeners.addElement(dsl);
     }
     // ---------------------------------------------------------------------------------------------------
     public void removeDataSinkListener(DataSinkListener dsl) {
@@ -414,9 +421,9 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
     protected void sendEvent(DataSinkEvent event) {
       if (!listeners.isEmpty()) {
         synchronized (listeners) {
-          Enumeration list = listeners.elements();
+          Enumeration<DataSinkListener> list = listeners.elements();
           while (list.hasMoreElements()) {
-            DataSinkListener listener = (DataSinkListener) list.nextElement();
+            DataSinkListener listener = list.nextElement();
             listener.dataSinkUpdate(event);
           }
         }
@@ -490,11 +497,11 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       try {
         if (buffer.getFormat() instanceof AudioFormat) {
           byte[] buf = (byte[]) buffer.getData();
-          if (reftomain.progmon.isCanceled() == true) {
+          if (reftomain.progmon.isCanceled()) {
             System.out.println("--> CANCEL Button is pressed while read Samples from File.");
             reftomain.progmon.close();
             reftomain.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
+            reftomain.setTitle("Sonogram Visible Speech - version " + Sonogram.VERSION);
             reftomain.spectrumExist = false;
             reftomain.updateimageflag = true;
             reftomain.repaint();
@@ -506,7 +513,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           for (int i = 0; i < (buffer.getLength()); i++) { // Copy Data To Buffer
             try {
               audioStream.addElement(Byte.valueOf(buf[i]));
-            } catch (Throwable t) {
+            } catch (Exception t) {
               if (error) return;
               error = true;
               reftomain.messageBox(
@@ -517,7 +524,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
             }
           }
           int pr =
-              (int) (double) (audioStream.size() / (double) samplerate / (double) duration * 85.0);
+              (int) (audioStream.size() / (double) samplerate / duration * 85.0);
           if (pr < 100) {
             reftomain.progmon.setProgress(15 + pr);
           }
@@ -567,28 +574,33 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
     // ---------------------------------------------------------------------------------------------------
     public synchronized void restart() {
       paused = false;
-      notify();
+      notifyAll();
     }
     // ---------------------------------------------------------------------------------------------------
     /** This is the correct way to pause a thread; unlike suspend. */
     public synchronized void pause() {
       paused = true;
+      // Not necessary to notifyAll(), threads periodically check if they should pause
     }
     // ---------------------------------------------------------------------------------------------------
     /** This is the correct way to kill a thread; unlike stop. */
     public synchronized void kill() {
       killed = true;
-      notify();
+      notifyAll();
     }
     // ---------------------------------------------------------------------------------------------------
     /** This is the processing loop to pull data from a PullBufferDataSource. */
-    public void run() {
+    @Override
+    public synchronized void run() {
       while (!killed) {
         try {
           while (paused && !killed) {
             wait();
           }
         } catch (InterruptedException e) {
+          // Catching the InterruptedException clears the interrupted state,
+          // so we need to reinterrupt the thread
+          Thread.currentThread().interrupt();
         }
 
         if (!killed) {
@@ -603,7 +615,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
 
   public void generateSamplesFromURL(String url) {
 
-    // url="http://github.com/Christoph-Lauer/Sonogram/blob/main/build/samples/11.wav";
+    // url="http://github.com/Christoph-Lauer/Sonogram/blob/main/build/samples/11.wav"
     System.out.println("--> DataSourceReader.generateSamplesFromUrl: " + url);
     // Find out URL type
     int urltype = 0; // 0=error, 1=local file system, 2=https, 3=http, 4=ftp
@@ -659,10 +671,12 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
               100);
     }
     reftomain.progmon.setProgress(1);
+    
     String filename = "";
     try {
       filename = (new java.io.File((new URL(url)).getFile()).getName());
-    } catch (Throwable t) {
+    } catch (Exception t) {
+      System.out.println("Failed to find remote file.");
     }
     reftomain.filename = filename;
     if (reftomain.fileisfromurl)
@@ -680,7 +694,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           "<html><u>Cannot build the MediaLocator",
           JOptionPane.WARNING_MESSAGE);
       System.err.println("--> ERROR: Can't Build MediaLocator: " + url);
-      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
+      reftomain.setTitle("Sonogram Visible Speech - version " + Sonogram.VERSION);
       reftomain.spectrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();
@@ -737,7 +751,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
                 + "</u>",
             JOptionPane.WARNING_MESSAGE);
       System.err.println("--> ERROR:" + e.getMessage());
-      reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
+      reftomain.setTitle("Sonogram Visible Speech - version " + Sonogram.VERSION);
       reftomain.spectrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();

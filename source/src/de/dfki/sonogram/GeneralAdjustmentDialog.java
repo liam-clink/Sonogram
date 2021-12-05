@@ -385,7 +385,7 @@ class GeneralAdjustmentDialog extends JFrame {
         "<html>Show the Spectrum in the single<br>Frequency Curve while playing<br>(Shown in the"
             + " right Area)");
     p.add(csspecwhileplaying);
-    cscolsi = new JCheckBox("Momochrom Single Curve", sono.imonoso);
+    cscolsi = new JCheckBox("Monochrome Single Curve", sono.imonoso);
     cscolsi.setForeground(new Color(0, 51, 180));
     cscolsi.setToolTipText(
         "<html>Do not show amplitude<br>based colors in single Frequency view<br>(Shown in the"
@@ -398,7 +398,7 @@ class GeneralAdjustmentDialog extends JFrame {
     p.add(cback);
     csmoothsi = new JCheckBox("Smooth out Single Curve", sono.ismosi);
     csmoothsi.setForeground(new Color(0, 51, 180));
-    csmoothsi.setToolTipText("Smooth out single frequency view (Shown in the rigth Area)");
+    csmoothsi.setToolTipText("Smooth out single frequency view (Shown in the right Area)");
     p.add(csmoothsi);
     csmooth = new JCheckBox("Smooth out over Frequency", sono.ismof);
     csmooth.setForeground(new Color(180, 100, 0));
@@ -1295,23 +1295,23 @@ class GeneralAdjustmentDialog extends JFrame {
     cpfog.addChangeListener(lst);
 
     // Set Text-Colors for the Tabs Titles
-    p1.setForegroundAt(0, sono.pp.coldv); // Windowlength
-    p1.setForegroundAt(1, sono.pp.coldv); // Windowfunctions
+    p1.setForegroundAt(0, sono.pp.colorPurple); // Windowlength
+    p1.setForegroundAt(1, sono.pp.colorPurple); // Windowfunctions
     p1.setForegroundAt(2, new Color(120, 30, 30)); // Colors
     p1.setForegroundAt(3, new Color(40, 40, 90)); // General
-    p1.setForegroundAt(4, sono.pp.coldv); // Overlapping
+    p1.setForegroundAt(4, sono.pp.colorPurple); // Overlapping
     p1.setForegroundAt(5, new Color(30, 30, 50)); // Perspectogram
     p1.setForegroundAt(6, new Color(90, 10, 80)); // FFT
     p1.setForegroundAt(7, new Color(90, 10, 80)); // LPC
     p1.setForegroundAt(8, new Color(100, 100, 100)); // Cepstrum
-    p1.setForegroundAt(9, sono.pp.coldv); // AC based Pitch
+    p1.setForegroundAt(9, sono.pp.colorPurple); // AC based Pitch
     p1.setForegroundAt(10, new Color(90, 10, 80)); // Autocorrelation
     p1.setForegroundAt(11, new Color(90, 10, 80)); // Waveform
     p1.setForegroundAt(12, new Color(40, 40, 90)); // Transformation
     p1.setForegroundAt(13, new Color(75, 97, 37)); // Sono Peak
     p1.setForegroundAt(14, new Color(75, 97, 37)); // Log Amp
     p1.setForegroundAt(15, new Color(75, 97, 37)); // Log Frequ
-    p1.setForegroundAt(16, sono.pp.coldv); // Gain
+    p1.setForegroundAt(16, sono.pp.colorPurple); // Gain
     p1.setForegroundAt(17, new Color(90, 10, 80)); // Wavelet
 
     applyChanges();
@@ -1814,13 +1814,13 @@ class GeneralAdjustmentDialog extends JFrame {
         cb.setEnabled(!cuniverse.isSelected());
       }
       if (e.getSource() == cscolsi && sono.spectrumExist) {
-        sono.pp.paintOneSpektrum(false);
+        sono.pp.paintOneSpectrum(false);
       }
       if (e.getSource() == cback && sono.spectrumExist) {
-        sono.pp.paintOneSpektrum(false);
+        sono.pp.paintOneSpectrum(false);
       }
       if (e.getSource() == csmoothsi && sono.spectrumExist) {
-        sono.pp.paintOneSpektrum(false);
+        sono.pp.paintOneSpectrum(false);
       }
       if (e.getSource() == cscrennsaver) {
         sono.irotate = cscrennsaver.isSelected();

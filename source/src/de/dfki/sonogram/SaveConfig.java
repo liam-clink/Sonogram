@@ -30,8 +30,7 @@ public class SaveConfig {
           if (files.length > 0) System.out.println("--> Delete: directory not empty.");
         }
         // Attempt to delete it
-        boolean success = f.delete();
-        if (!success) System.out.println("--> Delete: deletion failed.");
+        if (!f.delete()) System.out.println("--> Delete: deletion failed.");
         System.out.println("--> Delete: deletion successfully.");
         return;
       }
@@ -41,7 +40,7 @@ public class SaveConfig {
       out.println("<!-- XML file written by Sonogram application while ending program-->");
       out.println("<!DOCTYPE sonogramconfig SYSTEM \"SonogramConfig.dtd\">");
       out.println("\t<sonogramconfig>");
-      if (sono.gad.csavehist.isSelected() == true) { // save only if the save flag in gad is enables
+      if (sono.gad.csavehist.isSelected()) { // save only if the save flag in gad is enables
         out.println("\t\t<hotlist>");
         for (int i = 0; i < sono.filehistory.size(); i++) {
           out.println(
@@ -64,7 +63,7 @@ public class SaveConfig {
               + sl.y
               + "\" width=\""
               + sd.height
-              + "\" heigth=\""
+              + "\" height=\""
               + sd.width
               + "\"/>");
       Dimension gd = sono.gad.getSize();
@@ -76,7 +75,7 @@ public class SaveConfig {
               + gl.y
               + "\" width=\""
               + gd.height
-              + "\" heigth=\""
+              + "\" height=\""
               + gd.width
               + "\"/>");
       Dimension cd = sono.cv.getSize();
@@ -88,7 +87,7 @@ public class SaveConfig {
               + cl.y
               + "\" width=\""
               + cd.height
-              + "\" heigth=\""
+              + "\" height=\""
               + cd.width
               + "\"/>");
       Dimension ld = sono.lv.getSize();
@@ -100,7 +99,7 @@ public class SaveConfig {
               + ll.y
               + "\" width=\""
               + ld.height
-              + "\" heigth=\""
+              + "\" height=\""
               + ld.width
               + "\"/>");
       Dimension fd = sono.fv.getSize();
@@ -112,7 +111,7 @@ public class SaveConfig {
               + fl.y
               + "\" width=\""
               + fd.height
-              + "\" heigth=\""
+              + "\" height=\""
               + fd.width
               + "\"/>");
       Dimension wd = sono.wv.getSize();
@@ -124,7 +123,7 @@ public class SaveConfig {
               + wl.y
               + "\" width=\""
               + wd.height
-              + "\" heigth=\""
+              + "\" height=\""
               + wd.width
               + "\"/>");
       Dimension ad = sono.av.getSize();
@@ -136,7 +135,7 @@ public class SaveConfig {
               + al.y
               + "\" width=\""
               + ad.height
-              + "\" heigth=\""
+              + "\" height=\""
               + ad.width
               + "\"/>");
       Dimension kd = sono.av.getSize();
@@ -148,7 +147,7 @@ public class SaveConfig {
               + kl.y
               + "\" width=\""
               + kd.height
-              + "\" heigth=\""
+              + "\" height=\""
               + kd.width
               + "\"/>");
       out.println("\t\t</ScreenPositions>");

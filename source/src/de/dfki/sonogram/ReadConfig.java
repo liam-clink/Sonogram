@@ -85,7 +85,7 @@ public class ReadConfig {
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
           sw = Integer.parseInt(tmp);
-          t1 = line.indexOf("heigth=");
+          t1 = line.indexOf("height=");
           t1 += 8;
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
@@ -107,7 +107,7 @@ public class ReadConfig {
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
           gw = Integer.parseInt(tmp);
-          t1 = line.indexOf("heigth=");
+          t1 = line.indexOf("height=");
           t1 += 8;
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
@@ -129,7 +129,7 @@ public class ReadConfig {
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
           cw = Integer.parseInt(tmp);
-          t1 = line.indexOf("heigth=");
+          t1 = line.indexOf("height=");
           t1 += 8;
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
@@ -151,7 +151,7 @@ public class ReadConfig {
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
           fw = Integer.parseInt(tmp);
-          t1 = line.indexOf("heigth=");
+          t1 = line.indexOf("height=");
           t1 += 8;
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
@@ -173,7 +173,7 @@ public class ReadConfig {
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
           lw = Integer.parseInt(tmp);
-          t1 = line.indexOf("heigth=");
+          t1 = line.indexOf("height=");
           t1 += 8;
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
@@ -195,7 +195,7 @@ public class ReadConfig {
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
           ww = Integer.parseInt(tmp);
-          t1 = line.indexOf("heigth=");
+          t1 = line.indexOf("height=");
           t1 += 8;
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
@@ -217,7 +217,7 @@ public class ReadConfig {
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
           aw = Integer.parseInt(tmp);
-          t1 = line.indexOf("heigth=");
+          t1 = line.indexOf("height=");
           t1 += 8;
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
@@ -239,7 +239,7 @@ public class ReadConfig {
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
           kw = Integer.parseInt(tmp);
-          t1 = line.indexOf("heigth=");
+          t1 = line.indexOf("height=");
           t1 += 8;
           t2 = line.indexOf("\"", t1);
           tmp = line.substring(t1, t2);
@@ -1160,7 +1160,7 @@ public class ReadConfig {
           sono.ibgcol = new Color(r, g, b);
         }
         // Read Zoominformation only when openLastFile is stred as selected
-        if (sono.iopenlast == true && sono.ilastwithzoom == true) {
+        if (sono.iopenlast == true && sono.ilastwithzoom) {
           sono.autoopened = true;
           if (line.indexOf("SelectedStartCurrent") > 0) {
             t1 = line.indexOf("value=");
@@ -1218,8 +1218,8 @@ public class ReadConfig {
       }
       rd.close();
       // Set Chages
-      if (sono.iopenlast == true) // For Datasourcereader to leave width and start
-      sono.autoopened = true;
+      if (sono.iopenlast) // For Datasourcereader to leave width and start
+        sono.autoopened = true;
 
       // postprocess the file history vector to restrict the length of maximal 9 elements
       while (sono.filehistory.size() > 10) sono.filehistory.removeElementAt(0);
@@ -1229,7 +1229,7 @@ public class ReadConfig {
       // is sized at normal position
       // sh = 1000;
       // sw = 540;
-      if (sono.isascpo == true) {
+      if (sono.isascpo) {
         sono.setLocation(sx, sy);
         sono.setSize(sh, sw);
         sono.cv.setLocation(cx, cy);

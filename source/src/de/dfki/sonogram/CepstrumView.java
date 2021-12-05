@@ -102,7 +102,7 @@ public class CepstrumView extends JFrame {
       
       // Draw horizontal lines
       int verticalDivisionCounter = 0;
-      for (double yGridLine = (height - margin+majorTickLength); yGridLine >= margin; yGridLine -= (double) (height - (margin+majorTickLength)) / divisions) {
+      for (double yGridLine = (axisHeight + margin - 1); yGridLine >= margin-1; yGridLine -= (double) axisHeight / divisions) {
         g.setColor(colorRed);
         // Draw major tick
         if (verticalDivisionCounter%5 == 0) g.drawLine(margin, (int) yGridLine, majorTickLength+margin, (int) yGridLine);
@@ -145,7 +145,7 @@ public class CepstrumView extends JFrame {
         mouseIsInTimeSpan = true;
       }
       for (int i = 0; i < samples; i++) {
-        tempbyte = (Byte) refToMain.reader.audioStream.get(startp + i);
+        tempbyte = refToMain.reader.audioStream.get(startp + i);
         buffer[i] = tempbyte.floatValue();
       }
 
@@ -197,7 +197,6 @@ public class CepstrumView extends JFrame {
         xStart = (int) (f * pixelsPerSample - 1);
         xEnd = (int) (f * pixelsPerSample);
         
-
         g.drawLine(xStart + 21, height - 21 - yStart, xEnd + 21, height - 21 - yEnd);
       }
 
@@ -206,10 +205,10 @@ public class CepstrumView extends JFrame {
       g.setColor(colorLightLine);
       for (double f = samplesPerPixel; f < samples / 2.0; f += samplesPerPixel) {
         // NOTE: In Java, the (int) typecast truncates the decimal part
-        yEnd = (int) (cepstrum[(int) f] * normalizationFactor);
         yStart = (int) (cepstrum[(int) (f - samplesPerPixel)] * normalizationFactor);
-        xEnd = (int) (f * samplesPerPixel);
-        xStart = (int) ((f - samplesPerPixel) * samplesPerPixel);
+        yEnd = (int) (cepstrum[(int) f] * normalizationFactor);
+        xStart = (int) (f * pixelsPerSample - 1);
+        xEnd = (int) (f * pixelsPerSample);
 
         g.drawLine(xStart + 1 + margin + majorTickLength, height - (1 + margin + majorTickLength) - yStart,
                    xEnd + 1 + margin + majorTickLength, height - (1 + margin + majorTickLength) - yEnd);

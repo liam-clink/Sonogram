@@ -349,10 +349,12 @@ public class Surface extends JFrame {
 
   // my own implementation of the keyboard interaction
   private class MyKeyNavigatorBehavior extends Behavior {
-    private Transform3D tr, tgr;
+    
+    private Transform3D tgr;
+    
     private TransformGroup tg;
     private WakeupOnAWTEvent wup;
-    private Vector3f vec;
+    
     private float step;
     private double angle;
 
@@ -373,6 +375,9 @@ public class Surface extends JFrame {
     public void processStimulus(java.util.Enumeration criteria) {
       KeyEvent event = (KeyEvent) (wup.getAWTEvent())[0];
       int keyCode = event.getKeyCode();
+
+      Transform3D tr;
+      Vector3f vec;
 
       if (keyCode == KeyEvent.VK_UP
           || keyCode == KeyEvent.VK_DOWN
@@ -431,6 +436,8 @@ public class Surface extends JFrame {
             tg.setTransform(tgr);
             wakeupOn(wup);
             return;
+          default:
+            break;
         }
       } else {
         wakeupOn(wup);

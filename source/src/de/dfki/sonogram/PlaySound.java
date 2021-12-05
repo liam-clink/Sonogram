@@ -118,7 +118,7 @@ public class PlaySound implements ControllerListener, Runnable {
                   (((double) nano / (double) dura) - reftomain.selectedstartold)
                       / reftomain.selecedwidthold;
               if (reftomain.gad.csspecwhileplaying.isSelected() == true) {
-                reftomain.pp.paintOneSpektrum(true);
+                reftomain.pp.paintOneSpectrum(true);
                 reftomain.pp.paintTimeSlider(null, false);
               }
             }

@@ -321,7 +321,7 @@ public class LiveAnalyzer extends JFrame implements MouseListener {
       gi.fillRect(0, 0, 1070, 256);
 
       // get the window function
-      float window[] = WindowFunktion.harrisWindow(512);
+      float window[] = WindowFunction.harrisWindow(512);
 
       try {
         while (!stopCapture) {

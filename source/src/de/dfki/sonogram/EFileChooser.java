@@ -9,7 +9,6 @@ import java.text.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.event.*;
 import javax.swing.plaf.basic.*;
 
 /**
@@ -29,7 +28,6 @@ public class EFileChooser extends JFileChooser {
   private static FileInputStream fis;
   private static ObjectInputStream ois;
   private static String dirFile;
-  private String applicationName = "Sonogram";
 
   private TextPreviewer previewer;
   private PreviewAndHistoryPanel previewAndHistoryPanel;

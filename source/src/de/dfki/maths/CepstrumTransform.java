@@ -10,7 +10,9 @@ package de.dfki.maths;
  */
 public final class CepstrumTransform {
   // ----------------------------------------------------------------------
-  private int n, nu;
+  private int n;
+  private int nu;
+  
   private float[] xre;
   private float[] xim;
   // ----------------------------------------------------------------------
@@ -19,7 +21,7 @@ public final class CepstrumTransform {
     n = vec.length;
     double ld = (Math.log(n) / Math.log(2.0));
     nu = (int) ld;
-    if ((float) ((int) ld) - ld != 0) {
+    if (((int) ld) - ld != 0) {
       System.out.println("ERROR: in CepstrumTransform");
       System.out.println("The Given Vector did not have an power of two!!!");
       System.out.println("Calculate ending.");
@@ -34,13 +36,13 @@ public final class CepstrumTransform {
     }
     FFT();
     // Logarithm and inverse Transform
-    if (logarithm == true) {
+    if (logarithm) {
       for (int i = 0; i < n; i++) {
         xre[i] = (float) Math.log(Math.abs(100000000.0 * xre[i]) + 1.0);
         xim[i] = -(float) Math.log(Math.abs(100000000.0 * xim[i]) + 1.0);
       }
     }
-    if (logarithm == false) {
+    if (!logarithm) {
       for (int i = 0; i < n; i++) {
         xre[i] = (float) Math.log(Math.abs(xre[i]) + 1.0);
         xim[i] = -(float) Math.log(Math.abs(xim[i]) + 1.0);
@@ -60,7 +62,14 @@ public final class CepstrumTransform {
     double ld = (Math.log(n) / Math.log(2.0));
     int n2 = n / 2;
     int nu1 = nu - 1;
-    float tr, ti, p, arg, c, s;
+    
+    float tr;
+    float ti;
+    float p;
+    float arg;
+    float c;
+    float s;
+    
     int k = 0;
 
     for (int l = 1; l <= nu; l++) {

@@ -39,8 +39,8 @@ class ExportSpectrumCSV {
       PrintWriter out = new PrintWriter(outFile);
 
       // write the CSV file
-      for (int x = 0; x < reftosonogram.spektrum.size(); x++) {
-        float[] spec = (float[]) reftosonogram.spektrum.get(x);
+      for (int x = 0; x < reftosonogram.spectrum.size(); x++) {
+        float[] spec = (float[]) reftosonogram.spectrum.get(x);
         for (int y = 0; y < (reftosonogram.timewindowlength / 2); y++) {
           float ampl = spec[y];
           out.print(ampl);

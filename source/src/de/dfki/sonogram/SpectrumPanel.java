@@ -84,7 +84,7 @@ class SpectrumPanel extends JPanel implements java.awt.event.ActionListener {
       }
       double fr = (Math.round(22050.0 / 256 * (double) maxI)) / 1000.0;
       if (maxI > 1)
-        paintToopTip(g2, 21 + (maxI * 2), 52, 530, "Peak: " + Double.toString(fr) + "kHz");
+        paintToolTip(g2, 21 + (maxI * 2), 52, 530, "Peak: " + Double.toString(fr) + "kHz");
     }
   }
 
@@ -185,7 +185,7 @@ class SpectrumPanel extends JPanel implements java.awt.event.ActionListener {
 
   // ----------------------------------------------------------------------------------------------------------------
 
-  private void paintToopTip(Graphics2D g, int posX, int posY, int maxX, String text) {
+  private void paintToolTip(Graphics2D g, int posX, int posY, int maxX, String text) {
     AlphaComposite alphacomposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f);
     g.setComposite(alphacomposite);
     int y1 = 25; // From top to tooltip begin.
@@ -193,8 +193,21 @@ class SpectrumPanel extends JPanel implements java.awt.event.ActionListener {
     int x1 = 40; // From left to begin triangle.
     int x2 = 8; // Triangle width.
     int x3 = 90; // From the triangle to the right.
-    int trix1, triy1, trix2, triy2;
-    int recx1, recy1, recx2, recy2, recx3, recy3, recx4, recy4;
+    
+    int trix1;
+    int triy1;
+    int trix2;
+    int triy2;
+
+    int recx1;
+    int recy1;
+    int recx2;
+    int recy2;
+    int recx3;
+    int recy3;
+    int recx4;
+    int recy4;
+    
     Color fillcolor = new Color(100, 100, 100);
     Color bordercolor = new Color(255, 255, 255);
     Color textcolor = new Color(255, 255, 255);

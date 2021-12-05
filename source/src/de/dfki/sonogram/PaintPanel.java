@@ -182,7 +182,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
     if ((x > 39 && x < (xm - 60)) && (y < ym - 70)) {
       wnf = (double) (x - 39) / (double) (xm - 101); // relative X position
       wsf = (double) (y) / (double) (ym - 70); // relative y position
-      wnp = (int) ((double) reftosonogram.spektrum.size() * wnf); // time position in samples
+      wnp = (int) ((double) reftosonogram.spectrum.size() * wnf); // time position in samples
       wsp = (int) ((double) (reftosonogram.timewindowlength / 2) * wsf); // frequenz position in Hz
       paintOneSpektrum(false);
     }
@@ -334,16 +334,16 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
           && reftosonogram.gad.csspecwhileplaying.isSelected()
               == true) { // When plaing take position from plbutton
         {
-          int spectimepos = (int) (plbutton * (double) reftosonogram.spektrum.size());
-          if (spectimepos < reftosonogram.spektrum.size())
-            orginalbuff = (float[]) reftosonogram.spektrum.get(spectimepos);
+          int spectimepos = (int) (plbutton * (double) reftosonogram.spectrum.size());
+          if (spectimepos < reftosonogram.spectrum.size())
+            orginalbuff = (float[]) reftosonogram.spectrum.get(spectimepos);
           else
-            orginalbuff = (float[]) reftosonogram.spektrum.get(reftosonogram.spektrum.size() - 1);
+            orginalbuff = (float[]) reftosonogram.spectrum.get(reftosonogram.spectrum.size() - 1);
         }
       } else {
-        if (wnp >= reftosonogram.spektrum.size()) wnp = reftosonogram.spektrum.size() - 1;
+        if (wnp >= reftosonogram.spectrum.size()) wnp = reftosonogram.spectrum.size() - 1;
         if (wnp < 0) wnp = 0;
-        orginalbuff = (float[]) reftosonogram.spektrum.get(wnp);
+        orginalbuff = (float[]) reftosonogram.spectrum.get(wnp);
       }
       // If Normalize is on
       if (reftosonogram.gad.cback.isSelected() == true) {
@@ -670,7 +670,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
 
         double diffx =
             (double) (xm - 100)
-                / (double) reftosonogram.spektrum.size(); // difference in Pixel from WFFT to WFFT
+                / (double) reftosonogram.spectrum.size(); // difference in Pixel from WFFT to WFFT
         double fakt = (double) (xm - 100) / 2000.0; // To draw Timesignal
         double diffy =
             (double) (ym - 70)
@@ -777,11 +777,11 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
           g.setComposite(compositeNo);
         }
         // Painting Sonogram on the Image
-        for (int x = 0; x < reftosonogram.spektrum.size(); x++) { // loop over FFT Vectors
+        for (int x = 0; x < reftosonogram.spectrum.size(); x++) { // loop over FFT Vectors
           if (x == reftosonogram.peakx) // If peakpoint is reached
           peaktimeisreached = true;
           else peaktimeisreached = false;
-          tempSpektrum = (float[]) reftosonogram.spektrum.get(x); // WFT Frequ. Vector
+          tempSpektrum = (float[]) reftosonogram.spectrum.get(x); // WFT Frequ. Vector
           // loop over FFT Vector-Elements
           for (int y = 0; y < (reftosonogram.timewindowlength / 2); y++) {
             bwcolor = (int) tempSpektrum[(reftosonogram.timewindowlength / 2 - 1) - y];
@@ -1063,7 +1063,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         String tr;
         if (reftosonogram.gad.rfft.isSelected() == true) tr = "FFT";
         else tr = "LPC";
-        String wn = "wn:" + String.valueOf(reftosonogram.spektrum.size());
+        String wn = "wn:" + String.valueOf(reftosonogram.spectrum.size());
         String wl = "wl:" + String.valueOf(reftosonogram.timewindowlength);
         g.drawString(tr, 3, ym - 21);
         g.drawString(wn, 3, ym - 12);

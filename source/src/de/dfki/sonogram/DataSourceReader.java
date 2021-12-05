@@ -52,7 +52,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       p = Manager.createProcessor(ds);
     } catch (Exception e) {
       p = null;
-      reftomain.progmon.close();
+      reftomain.progressMonitor.close();
       reftomain.messageBox(
           "Cannot recognize this Media File",
           "<html>Sonogram cannot recognize this file<br>as <u>valid Audio or Video</u>"
@@ -68,13 +68,13 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       reftomain.setTitle("Sonogram Visible Speech - version " + Sonogram.VERSION);
       return false;
     }
-    reftomain.progmon.setProgress(6);
+    reftomain.progressMonitor.setProgress(6);
     p.addControllerListener(this);
 
     // Put the Processor into configured state.
     p.configure();
     if (!waitForState(p.Configured)) {
-      reftomain.progmon.close();
+      reftomain.progressMonitor.close();
       reftomain.messageBox(
           "Cannot read the samples from Media File",
           "<html>Sonogram can recognize this Media File but <u>cannot read out the"
@@ -91,7 +91,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       reftomain.repaint();
       return false;
     }
-    reftomain.progmon.setProgress(7);
+    reftomain.progressMonitor.setProgress(7);
 
     // Hier wird das Ausgabeformat des PROCESSORS Spezifiziert
     javax.media.control.TrackControl traCont[] = p.getTrackControls();
@@ -109,13 +109,13 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
         reftomain.samplerate = samplerate;
       }
     }
-    reftomain.progmon.setProgress(8);
+    reftomain.progressMonitor.setProgress(8);
 
     // Get the raw output from the processor.
     p.setContentDescriptor(new ContentDescriptor(ContentDescriptor.RAW));
     p.realize();
     if (!waitForState(Controller.Realized)) {
-      reftomain.progmon.close();
+      reftomain.progressMonitor.close();
       reftomain.messageBox(
           "Connot convert Samples from Media File",
           "<html>The JMF-Processor <u>cannot convert this file</u> to specific format !",
@@ -128,7 +128,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       p = null;
       return false;
     }
-    reftomain.progmon.setProgress(9);
+    reftomain.progressMonitor.setProgress(9);
     
     // Get the output DataSource from the processor and
     // hook it up to the DataSourceHandler.
@@ -137,7 +137,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
     try {
       handler.setSource(ods);
     } catch (IncompatibleSourceException e) {
-      reftomain.progmon.close();
+      reftomain.progressMonitor.close();
       reftomain.messageBox(
           "Cannot hadle Datasource",
           "<html>The JMF-Processot <u>cannot handel the datasource</u> !",
@@ -149,13 +149,13 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       reftomain.repaint();
       return false;
     }
-    reftomain.progmon.setProgress(10);
+    reftomain.progressMonitor.setProgress(10);
     handler.addDataSinkListener(this);
     handler.start();
     // Prefetch the processor.
     p.prefetch();
     if (!waitForState(Controller.Prefetched)) {
-      reftomain.progmon.close();
+      reftomain.progressMonitor.close();
       reftomain.messageBox(
           "Cannot Prefetch Audio Date",
           "<html>The JMF-Processor <u>cannot prefetch the audio data</u> !",
@@ -167,7 +167,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       reftomain.repaint();
       return false;
     }
-    reftomain.progmon.setProgress(15);
+    reftomain.progressMonitor.setProgress(15);
     // Start the processor.
     System.err.println("--> Moment Please, reading Stream");
     duration = p.getDuration().getSeconds();
@@ -215,7 +215,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       try {
         while (p.getState() < state && stateTransitionOK) waitSync.wait();
       } catch (Exception e) {
-        reftomain.progmon.close();
+        reftomain.progressMonitor.close();
         reftomain.messageBox(
             "Error in the JMF Transition",
             "<html>Error <u>while JMF-Processor Transition</u> !",
@@ -261,7 +261,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       System.err.println("--> Stream ausgelesen: " + audioStream.size() + " Samples");
       evt.getSourceDataSink().close();
       if (audioStream.isEmpty()) {
-        reftomain.progmon.close();
+        reftomain.progressMonitor.close();
         reftomain.messageBox(
             "No Audio Track found",
             "<html>This Media File <u>does not contain any Audiotrack</u> !",
@@ -276,8 +276,8 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
         reftomain.selecedwidth = 1.0;
         reftomain.zoompreviousindex = 0;
       } else reftomain.autoopened = false; // else show in stored width an reset Flag to false
-      reftomain.progmon.setProgress(100);
-      reftomain.progmon.close();
+      reftomain.progressMonitor.setProgress(100);
+      reftomain.progressMonitor.close();
       reftomain.readerIsBack();
     }
   }
@@ -367,7 +367,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       try {
         source.start();
       } catch (IOException e) {
-        reftomain.progmon.close();
+        reftomain.progressMonitor.close();
         System.err.println(e);
         reftomain.messageBox(
             "Error while starting the JFM-Processor",
@@ -388,7 +388,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       try {
         source.stop();
       } catch (IOException e) {
-        reftomain.progmon.close();
+        reftomain.progressMonitor.close();
         reftomain.messageBox(
             "Error while stopping the JMF-Processor",
             "<html>Error while <u>stopping the source</u> in the JMF-Processor",
@@ -435,7 +435,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       try {
         stream.read(readBuffer);
       } catch (IOException e) {
-        reftomain.progmon.close();
+        reftomain.progressMonitor.close();
         System.err.println(e);
         sendEvent(new DataSinkErrorEvent(this, e.getMessage()));
         reftomain.messageBox(
@@ -457,7 +457,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       try {
         stream.read(readBuffer);
       } catch (IOException e) {
-        reftomain.progmon.close();
+        reftomain.progressMonitor.close();
         System.err.println(e);
         reftomain.messageBox(
             "Error while read the Buffer",
@@ -497,9 +497,9 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       try {
         if (buffer.getFormat() instanceof AudioFormat) {
           byte[] buf = (byte[]) buffer.getData();
-          if (reftomain.progmon.isCanceled()) {
+          if (reftomain.progressMonitor.isCanceled()) {
             System.out.println("--> CANCEL Button is pressed while read Samples from File.");
-            reftomain.progmon.close();
+            reftomain.progressMonitor.close();
             reftomain.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             reftomain.setTitle("Sonogram Visible Speech - version " + Sonogram.VERSION);
             reftomain.spectrumExist = false;
@@ -526,7 +526,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           int pr =
               (int) (audioStream.size() / (double) samplerate / duration * 85.0);
           if (pr < 100) {
-            reftomain.progmon.setProgress(15 + pr);
+            reftomain.progressMonitor.setProgress(15 + pr);
           }
         }
       } catch (Exception e) {
@@ -539,7 +539,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
         reftomain.spectrumExist = false;
         reftomain.updateimageflag = true;
         reftomain.repaint();
-        reftomain.progmon.close();
+        reftomain.progressMonitor.close();
       }
     }
     // ---------------------------------------------------------------------------------------------------
@@ -639,12 +639,12 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
 
     // Build specific Progressmonitor
     if (urltype == 1) {
-      reftomain.progmon =
+      reftomain.progressMonitor =
           new SonoProgressMonitor(
               reftomain, "Open File.", "Reading samples from local file system.", 0, 100);
     }
     if (urltype == 2) {
-      reftomain.progmon =
+      reftomain.progressMonitor =
           new SonoProgressMonitor(
               reftomain,
               "Open File",
@@ -653,7 +653,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
               100);
     }
     if (urltype == 3) {
-      reftomain.progmon =
+      reftomain.progressMonitor =
           new SonoProgressMonitor(
               reftomain,
               "Open File",
@@ -662,7 +662,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
               100);
     }
     if (urltype == 4) {
-      reftomain.progmon =
+      reftomain.progressMonitor =
           new SonoProgressMonitor(
               reftomain,
               "Open File.",
@@ -670,7 +670,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
               0,
               100);
     }
-    reftomain.progmon.setProgress(1);
+    reftomain.progressMonitor.setProgress(1);
     
     String filename = "";
     try {
@@ -680,15 +680,15 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
     }
     reftomain.filename = filename;
     if (reftomain.fileisfromurl)
-      reftomain.progmon.setNote(
+      reftomain.progressMonitor.setNote(
           "Read out the Samples from the File  «" + filename + "»  over the Network");
     else
-      reftomain.progmon.setNote(
+      reftomain.progressMonitor.setNote(
           "Read out the Samples from the File  «" + filename + "»  on the local file system");
     // Medialocator from URL
     MediaLocator ml;
     if ((ml = new MediaLocator(url)) == null) {
-      reftomain.progmon.close();
+      reftomain.progressMonitor.close();
       reftomain.messageBox(
           "Error from Medialocator",
           "<html><u>Cannot build the MediaLocator",
@@ -703,13 +703,13 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
 
     System.out.println("--> PROTOCOL:" + ml.getProtocol());
 
-    reftomain.progmon.setProgress(2);
+    reftomain.progressMonitor.setProgress(2);
     DataSource ds = null;
     // Create a DataSource given the media locator.
     try {
       ds = Manager.createDataSource(ml);
     } catch (Exception e) {
-      reftomain.progmon.close();
+      reftomain.progressMonitor.close();
       if (urltype == 1)
         reftomain.messageBox(
             "Error while opening the Local File",
@@ -758,7 +758,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
       return;
     }
     // Call to open in this CLass
-    reftomain.progmon.setProgress(4);
+    reftomain.progressMonitor.setProgress(4);
     if (!open(ds)) {
       return;
     }

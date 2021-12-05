@@ -161,7 +161,7 @@ class ExportSpectrumSVG extends JFrame {
     int amplitude;
     Color color;
     int r, g, b;
-    int width = reftomain.spektrum.size();
+    int width = reftomain.spectrum.size();
     int heigth = reftomain.timewindowlength / 2;
     int scale = slidersize.getValue();
     if (scale == 0) scale = 1;
@@ -171,7 +171,7 @@ class ExportSpectrumSVG extends JFrame {
       return (false);
     }
     if (width * heigth > 30000) {
-      double sel = reftomain.spektrum.size() * reftomain.timewindowlength / 2;
+      double sel = reftomain.spectrum.size() * reftomain.timewindowlength / 2;
       double mes = Math.round(Math.round((double) sel * 83.175 / 1024.0) / 1024.0 * 100.0) / 100.0;
 
       int confirm =
@@ -214,7 +214,7 @@ class ExportSpectrumSVG extends JFrame {
       out.println("\t<svg width=\"" + width * scale + "\" height=\"" + heigth * scale + "\">");
       // Draw spektrum
       for (int x = 0; x < width; x++) {
-        tempSpektrum = (float[]) reftomain.spektrum.get(x);
+        tempSpektrum = (float[]) reftomain.spectrum.get(x);
         for (int y = 0; y < heigth; y++) {
           amplitude = (int) tempSpektrum[(reftomain.timewindowlength / 2 - 1) - y];
           color = colors[amplitude];
@@ -293,7 +293,7 @@ class ExportSpectrumSVG extends JFrame {
         out.println("\t<SpectrumSettingsForGeneration/>");
         out.println("\t\t<FilePath=\"" + reftomain.filepath + "\"/>");
         out.println("\t\t<TimewindowLength=\"" + reftomain.timewindowlength + "\"/>");
-        out.println("\t\t<WindowNumbers=\"" + reftomain.spektrum.size() + "\"/>");
+        out.println("\t\t<WindowNumbers=\"" + reftomain.spectrum.size() + "\"/>");
         out.println("\t\t<WindowNumberAuto=\"" + reftomain.gad.cauto.isSelected() + "\"/>");
         String wf = "Error";
         if (reftomain.hamItem.isSelected() == true) wf = "Hamming";

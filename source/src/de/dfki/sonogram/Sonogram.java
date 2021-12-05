@@ -23,6 +23,9 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.plaf.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+
+import com.incors.plaf.kunststoff.KunststoffLookAndFeel;
 
 public class Sonogram extends JFrame implements ActionListener, MouseListener {
   static final int BUILD = 8515;
@@ -56,7 +59,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
   String url;
   String selectedFilter;
   String filepath;
-  String sysopt = new String(); // Systemoptions generated in Construktor
+  String sysopt; // Systemoptions generated in Construktor
   double selectedstart = 0.0;
   double selecedwidth = 1.0;
   double selectedstartold = 0.0;
@@ -64,7 +67,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
   EFileChooser chooser = new EFileChooser(); // File-open-chooser
   public DataSourceReader reader = new DataSourceReader(); // To read Mediafiles
   private Surface surplot;
-  SonoProgressMonitor progmon;
+  SonoProgressMonitor progressMonitor;
   HelpDialog hd = new HelpDialog(this);
   LicenseDialog ld = new LicenseDialog(this);
   CepstrumView cv = new CepstrumView(this);
@@ -80,10 +83,10 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
   LiveAnalyzer la = new LiveAnalyzer(this);
   GeneralAdjustmentDialog gad;
   ExportSpectrumSVG svg = new ExportSpectrumSVG(this);
-  public Vector spektrum = new Vector(); // Vector for FFT Transformations
-  public Vector filehistory = new Vector(); // vector for file history
-  Vector selectedstartpre = new Vector(); // For Zoomback
-  Vector selectedwidthpre = new Vector(); // For Zoomback
+  public Vector<float[]> spectrum = new Vector<>(); // Vector for FFT Transformations
+  public Vector<String> filehistory = new Vector<>(); // vector for file history
+  Vector<Double> selectedstartpre = new Vector<>(); // For Zoomback
+  Vector<Double> selectedwidthpre = new Vector<>(); // For Zoomback
   ButtonGroup bg = new ButtonGroup(); // To change Color and B/W view
   ButtonGroup bgwf = new ButtonGroup(); // For Submenu WinFunkt
   PaintPanel pp = new PaintPanel(this);
@@ -201,7 +204,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
   JCheckBoxMenuItem logItem; // logartihm view
   Sonogram reftosonogram = this;
   JToolBar toolBar = new JToolBar();
-  JSlider colorSlider = new JSlider(JSlider.HORIZONTAL, 0, 5, 1);
+  JSlider colorSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 5, 1);
 
   // For Fullscreen
   Dimension normaldimension = new Dimension(0, 0); // used in fullscreen to atore old dimension
@@ -303,14 +306,14 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
   int isacpwl;
   int isacpws;
   int isacpmax;
-  static final int isetu = 10; // the dmeo minutes
+  static final int isetu = 10; // the demo minutes
   static final String Plugo =
       "PluginParameterFromExternalCalto"; // others in SonoSplashScreen and WelcomeScreen
 
   // -------------------------------------------------------------------------------------------------------------------------
 
   /**
-   * Constructor for the Songram application. Handles the WindowClosing event and make
+   * Constructor for the Sonogram application. Handles the WindowClosing event and make
    * initialisations for the Filechooser, the Toolbar and the Menubar.
    */
   public Sonogram(String openpath) {
@@ -388,13 +391,13 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     boolean capsLock = false;
     try {
       capsLock = kit.getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
-      if (capsLock == true)
+      if (capsLock)
         System.out.println("--> CAPSLOCKCAPSLOCKCAPSLOCKCAPSLOCKCAPSLOCKCAPSLOCKCAPSLOCKCAPSLOCKCAPSLOCK");
-    } catch (java.lang.Throwable t) {
-      System.out.println("--> Error while get the CapsLock state" + t.toString());
+    } catch (Exception e) {
+      System.out.println("--> Error while get the CapsLock state" + e.toString());
     }
     System.out.println("--> check for the deletion of the config file with CapsLock = " + capsLock);
-    if (capsLock == true) {
+    if (capsLock) {
       Object[] options = {"Delete and Launch", "Delete and Quit", "Cancel"};
       int confirm =
           JOptionPane.showOptionDialog(
@@ -413,8 +416,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       if (confirm == JOptionPane.OK_OPTION || confirm == 1) {
         System.out.println("--> Delete the Configuration File");
         File f = new File("SonogramConfig.xml");
-        boolean success = f.delete();
-        if (success == false)
+        if (!f.delete())
           JOptionPane.showMessageDialog(
               this,
               "<html><font color=#DD0000>Error</font> while delte the <u>SonogramConfig.xml</u>"
@@ -428,14 +430,14 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     // read startup settings from the SonogramConf.xml configuration file
     splash.setProgress(12, "Read out the Configuration from the SonogramConf.xml File 12%");
     ReadConfig rf = new ReadConfig(this);
-    if (isaco == false) {
+    if (!isaco) {
       splash.setProgress(15, "Initialize  Default Dettings 15%");
       initGadToDefault();
     }
     wvconfig = new WvSettingsDialog(this);
 
     // print the welcome screen if no configuration file was found
-    if (rf.successfully == false) firststart = true;
+    if (!rf.successfully) firststart = true;
 
     // instanciate the GUI elements
     splash.setProgress(20, "Create the Menue Bar 20%");
@@ -511,33 +513,33 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
 
     splash.setProgress(75, "Add Window Closing Event 75%");
     WindowListener wndCloser = new WindowAdapter() // Windowlistener
-        {
-          public void windowClosing(WindowEvent e) {
-            System.out.println("--> Bye");
-            saveConfig();
-            if (plugin == true) {
-              try // Call Plugin exit class
-              {
-                // Check Class for exist
-                Class sap = Class.forName("de.dfki.nite.gram.tools.SonogramCommunication");
-                // Generate Signature for funktion to get Funktion
-                Class[] signature = new Class[0];
-                // get funktion
-                java.lang.reflect.Method function = sap.getMethod("sonogramCallBackEnd", signature);
-                // Generate parameter for funktion
-                Object[] parameter = new Object[0];
-                // call static funktion, therefore null as class object
-                function.invoke(null, parameter);
-              } catch (Throwable throwable) {
-                System.out.println("--> No Plugin Class not found.");
-                plugin = false;
-              }
-              dispose();
-              return;
-            }
-            System.exit(0);
+    {
+      public void windowClosing(WindowEvent e) {
+        System.out.println("--> Bye");
+        saveConfig();
+        if (plugin) {
+          try // Call Plugin exit class
+          {
+            // Check Class for exist
+            Class sap = Class.forName("de.dfki.nite.gram.tools.SonogramCommunication");
+            // Generate Signature for funktion to get Funktion
+            Class[] signature = new Class[0];
+            // get funktion
+            java.lang.reflect.Method function = sap.getMethod("sonogramCallBackEnd", signature);
+            // Generate parameter for funktion
+            Object[] parameter = new Object[0];
+            // call static funktion, therefore null as class object
+            function.invoke(null, parameter);
+          } catch (Throwable throwable) {
+            System.out.println("--> No Plugin Class not found.");
+            plugin = false;
           }
-        };
+          dispose();
+          return;
+        }
+        System.exit(0);
+      }
+    };
     addWindowListener(wndCloser);
     reader.setMainRef(this);
     // Set Look and Feel
@@ -551,9 +553,9 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       openFile(openpath); // from Konsole
     } else {
 
-      if (filepath != null && iopenlast == true) {
-        if (filepath.substring(0, 2).equals("ft") == true
-            || filepath.substring(0, 2).equals("ht") == true) {
+      if (filepath != null && iopenlast) {
+        if (filepath.substring(0, 2).equals("ft")
+            || filepath.substring(0, 2).equals("ht")) {
           splash.setProgress(95, "Ask user if remote Network File should be opened 95%");
           int confirm =
               JOptionPane.showOptionDialog(
@@ -585,7 +587,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
           }
         } else {
           File file = new File(filepath.substring(5));
-          if (file.exists() == true) { // Check for file if existsy
+          if (file.exists()) { // Check for file if existsy
             splash.setProgress(100, "Automatical open the last File 100%");
             setVisible(true);
             fileisfromurl = false;
@@ -612,9 +614,9 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     }
     splash.setProgress(100, "100% Sonogram is coming up now !!!");
 
-    if (firststart == true) {
+    if (firststart) {
       welcome = new WelcomeScreen(true);
-      while (welcome.buttonPressed == false) {
+      while (!welcome.buttonPressed) {
         try {
           Thread.sleep(10);
         } catch (Exception e) {
@@ -625,7 +627,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     }
     setMinimumSize(new Dimension(400, 225));
     setVisible(true);
-    if (isarr == true && iopenlast == true) {
+    if (isarr && iopenlast) {
       arrangeWindows();
     }
     /*				// DEBUG
@@ -708,10 +710,10 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     try {
       Class.forName("com.incors.plaf.kunststoff.KunststoffTheme");
     } catch (Throwable throwable) {
-      System.out.println("--> Kunststoff.jar is not aviable !!!");
+      System.out.println("--> Kunststoff.jar is not available !!!");
       JOptionPane.showMessageDialog(
           null,
-          "<html><i>Could not create Sonogram maincllass.\n"
+          "<html><i>Could not create Sonogram mainclass.\n"
               + "Please include Sonogram.jar in Classpath.",
           "Sonogram Class not found !",
           JOptionPane.ERROR_MESSAGE);
@@ -737,6 +739,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       System.exit(0);
       return;
     }
+
     splash.setProgress(4, "Check if the Java Media Framework is available 4%");
     openpath = null;
     // Check if JMF is installed
@@ -753,18 +756,18 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
               + "http://java.sun.com/products/java-media/jmf/",
           "JMF not found",
           0);
-      if (plugin == true) {
+      if (plugin) {
         try // Call Plugin exit class
         {
           // Check Class for exist
           Class sap = Class.forName("de.dfki.nite.gram.tools.SonogramCommunication");
-          // Generate Signature for funktion to get Funktion
+          // Generate Signature for function to get Function
           Class[] signature = new Class[0];
-          // get funktion
+          // get function
           java.lang.reflect.Method function = sap.getMethod("sonogramCallBackEnd", signature);
-          // Generate parameter for funktion
+          // Generate parameter for function
           Object[] parameter = new Object[0];
-          // call static funktion, therefore null as class object
+          // call static function, therefore null as class object
           function.invoke(null, parameter);
         } catch (Throwable t) {
           System.out.println("SONOGRAM CALLBACK CLASS NOT FOUND.");
@@ -776,8 +779,8 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       return;
     }
     splash.setProgress(6, "Check if Java3D is available 6%");
-    String OS = System.getProperties().getProperty("os.name");
-    System.out.println("--> Operating System: " + OS);
+    String operatingSystem = System.getProperties().getProperty("os.name");
+    System.out.println("--> Operating System: " + operatingSystem);
     // 	if (OS.equals("Mac OS X") == false) {
     try {
       Class.forName("javax.media.j3d.Canvas3D");
@@ -833,25 +836,25 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       if (which == 0) {
         javax.swing.plaf.metal.MetalLookAndFeel mlaf =
             new javax.swing.plaf.metal.MetalLookAndFeel();
-        mlaf.setCurrentTheme(new javax.swing.plaf.metal.DefaultMetalTheme());
+        MetalLookAndFeel.setCurrentTheme(new javax.swing.plaf.metal.DefaultMetalTheme());
         UIManager.setLookAndFeel(mlaf);
         System.out.println("--> Change LookAndFeel to METAL");
       } else if (which >= 1 && which <= 5) {
         com.incors.plaf.kunststoff.KunststoffLookAndFeel kunststoffLF =
             new com.incors.plaf.kunststoff.KunststoffLookAndFeel();
         if (which == 1)
-          kunststoffLF.setCurrentTheme(new com.incors.plaf.kunststoff.KunststoffTheme());
+          KunststoffLookAndFeel.setCurrentTheme(new com.incors.plaf.kunststoff.KunststoffTheme());
         if (which == 2)
-          kunststoffLF.setCurrentTheme(
+          KunststoffLookAndFeel.setCurrentTheme(
               new com.incors.plaf.kunststoff.themes.KunststoffDesktopTheme());
         if (which == 3)
-          kunststoffLF.setCurrentTheme(
+          KunststoffLookAndFeel.setCurrentTheme(
               new com.incors.plaf.kunststoff.themes.KunststoffNotebookTheme());
         if (which == 4)
-          kunststoffLF.setCurrentTheme(
+          KunststoffLookAndFeel.setCurrentTheme(
               new com.incors.plaf.kunststoff.themes.KunststoffPresentationTheme());
         if (which == 5)
-          kunststoffLF.setCurrentTheme(new com.incors.plaf.kunststoff.KunststoffTheme());
+          KunststoffLookAndFeel.setCurrentTheme(new com.incors.plaf.kunststoff.KunststoffTheme());
         UIManager.setLookAndFeel(kunststoffLF);
         System.out.println("--> Change LookAndFeel to PLASTIC");
       } else if (which == 6) {
@@ -860,7 +863,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       } else if (which == 7) {
         javax.swing.plaf.metal.MetalLookAndFeel mlaf =
             new javax.swing.plaf.metal.MetalLookAndFeel();
-        mlaf.setCurrentTheme(new javax.swing.plaf.metal.OceanTheme());
+        MetalLookAndFeel.setCurrentTheme(new javax.swing.plaf.metal.OceanTheme());
         UIManager.setLookAndFeel(mlaf);
         System.out.println("--> Change LookAndFeel to OCEAN");
       }
@@ -903,49 +906,51 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     int offset;
     Byte b;
     boolean ffttrans;
-    float windowbuffer[];
+    float[] windowbuffer;
 
     CalcThread(
-        int a_index, double a_i, int a_transformationlength, int a_offset, float a_windowbuffer[]) {
-      this.i = a_i;
-      this.transformationlength = a_transformationlength;
-      this.offset = a_offset;
+        int argIndex, double argI, int argTransformationlength, int argOffset, float[] argWindowBuffer) {
+      this.index = argIndex;
+      this.i = argI;
+      this.transformationlength = argTransformationlength;
+      this.offset = argOffset;
+      this.windowbuffer = argWindowBuffer;
       ffttrans = gad.rfft.isSelected();
-      this.windowbuffer = a_windowbuffer;
-      this.index = a_index;
+      
       setPriority(Thread.MIN_PRIORITY);
     }
 
+    @Override
     public void run() {
       float[] spekbuffer = null;
       FastFourierTransform fft = new FastFourierTransform();
       LinearPredictionTransform lpt = new LinearPredictionTransform();
-      if (progmon.isCanceled() == true) {
+      if (progressMonitor.isCanceled()) {
         System.out.println("--> CANCEL Button is pressed while Transformation.");
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        progmon.close();
+        progressMonitor.close();
         setTitle("Sonogram Visible Speech - version " + VERSION);
         spectrumExist = false;
         updateimageflag = true;
         repaint();
         return;
       }
-      progmon.setProgress(
-          10 + (int) ((double) i / (double) (samplestotal - timewindowlength) * 70.0));
-      float timebuffer[] = new float[transformationlength]; // allokate the buffer for timeSignal
-      offset = (int) ((double) samplesall * selectedstart); // offset for marked selection
+      progressMonitor.setProgress(
+          10 + (int) (i / (samplestotal - timewindowlength) * 70.0));
+      float[] timebuffer = new float[transformationlength]; // allokate the buffer for timeSignal
+      offset = (int) (samplesall * selectedstart); // offset for marked selection
       for (int v = 0; v < transformationlength; v++) { // Copy from DataSourceReader
-        b = (Byte) reader.audioStream.get(v + (int) i + offset);
-        if (ffttrans == true) timebuffer[v] = b.floatValue() * windowbuffer[v];
+        b = reader.audioStream.get(v + (int) i + offset);
+        if (ffttrans) timebuffer[v] = b.floatValue() * windowbuffer[v];
         else timebuffer[v] = b.floatValue();
       }
-      if (ffttrans == false) // Select Transformtion
-      spekbuffer =
-            lpt.doLinearPredictionTransform(
+      if (!ffttrans) // Select Transformtion
+        spekbuffer =
+            LinearPredictionTransform.doLinearPredictionTransform(
                 timebuffer, timewindowlength, gad.sliderlpccoef.getValue(), windowbuffer);
       else spekbuffer = fft.doFFT(timebuffer); // Transformation Call for FFT
       // Smooth over Frequency
-      if (gad.csmooth.isSelected() == true) { // if Smooth Spektrum ower frequency is set
+      if (gad.csmooth.isSelected()) { // if Smooth Spektrum ower frequency is set
         float[] spekbuffertmp = new float[timewindowlength / 2];
         for (int k = 2; k < (timewindowlength / 2 - 2); k++)
           spekbuffertmp[k] =
@@ -966,8 +971,8 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         spekbuffertmp[timewindowlength / 2 - 1] =
             (spekbuffertmp[timewindowlength / 2 - 1] + spekbuffertmp[timewindowlength / 2 - 2])
                 / 2.0f;
-        spektrum.set(index, spekbuffertmp); // Adding Transformvector to Spektrum
-      } else spektrum.set(index, spekbuffer);
+        spectrum.set(index, spekbuffertmp); // Adding Transformvector to Spektrum
+      } else spectrum.set(index, spekbuffer);
     }
   }
 
@@ -1000,14 +1005,14 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       double sum;
       // Progressdialog and Initalize some stuff
       if (gad.highlightedbutton < 3) gad.highLightButton(0);
-      progmon = new SonoProgressMonitor(reftosonogram, "", "", 0, 100);
-      progmon.setProgress(1);
-      progmon.setNote("Initialize for generating Sonogram for File: " + filename);
+      progressMonitor = new SonoProgressMonitor(reftosonogram, "", "", 0, 100);
+      progressMonitor.setProgress(1);
+      progressMonitor.setNote("Initialize for generating Sonogram for File: " + filename);
       transformflag = true;
       setCursor(new Cursor(Cursor.WAIT_CURSOR));
       openingflag = false;
       System.out.println("--> Begin Transformation.");
-      spektrum.removeAllElements();
+      spectrum.removeAllElements();
       // Store Old Numbers to calculate inner zooms
       selectedstartold = selectedstart;
       selecedwidthold = selecedwidth;
@@ -1031,7 +1036,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       Runtime runtime = Runtime.getRuntime();
       int NTHREADS = runtime.availableProcessors();
       if (ffttrans == false) { // LPC
-        progmon.setNote(
+        progressMonitor.setNote(
             "Calculate the Spectrum with the Linear-Predictive-Coding-Transformation for the File: "
                 + " «"
                 + filename
@@ -1041,7 +1046,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         transformationlength = (short) gad.sliderlpcsamfutur.getValue();
         System.out.println("--> transformation length for LPC: " + transformationlength);
       } else {
-        progmon.setNote(
+        progressMonitor.setNote(
             "Calculate the Spectrum with the Fast-Fourier-Transformation for the File:  «"
                 + filename
                 + "» (using "
@@ -1052,74 +1057,70 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       System.out.println("--> Use " + transformationlength + " transformationlegth");
       // Then calculate Windowingbuffers which is selected in GeneralAdjustmentDialog
       int winfunclen = 0;
-      if (ffttrans == true) winfunclen = transformationlength;
+      if (ffttrans) winfunclen = transformationlength;
       else winfunclen = timewindowlength;
-      if (hamItem.isSelected() == true) {
-        windowbuffer = WindowFunktion.hammingWindow(winfunclen);
+      if (hamItem.isSelected()) {
+        windowbuffer = WindowFunction.hammingWindow(winfunclen);
         selectedFilter = "Hamming";
       }
-      if (hanItem.isSelected() == true) {
-        windowbuffer = WindowFunktion.hanningWindow(winfunclen);
+      if (hanItem.isSelected()) {
+        windowbuffer = WindowFunction.hanningWindow(winfunclen);
         selectedFilter = "Hanning";
       }
-      if (blaItem.isSelected() == true) {
-        windowbuffer = WindowFunktion.blackmanWindow(winfunclen);
+      if (blaItem.isSelected()) {
+        windowbuffer = WindowFunction.blackmanWindow(winfunclen);
         selectedFilter = "Blackman";
       }
-      if (rectItem.isSelected() == true) {
-        windowbuffer = WindowFunktion.rectangleWindow(winfunclen);
+      if (rectItem.isSelected()) {
+        windowbuffer = WindowFunction.rectangleWindow(winfunclen);
         selectedFilter = "Rectangle";
       }
-      if (triItem.isSelected() == true) {
-        windowbuffer = WindowFunktion.triangleWindow(winfunclen);
+      if (triItem.isSelected()) {
+        windowbuffer = WindowFunction.triangleWindow(winfunclen);
         selectedFilter = "Triangle";
       }
-      if (gauItem.isSelected() == true) {
-        windowbuffer = WindowFunktion.gaussWindow(winfunclen);
+      if (gauItem.isSelected()) {
+        windowbuffer = WindowFunction.gaussWindow(winfunclen);
         selectedFilter = "Gauss";
       }
-      if (welItem.isSelected() == true) {
-        windowbuffer = WindowFunktion.welchWindow(winfunclen);
+      if (welItem.isSelected()) {
+        windowbuffer = WindowFunction.welchWindow(winfunclen);
         selectedFilter = "Welch";
       }
-      if (flaItem.isSelected() == true) {
-        windowbuffer = WindowFunktion.flattopWindow(winfunclen);
+      if (flaItem.isSelected()) {
+        windowbuffer = WindowFunction.flattopWindow(winfunclen);
         selectedFilter = "Flat-Top";
       }
-      if (harItem.isSelected() == true) {
-        windowbuffer = WindowFunktion.harrisWindow(winfunclen);
+      if (harItem.isSelected()) {
+        windowbuffer = WindowFunction.harrisWindow(winfunclen);
         selectedFilter = "Harris";
       }
-      if (cosItem.isSelected() == true) {
-        windowbuffer = WindowFunktion.cosineWindow(winfunclen);
+      if (cosItem.isSelected()) {
+        windowbuffer = WindowFunction.cosineWindow(winfunclen);
         selectedFilter = "Cosine";
       }
-      if (asyItem.isSelected() == true) {
-        windowbuffer = WindowFunktion.asymetricalWindow(winfunclen);
+      if (asyItem.isSelected()) {
+        windowbuffer = WindowFunction.asymetricalWindow(winfunclen);
         selectedFilter = "Cosine";
       }
-      progmon.setProgress(10);
-      double overlapping = (double) gad.sliderwinspeed.getValue();
-      if (gad.coverlapping.isSelected() == false) overlapping = 1.0;
+      progressMonitor.setProgress(10);
+      double overlapping = gad.sliderwinspeed.getValue();
+      if (!gad.coverlapping.isSelected()) overlapping = 1.0;
 
       // **********************************/
       // START MAIN TRANSFORMATION LOOP
       // START OF THE PARALLELIZATION
       int index = 0;
       // precalc the size
-      for (double i = 0;
-          i < (samplestotal - transformationlength);
-          i += ((double) timewindowlength / overlapping)) {
+      for (double i = 0; i < (samplestotal - transformationlength); i += timewindowlength / overlapping) {
         index++;
       }
-      spektrum.setSize(index);
+      spectrum.setSize(index);
       // the core parallezation loops
       System.out.println("--> Max Number of parallel FFT Threads: " + NTHREADS);
       index = 0;
       ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
-      for (double i = 0;
-          i < (samplestotal - transformationlength);
-          i += ((double) timewindowlength / overlapping)) {
+      for (double i = 0; i < (samplestotal - transformationlength); i += timewindowlength / overlapping) {
         CalcThread thread = new CalcThread(index, i, transformationlength, offset, windowbuffer);
         executor.execute(thread);
         index++;
@@ -1131,21 +1132,21 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       // END OF THE PARALLELIZATION
       // **********************************/
 
-      System.out.println("--> Transformation finished, generate  " + spektrum.size() + " spektras");
+      System.out.println("--> Transformation finished, generate  " + spectrum.size() + " spektras");
       System.out.println("--> Window lentgh: " + timewindowlength);
       // Smooth ower time is set
-      if (gad.csmoothx.isSelected() == true) {
+      if (gad.csmoothx.isSelected()) {
         float[] spekbuffersuba; // b,a,0,a,b
         float[] spekbuffersubb;
         float[] spekbufferadda;
         float[] spekbufferaddb;
         float[] spekbuffertmp;
-        for (int time = 2; time < spektrum.size() - 2; time++) {
-          spekbuffersubb = (float[]) spektrum.get(time - 2);
-          spekbuffersuba = (float[]) spektrum.get(time - 1);
-          spekbuffer = (float[]) spektrum.get(time);
-          spekbufferadda = (float[]) spektrum.get(time + 1);
-          spekbufferaddb = (float[]) spektrum.get(time + 2);
+        for (int time = 2; time < spectrum.size() - 2; time++) {
+          spekbuffersubb = spectrum.get(time - 2);
+          spekbuffersuba = spectrum.get(time - 1);
+          spekbuffer = spectrum.get(time);
+          spekbufferadda = spectrum.get(time + 1);
+          spekbufferaddb = spectrum.get(time + 2);
           spekbuffertmp = new float[timewindowlength / 2];
           for (int frequency = 0; frequency < timewindowlength / 2; frequency++) {
             spekbuffertmp[frequency] =
@@ -1156,19 +1157,19 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
                         + spekbuffersubb[frequency])
                     / 5.0f;
           }
-          spektrum.setElementAt(spekbuffertmp, time);
+          spectrum.setElementAt(spekbuffertmp, time);
         }
         for (int frequency = 0; frequency < timewindowlength / 2; frequency++) { // Bounds
-          spekbuffer = (float[]) spektrum.get(0);
-          spekbuffersuba = (float[]) spektrum.get(1);
-          spekbuffersubb = (float[]) spektrum.get(2);
+          spekbuffer = spectrum.get(0);
+          spekbuffersuba = spectrum.get(1);
+          spekbuffersubb = spectrum.get(2);
           spekbuffersuba[frequency] =
               (spekbuffersubb[frequency] + spekbuffer[frequency] + spekbuffersuba[frequency])
                   / 3.0f;
           spekbuffer[frequency] = (spekbuffer[frequency] + spekbuffersuba[frequency]) / 2.0f;
-          spekbuffer = (float[]) spektrum.get(spektrum.size() - 1);
-          spekbuffersuba = (float[]) spektrum.get(spektrum.size() - 2);
-          spekbuffersubb = (float[]) spektrum.get(spektrum.size() - 3);
+          spekbuffer = spectrum.get(spectrum.size() - 1);
+          spekbuffersuba = spectrum.get(spectrum.size() - 2);
+          spekbuffersubb = spectrum.get(spectrum.size() - 3);
           spekbuffersuba[frequency] =
               (spekbuffersubb[frequency] + spekbuffer[frequency] + spekbuffersuba[frequency])
                   / 3.0f;
@@ -1177,7 +1178,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       }
       System.out.println("--> Smoothed over time");
       // Logarithmic Amplitude
-      if (logItem.isSelected() == true) {
+      if (logItem.isSelected()) {
         int logscale = 0;
         if (gad.sliderlog.getValue() == 1) logscale = 1;
         if (gad.sliderlog.getValue() == 2) logscale = 4;
@@ -1185,8 +1186,8 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         if (gad.sliderlog.getValue() == 4) logscale = 30;
         if (gad.sliderlog.getValue() == 5) logscale = 100;
         double logkonst = 255.0 / Math.log(256.0);
-        for (int time = 0; time < spektrum.size(); time++) {
-          spekbuffer = (float[]) spektrum.get(time);
+        for (int time = 0; time < spectrum.size(); time++) {
+          spekbuffer = spectrum.get(time);
           for (int frequency = 0; frequency < timewindowlength / 2; frequency++) {
             spekbuffer[frequency] =
                 (int) (Math.log(spekbuffer[frequency] * logscale + 1) * logkonst);
@@ -1195,22 +1196,21 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       }
       System.out.println("--> Logarithmical amplitude");
       // Generate Timelinearray
-      if (gad.cenergy.isSelected() == true) energyflag = true; // Check in GAD
+      if (gad.cenergy.isSelected()) energyflag = true; // Check in GAD
       else energyflag = false;
       for (int t = 0; t < 2000; t++) { // Copy and find min/max of timeline
-        streampoint = (int) ((double) t * timetostreamfakt);
-        if (energyflag == false) { // If Energytimesignal is not Selected
-          if (streampoint > 0 && streampoint < samplesall) {
-            b = (Byte) reader.audioStream.get(streampoint);
+        streampoint = (int) (t * timetostreamfakt);
+        // If Energytimesignal is not Selected
+        if (!energyflag && streampoint > 0 && streampoint < samplesall) { 
+            b = reader.audioStream.get(streampoint);
             timeline[t] = b.byteValue();
-          }
         }
-        if (energyflag == true) { // If Energytimesignal is Selected
+        if (energyflag) { // If Energytimesignal is Selected
           if ((streampoint > energywinlength) && (streampoint < samplesall - energywinlength)) {
             sum = 0.0f;
             for (int i = 0; i < energywinlength; i++) {
-              b1 = (Byte) reader.audioStream.get(streampoint + i);
-              b2 = (Byte) reader.audioStream.get(streampoint - i);
+              b1 = reader.audioStream.get(streampoint + i);
+              b2 = reader.audioStream.get(streampoint - i);
               sum += Math.pow(b1.doubleValue(), 2.0);
               sum += Math.pow(b2.doubleValue(), 2.0);
             }
@@ -1221,18 +1221,18 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         if (timeline[t] > timelinemax) timelinemax = timeline[t];
       }
       // Normalize Timeline
-      progmon.setNote("Normalize the Spectrogram");
-      progmon.setProgress(85);
+      progressMonitor.setNote("Normalize the Spectrogram");
+      progressMonitor.setProgress(85);
       float peak;
-      if (timelinemax > -timelinemin) peak = (float) timelinemax;
-      else peak = (float) -timelinemin;
+      if (timelinemax > -timelinemin) peak = timelinemax;
+      else peak =  -timelinemin;
       for (int t = 0; t < 2000; t++) {
-        timeline[t] = (byte) ((float) timeline[t] / peak * 127.0f);
+        timeline[t] = (byte) (timeline[t] / peak * 127.0f);
       }
       // Some Stuff at end of This Routine
       System.out.println("--> begin normalize");
-      normalizeSpekt();
-      progmon.setProgress(88);
+      normalizeSpectrum();
+      progressMonitor.setProgress(88);
       spectrumExist = true;
       if (player != null) {
         // player.close();
@@ -1244,16 +1244,16 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       pp.plstart = 0.0;
       pp.plstop = 1.0;
       pp.plbutton = 0.0;
-      progmon.setNote("Build Menue Elements...");
-      progmon.setProgress(90);
+      progressMonitor.setNote("Build Menue Elements...");
+      progressMonitor.setProgress(90);
       // Update the file here history
       // filehistory = VECTOR with STRING elements
       boolean alwaysinlist = false;
       for (int i = 0; i < filehistory.size(); i++) { // Check if Element exist
-        String tmpstr = (String) filehistory.get(i);
+        String tmpstr = filehistory.get(i);
         if (tmpstr.equals(filepath)) alwaysinlist = true;
       }
-      if (alwaysinlist == false) { // Add Menue entry
+      if (!alwaysinlist) { // Add Menue entry
         JMenuItem[] hotlisttmp = new JMenuItem[filehistory.size()];
         for (int i = 0; i < filehistory.size(); i++) { // Store old historylist
           hotlisttmp[i] = hotlist[i];
@@ -1264,11 +1264,11 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         for (int i = 0; i < newlen - 1; i++) { // Restore old Historylist
           hotlist[i] = hotlisttmp[i];
         }
-        String tmp = (String) filehistory.get(newlen - 1); // Get New String from new Path
-        String tmpName = new String(tmp);
+        String tmp = filehistory.get(newlen - 1); // Get New String from new Path
+        String tmpName = tmp;
         if (tmpName.length() > 32) tmpName = tmpName.substring(tmp.length() - 32);
         // add the new file to the history
-        if (tmp.substring(0, 4).equals("http") == true)
+        if (tmp.substring(0, 4).equals("http"))
           hotlist[newlen - 1] =
               new JMenuItem(
                   "<html>"
@@ -1276,7 +1276,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
                       + "&ensp;<font color=A0A0B4>HTTP:</font>&ensp;<font size=-2>"
                       + tmpName,
                   new ImageIcon(Sonogram.class.getResource("fileMenue.gif")));
-        if (tmp.substring(0, 3).equals("ftp") == true)
+        if (tmp.substring(0, 3).equals("ftp"))
           hotlist[newlen - 1] =
               new JMenuItem(
                   "<html>"
@@ -1285,7 +1285,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
                       + " size=-2>"
                       + tmpName,
                   new ImageIcon(Sonogram.class.getResource("fileMenue.gif")));
-        if (url.substring(0, 4).equals("file") == true)
+        if (url.substring(0, 4).equals("file"))
           hotlist[newlen - 1] =
               new JMenuItem(
                   "<html>"
@@ -1301,7 +1301,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
             "<html>Path to file"
                 + num
                 + ":<br><b>"
-                + (String) filehistory.get(newlen - 1)
+                + filehistory.get(newlen - 1)
                 + "</b>");
 
         KeyStroke key = KeyStroke.getKeyStroke('0');
@@ -1347,24 +1347,20 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
                   java.awt.event.KeyEvent.VK_9, java.awt.event.InputEvent.CTRL_DOWN_MASK);
         hotlist[newlen - 1].setAccelerator(key);
       }
-      // Garabage Collection and Some Stuff
+      // Some Stuff
       gad.highLightButton(0);
-      progmon.setNote("Waste the Grabage");
-      progmon.setProgress(95);
-      System.gc();
-      progmon.setProgress(100);
+      progressMonitor.setProgress(100);
       repaint();
       enableItems(true);
-      if (zoompreviousindex == 0) zprebutton.setEnabled(false);
-      else zprebutton.setEnabled(true);
+      zprebutton.setEnabled(zoompreviousindex != 0);
       zpreItem.setEnabled(false);
       stopItem.setEnabled(false);
       stopbutton.setEnabled(false);
-      if (java3disinstalled == false) {
+      if (!java3disinstalled) {
         d3button.setEnabled(false);
         d3Item.setEnabled(false);
       }
-      if (openenedbysvg == true) {
+      if (openenedbysvg) {
         openenedbysvg = false;
         gad.btro.setEnabled(true);
         gad.sliderwinfunktion.setEnabled(true);
@@ -1391,7 +1387,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
               + " Sonogram.<br>Please see the console output for more Details.",
           JOptionPane.ERROR_MESSAGE);
     } finally {
-      progmon.close();
+      progressMonitor.close();
       transformflag = false;
       setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
@@ -1564,7 +1560,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     toolBar.add(sep2);
 
     logbutton = new JButton(new ImageIcon(Sonogram.class.getResource("logbut.gif")));
-    if (ilogf == true) logbutton.setBorder(BorderFactory.createLoweredBevelBorder());
+    if (ilogf) logbutton.setBorder(BorderFactory.createLoweredBevelBorder());
     logbutton.setPreferredSize(buttonSize);
     logbutton.setMaximumSize(buttonSize);
     toolBar.add(logbutton);
@@ -1572,7 +1568,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         "<html><b>Linear/Logrithmic</b><br>Switch between the <b>linear</b> and<br> the"
             + " <b>logarithmical</b> frequency scale  <font color=black size=-2>Ctrl-L");
     smoothfrbutton = new JButton(new ImageIcon(Sonogram.class.getResource("smoothfr.gif")));
-    if (ismof == true) smoothfrbutton.setBorder(BorderFactory.createLoweredBevelBorder());
+    if (ismof) smoothfrbutton.setBorder(BorderFactory.createLoweredBevelBorder());
     smoothfrbutton.setPreferredSize(buttonSize);
     smoothfrbutton.setMaximumSize(buttonSize);
     toolBar.add(smoothfrbutton);
@@ -1580,7 +1576,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         "<html><b>Smooth over Frequency</b><br>This function burnish the Sonogram image<br>in the"
             + " vertical frequency direction");
     smoothtmbutton = new JButton(new ImageIcon(Sonogram.class.getResource("smoothtm.gif")));
-    if (ismot == true) smoothtmbutton.setBorder(BorderFactory.createLoweredBevelBorder());
+    if (ismot) smoothtmbutton.setBorder(BorderFactory.createLoweredBevelBorder());
     smoothtmbutton.setPreferredSize(buttonSize);
     smoothtmbutton.setMaximumSize(buttonSize);
     toolBar.add(smoothtmbutton);
@@ -1589,7 +1585,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
             + " horizontal time direction");
     sep3 = new JLabel(new ImageIcon(Sonogram.class.getResource("separator.png")));
     gridbutton = new JButton(new ImageIcon(Sonogram.class.getResource("gridbut.gif")));
-    if (igrid == true) gridbutton.setBorder(BorderFactory.createLoweredBevelBorder());
+    if (igrid) gridbutton.setBorder(BorderFactory.createLoweredBevelBorder());
     gridbutton.setPreferredSize(buttonSize);
     gridbutton.setMaximumSize(buttonSize);
     toolBar.add(gridbutton);
@@ -1699,10 +1695,11 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     colorSlider.setPaintTicks(true);
     colorSlider.addMouseListener(
         new MouseAdapter() {
+          @Override
           public void mouseReleased(MouseEvent e) {
             switch (colorSlider.getValue()) {
               case (0):
-                if (firecItem.isSelected() == false) {
+                if (!firecItem.isSelected()) {
                   firecItem.setSelected(true);
                   gad.p1.setSelectedIndex(2);
                   updateimageflag = true;
@@ -1711,7 +1708,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
                 }
                 break;
               case (1):
-                if (fireItem.isSelected() == false) {
+                if (!fireItem.isSelected()) {
                   fireItem.setSelected(true);
                   gad.p1.setSelectedIndex(2);
                   updateimageflag = true;
@@ -1720,7 +1717,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
                 }
                 break;
               case (2):
-                if (colItem.isSelected() == false) {
+                if (!colItem.isSelected()) {
                   colItem.setSelected(true);
                   gad.p1.setSelectedIndex(2);
                   updateimageflag = true;
@@ -1729,7 +1726,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
                 }
                 break;
               case (3):
-                if (rainItem.isSelected() == false) {
+                if (!rainItem.isSelected()) {
                   rainItem.setSelected(true);
                   gad.p1.setSelectedIndex(2);
                   updateimageflag = true;
@@ -1738,7 +1735,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
                 }
                 break;
               case (4):
-                if (greenItem.isSelected() == false) {
+                if (!greenItem.isSelected()) {
                   greenItem.setSelected(true);
                   gad.p1.setSelectedIndex(2);
                   updateimageflag = true;
@@ -1747,7 +1744,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
                 }
                 break;
               case (5):
-                if (bwItem.isSelected() == false) {
+                if (!bwItem.isSelected()) {
                   bwItem.setSelected(true);
                   gad.p1.setSelectedIndex(2);
                   updateimageflag = true;
@@ -1757,12 +1754,12 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
                 break;
             }
             int col = 0;
-            if (gad.r0.isSelected() == true) col = 0;
-            if (gad.r1.isSelected() == true) col = 1;
-            if (gad.r2.isSelected() == true) col = 2;
-            if (gad.r3.isSelected() == true) col = 3;
-            if (gad.r4.isSelected() == true) col = 4;
-            if (gad.r5.isSelected() == true) col = 5;
+            if (gad.r0.isSelected()) col = 0;
+            if (gad.r1.isSelected()) col = 1;
+            if (gad.r2.isSelected()) col = 2;
+            if (gad.r3.isSelected()) col = 3;
+            if (gad.r4.isSelected()) col = 4;
+            if (gad.r5.isSelected()) col = 5;
             wvconfig.colCombo.setSelectedIndex(col);
             la.spec.repaint();
           }
@@ -1805,7 +1802,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       gad.p1.setSelectedIndex(3);
       gridItem.setSelected(!gridItem.isSelected());
       gad.cgrid.setSelected(gridItem.isSelected());
-      if (gridItem.isSelected() == true)
+      if (gridItem.isSelected())
         gridbutton.setBorder(BorderFactory.createLoweredBevelBorder());
       else gridbutton.setBorder(BorderFactory.createEmptyBorder()); // fullbutton.getBorder());
     }
@@ -1813,7 +1810,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       gad.p1.setSelectedIndex(15);
       logfrItem.setSelected(!logfrItem.isSelected());
       gad.cslogfr.setSelected(logfrItem.isSelected());
-      if (logfrItem.isSelected() == true)
+      if (logfrItem.isSelected())
         logbutton.setBorder(BorderFactory.createLoweredBevelBorder());
       else logbutton.setBorder(BorderFactory.createEmptyBorder()); // fullbutton.getBorder());
     }
@@ -1821,7 +1818,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     if (e.getSource() == smoothfrbutton) {
       gad.p1.setSelectedIndex(3);
       gad.csmooth.setSelected(!gad.csmooth.isSelected());
-      if (gad.csmooth.isSelected() == true)
+      if (gad.csmooth.isSelected())
         smoothfrbutton.setBorder(BorderFactory.createLoweredBevelBorder());
       else smoothfrbutton.setBorder(BorderFactory.createEmptyBorder()); // fullbutton.getBorder());
     }
@@ -1829,27 +1826,27 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     if (e.getSource() == smoothtmbutton) {
       gad.p1.setSelectedIndex(3);
       gad.csmoothx.setSelected(!gad.csmoothx.isSelected());
-      if (gad.csmoothx.isSelected() == true)
+      if (gad.csmoothx.isSelected())
         smoothtmbutton.setBorder(BorderFactory.createLoweredBevelBorder());
       else smoothtmbutton.setBorder(BorderFactory.createEmptyBorder()); // fullbutton.getBorder());
     }
 
     if (e.getSource() == wvbutton) {
-      if ((wvbutton.isEnabled() == true
+      if ((wvbutton.isEnabled()
               && (e.getModifiersEx() & java.awt.event.InputEvent.CTRL_DOWN_MASK)
                   == java.awt.event.InputEvent.CTRL_DOWN_MASK)
-          || (wvbutton.isEnabled() == true && e.getButton() == MouseEvent.BUTTON3)) {
+          || (wvbutton.isEnabled() && e.getButton() == MouseEvent.BUTTON3)) {
         int col = 0;
-        if (gad.r0.isSelected() == true) col = 0;
-        if (gad.r1.isSelected() == true) col = 1;
-        if (gad.r2.isSelected() == true) col = 2;
-        if (gad.r3.isSelected() == true) col = 3;
-        if (gad.r4.isSelected() == true) col = 4;
-        if (gad.r5.isSelected() == true) col = 5;
+        if (gad.r0.isSelected()) col = 0;
+        if (gad.r1.isSelected()) col = 1;
+        if (gad.r2.isSelected()) col = 2;
+        if (gad.r3.isSelected()) col = 3;
+        if (gad.r4.isSelected()) col = 4;
+        if (gad.r5.isSelected()) col = 5;
         wvconfig.colCombo.setSelectedIndex(col);
         wvconfig.renderType = WvSettingsDialog.RenderType.RENDER_2D;
         wvconfig.generateHandler();
-      } else if (wvbutton.isEnabled() == true) {
+      } else if (wvbutton.isEnabled()) {
         wvconfig.setVisible(true);
         wvconfig.shakeButton();
       }
@@ -1923,27 +1920,27 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     menuFile.add(printItem);
     menuFile.addSeparator();
     hotlist = new JMenuItem[filehistory.size()];
-    int filecheck[] = new int[filehistory.size()];
-    for (int i = 0; i < filehistory.size(); i++) { // Test for File for exist
-      filecheck[i] = 0; // 0 = not aviable; 1 = aviable; 2 = http; 3 = ftp
-      String str = (String) filehistory.get(i);
+    int[] filecheck = new int[filehistory.size()];
+
+    // Test for File for exist
+    for (int i = 0; i < filehistory.size(); i++) {
+      filecheck[i] = 0; // 0 = not available; 1 = available; 2 = http; 3 = ftp
+      String str = filehistory.get(i);
       if (str.substring(0, 4).equals("file")) {
         str = str.substring(5);
         File testfile = new File(str);
-        if (testfile.exists() == true) filecheck[i] = 1;
+        if (testfile.exists()) filecheck[i] = 1;
       }
-      if (str.substring(0, 4).equals("http") == true) {
+      if (str.substring(0, 4).equals("http")) {
         filecheck[i] = 2;
-        continue;
       }
-      if (str.substring(0, 3).equals("ftp") == true) {
+      else if (str.substring(0, 3).equals("ftp")) {
         filecheck[i] = 3;
-        continue;
       }
     }
     for (int i = 0; i < filehistory.size(); i++) {
       System.out.println("--> " + filehistory.get(i));
-      String tmp = (String) filehistory.get(i);
+      String tmp = filehistory.get(i);
       if (tmp.length() > 32) tmp = tmp.substring(tmp.length() - 32);
       if (filecheck[i] == 0)
         hotlist[i] =
@@ -1974,7 +1971,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
                 new ImageIcon(Sonogram.class.getResource("hin.gif")));
       menuFile.add(hotlist[i]);
       hotlist[i].setToolTipText(
-          "<html>Path to file" + i + ":<br><b>" + (String) filehistory.get(i) + "</b>");
+          "<html>Path to file" + i + ":<br><b>" + filehistory.get(i) + "</b>");
       hotlist[i].addActionListener(this);
 
       KeyStroke key = KeyStroke.getKeyStroke('0');
@@ -2509,7 +2506,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
   // ----------------------------------------------------------------------------------------------------------------
 
   public void shakeButtons() {
-    if (shaking == true) return;
+    if (shaking) return;
     else shaking = true;
     final Point point1 = zinbutton.getLocation();
     final Point point2 = wvbutton.getLocation();
@@ -2521,53 +2518,54 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
             for (int i = 0; i < 1; i++) {
               try {
                 moveButton(new Point(point1.x, point1.y + 1), zinbutton);
-                if (wvbutton.isEnabled() == true)
+                if (wvbutton.isEnabled())
                   moveButton(new Point(point2.x, point2.y + 1), wvbutton);
                 Thread.sleep(delay);
                 moveButton(new Point(point1.x, point1.y + 2), zinbutton);
-                if (wvbutton.isEnabled() == true)
+                if (wvbutton.isEnabled())
                   moveButton(new Point(point2.x, point2.y + 2), wvbutton);
                 Thread.sleep(delay);
                 moveButton(new Point(point1.x, point1.y + 3), zinbutton);
-                if (wvbutton.isEnabled() == true)
+                if (wvbutton.isEnabled())
                   moveButton(new Point(point2.x, point2.y + 3), wvbutton);
                 Thread.sleep(delay);
                 moveButton(new Point(point1.x, point1.y + 2), zinbutton);
-                if (wvbutton.isEnabled() == true)
+                if (wvbutton.isEnabled())
                   moveButton(new Point(point2.x, point2.y + 2), wvbutton);
                 Thread.sleep(delay);
                 moveButton(new Point(point1.x, point1.y + 1), zinbutton);
-                if (wvbutton.isEnabled() == true)
+                if (wvbutton.isEnabled())
                   moveButton(new Point(point2.x, point2.y + 1), wvbutton);
                 Thread.sleep(delay);
                 moveButton(point1, zinbutton);
-                if (wvbutton.isEnabled() == true) moveButton(point2, wvbutton);
+                if (wvbutton.isEnabled()) moveButton(point2, wvbutton);
                 Thread.sleep(delay);
                 moveButton(new Point(point1.x, point1.y - 1), zinbutton);
-                if (wvbutton.isEnabled() == true)
+                if (wvbutton.isEnabled())
                   moveButton(new Point(point2.x, point2.y - 1), wvbutton);
                 Thread.sleep(delay);
                 moveButton(new Point(point1.x, point1.y - 2), zinbutton);
-                if (wvbutton.isEnabled() == true)
+                if (wvbutton.isEnabled())
                   moveButton(new Point(point2.x, point2.y - 2), wvbutton);
                 Thread.sleep(delay);
                 moveButton(new Point(point1.x, point1.y - 3), zinbutton);
-                if (wvbutton.isEnabled() == true)
+                if (wvbutton.isEnabled())
                   moveButton(new Point(point2.x, point2.y - 3), wvbutton);
                 Thread.sleep(delay);
                 moveButton(new Point(point1.x, point1.y - 2), zinbutton);
-                if (wvbutton.isEnabled() == true)
+                if (wvbutton.isEnabled())
                   moveButton(new Point(point2.x, point2.y - 2), wvbutton);
                 Thread.sleep(delay);
                 moveButton(new Point(point1.x, point1.y - 1), zinbutton);
-                if (wvbutton.isEnabled() == true)
+                if (wvbutton.isEnabled())
                   moveButton(new Point(point2.x, point2.y - 1), wvbutton);
                 Thread.sleep(delay);
                 moveButton(point1, zinbutton);
-                if (wvbutton.isEnabled() == true) moveButton(point2, wvbutton);
+                if (wvbutton.isEnabled()) moveButton(point2, wvbutton);
                 Thread.sleep(delay);
               } catch (InterruptedException ex) {
                 ex.printStackTrace();
+                Thread.currentThread().interrupt();
               }
             }
             shaking = false;
@@ -2800,7 +2798,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       if (confirm == 0) {
         System.out.println("--> Bye");
         saveConfig();
-        if (plugin == true) {
+        if (plugin) {
           try // Call Plugin exit class
           {
             // Check Class for exist
@@ -2881,36 +2879,32 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       fileisfromurl = false;
       openFile(null);
     }
-    if (e.getSource() == adjItem
-        || e.getSource() == adjbutton) { // General Adjustment Button, shows Adj.Dialog
+
+    // General Adjustment Button, shows Adj.Dialog
+    if (e.getSource() == adjItem || e.getSource() == adjbutton) {
       gad.aktualize();
       gad.setVisible(!gad.isVisible());
     }
-    if (e.getSource() == playbutton || e.getSource() == playItem) {
-      if (spectrumExist == true) {
+    if ((e.getSource() == playbutton || e.getSource() == playItem) && spectrumExist) {
         playbuttonpressed = true;
         System.out.println("--> START playing");
         if (pp.plstop == pp.plstart) pp.plstop = 1.0;
-        player.springTo(
-            (selectedstartold + pp.plstart * selecedwidthold)
-                * (double) samplesall
-                / (double) samplerate);
+        player.springTo((selectedstartold + pp.plstart * selecedwidthold) * samplesall / samplerate);
         player.play();
         stopItem.setEnabled(true);
         stopbutton.setEnabled(true);
         playItem.setEnabled(false);
         playbutton.setEnabled(false);
-      }
     }
-    if (e.getSource() == stopbutton || e.getSource() == stopItem) {
-      if (spectrumExist == true) {
+    if ((e.getSource() == stopbutton || e.getSource() == stopItem) && spectrumExist) {
         System.out.println("--> STOP playing");
         stopbuttonpressed = true;
         player.stop();
-      }
     }
-    if (e.getSource() == revbutton || e.getSource() == revItem) { // Play Rewindbutton
-      if (spectrumExist == true) {
+
+    // Play Rewindbutton
+    if (e.getSource() == revbutton || e.getSource() == revItem) { 
+      if (spectrumExist) {
         player.springTo(0.0);
         pp.plstart = 0.0;
         pp.plbutton = 0.0;
@@ -2922,7 +2916,9 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         pp.updateWvButton();
       }
     }
-    if (e.getSource() == helpItem || e.getSource() == helpbutton) { // Helpitem
+
+    // Helpitem
+    if (e.getSource() == helpItem || e.getSource() == helpbutton) {
       hd.setVisible(!hd.isVisible());
     }
     if (e.getSource() == licenseItem) {
@@ -2935,7 +2931,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       SonoSplashScreen splash = new SonoSplashScreen(true);
     }
     if (e.getSource() == d3button || e.getSource() == d3Item) { // Surfaceplot
-      if (spectrumExist == false) messageBox("Perspectogram", "Please open Mediafile first.", 2);
+      if (!spectrumExist) messageBox("Perspectogram", "Please open Mediafile first.", 2);
       else
         try {
           gad.p1.setSelectedIndex(5);
@@ -2953,15 +2949,14 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         }
     }
     if (e.getSource() == cepbutton || e.getSource() == cepItem) { // Cepstrum View
-      if (spectrumExist == false) messageBox("Cepstrum", "Please open Mediafile first.", 1);
+      if (!spectrumExist) messageBox("Cepstrum", "Please open Mediafile first.", 1);
       else if (samplesall > cv.samples()) {
         System.out.println("--> Show Cepstrum View");
         gad.p1.setSelectedIndex(8);
         cv.setVisible(!cv.isVisible());
       } else messageBox("Cepstrum", "Signal to short !!!.", 1);
     }
-    if (e.getSource() == zinbutton || e.getSource() == zinItem) { // Zoomin
-      if (spectrumExist == true) {
+    if ((e.getSource() == zinbutton || e.getSource() == zinItem) && spectrumExist) { // Zoomin
         selectedstartpre.add(Double.valueOf(selectedstartold));
         selectedwidthpre.add(Double.valueOf(selecedwidthold));
         zoompreviousindex++;
@@ -2969,10 +2964,8 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         zprebutton.setEnabled(true);
         zpreItem.setEnabled(true);
         pp.updateWvButton();
-      }
     }
-    if (e.getSource() == zbabutton || e.getSource() == zbaItem) { // Zoomfull
-      if (spectrumExist == true) {
+    if ((e.getSource() == zbabutton || e.getSource() == zbaItem) && spectrumExist) { // Zoomfull
         selectedstart = 0.0;
         selecedwidth = 1.0;
         selectedstartpre.removeAllElements();
@@ -2983,13 +2976,11 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         zpreItem.setEnabled(false);
         infod.update();
         pp.updateWvButton();
-      }
     }
-    if (e.getSource() == zprebutton || e.getSource() == zpreItem) { // Zoomback
-      if (spectrumExist == true) {
+    if ((e.getSource() == zprebutton || e.getSource() == zpreItem) && spectrumExist) { // Zoomback
         if (zoompreviousindex != 0) {
-          selectedstart = ((Double) selectedstartpre.get(zoompreviousindex - 1)).doubleValue();
-          selecedwidth = ((Double) selectedwidthpre.get(zoompreviousindex - 1)).doubleValue();
+          selectedstart = (selectedstartpre.get(zoompreviousindex - 1)).doubleValue();
+          selecedwidth = (selectedwidthpre.get(zoompreviousindex - 1)).doubleValue();
           selectedstartpre.remove(zoompreviousindex - 1);
           selectedwidthpre.remove(zoompreviousindex - 1);
           zoompreviousindex--;
@@ -3002,10 +2993,9 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
           zprebutton.setEnabled(false);
           zpreItem.setEnabled(false);
         }
-      }
     }
     if (e.getSource() == forbutton || e.getSource() == forItem) { // FFT View
-      if (spectrumExist == false) messageBox("Fast Fourier", "Please open Mediafile first.", 1);
+      if (!spectrumExist) messageBox("Fast Fourier", "Please open Mediafile first.", 1);
       else if (samplesall > fv.len) {
         System.out.println("--> Fast Fourier Transform View");
         fv.setVisible(!fv.isVisible());
@@ -3014,7 +3004,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     }
     if (e.getSource() == autocorrelationbutton
         || e.getSource() == autocorrelationItem) { // Autocorrelation
-      if (spectrumExist == false) messageBox("Autocorrelation", "Please open Mediafile first.", 1);
+      if (!spectrumExist) messageBox("Autocorrelation", "Please open Mediafile first.", 1);
       else {
         System.out.println("--> Autocorrelation View");
         gad.p1.setSelectedIndex(10);
@@ -3022,7 +3012,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       }
     }
     if (e.getSource() == pitchbutton || e.getSource() == pitchItem) { // PitchWindow
-      if (spectrumExist == false) messageBox("Pitch Tracking", "Please open Mediafile first.", 1);
+      if (!spectrumExist) messageBox("Pitch Tracking", "Please open Mediafile first.", 1);
       else {
         gad.p1.setSelectedIndex(9);
         System.out.println("--> Pitch Tracking View");
@@ -3033,13 +3023,13 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     if (e.getSource() == infobutton || e.getSource() == infoItem) { // Information Dialog
       infod.setVisible(!infod.isVisible());
       infovisible = infod.isVisible();
-      if (infovisible == true) {
+      if (infovisible) {
         infod.update();
         System.out.println("--> Show Informationtable-View");
       }
     }
     if (e.getSource() == lpcbutton || e.getSource() == lpcItem) { // Linear Prediction  Dialog
-      if (spectrumExist == false) messageBox("LPC", "Please open Mediafile first.", 1);
+      if (!spectrumExist) messageBox("LPC", "Please open Mediafile first.", 1);
       else if (samplesall > lv.len) {
         System.out.println("--> Show Linear Prediction View");
         lv.setVisible(!lv.isVisible());
@@ -3051,15 +3041,14 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     }
     for (int i = 0; i < filehistory.size(); i++) { // Filehistory
       if (e.getSource() == hotlist[i]) {
-        if (((String) filehistory.get(i)).substring(0, 4).equals("http") == true
-            || ((String) filehistory.get(i)).substring(0, 3).equals("ftp") == true)
+        if ((filehistory.get(i)).substring(0, 4).equals("http")
+            || (filehistory.get(i)).substring(0, 3).equals("ftp"))
           fileisfromurl = true;
         else fileisfromurl = false;
-        openFile((String) filehistory.get(i));
+        openFile(filehistory.get(i));
       }
     }
-    if (e.getSource() == delhistItem) { // Delte Hotlist
-      if (filehistory.size() != 0) {
+    if (e.getSource() == delhistItem && !filehistory.isEmpty()) { // Delte Hotlist
         int confirm =
             JOptionPane.showOptionDialog(
                 this,
@@ -3075,7 +3064,6 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
           for (int i = 0; i < filehistory.size(); i++) menuFile.remove(11);
           filehistory.removeAllElements();
         }
-      }
     }
     if (e.getSource() == printItem) {
       PrintableComponent pc = new PrintableComponent(pp);
@@ -3088,7 +3076,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       ;
     }
     if (e.getSource() == saveItem) {
-      if (spectrumExist == true)
+      if (spectrumExist)
         try {
           String filename = "Sonogram.png";
           class MyFilter extends javax.swing.filechooser.FileFilter {
@@ -3129,10 +3117,8 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       svg.setVisible(true);
     }
 
-    if (e.getSource() == csvItem) {
-      if (spectrumExist == true) {
-        ExportSpectrumCSV csv = new ExportSpectrumCSV(this);
-      }
+    if (e.getSource() == csvItem && spectrumExist) {
+      ExportSpectrumCSV csv = new ExportSpectrumCSV(this);
     }
 
     if (e.getSource() == memItem) {
@@ -3143,14 +3129,17 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       perfmon.surf.start();
       WindowListener l =
           new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent e) {
               f.dispose();
             }
 
+            @Override
             public void windowDeiconified(WindowEvent e) {
               perfmon.surf.start();
             }
 
+            @Override
             public void windowIconified(WindowEvent e) {
               perfmon.surf.stop();
             }
@@ -3190,13 +3179,13 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       sysopt += "</i><br>User home: <i>" + prop.getProperty("user.home");
       sysopt += "</i><br>Java Media Framework Installed: <i>YES";
       sysopt += "</i><br>Java3D installed: <i>";
-      if (java3disinstalled == true) sysopt += "YES";
+      if (java3disinstalled) sysopt += "YES";
       else sysopt += "NO";
       sysopt += "</i><br>Use Apple OpenGL: <i>" + prop.getProperty("apple.awt.graphics.UseOpenGL");
       sysopt += "</i><br>MP3 Available: <i>YES";
       sysopt += "</i><br>Splash Type: <i>";
 
-      if (splash.javaSplash == true) sysopt += "NATIVE JAVA STARTUP SPLASH-SCREEN";
+      if (splash.javaSplash) sysopt += "NATIVE JAVA STARTUP SPLASH-SCREEN";
       else sysopt += "OWN SPLASH-SCREEN";
       sysopt += "</i><br>Splash Transparency: <i>";
 
@@ -3253,7 +3242,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       arrangeWindows();
     }
     if (e.getSource() == defaultItem) {
-      if (openenedbysvg == true) {
+      if (openenedbysvg) {
         messageBox(
             "Not Aviable",
             "This file is opened by SVG.\n"
@@ -3294,7 +3283,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         logItem.setSelected(true);
         logfrItem.setSelected(false);
         logbutton.setBorder(fullbutton.getBorder());
-        if (spectrumExist == true) openFile(filepath);
+        if (spectrumExist) openFile(filepath);
         la.tp.colorSwitch = 0;
         la.tp.initDigitArray();
         la.spec.repaint();
@@ -3310,7 +3299,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
               null,
               null);
       if (confirmplacemet == 0) {
-        if (fullscreen == true) {
+        if (fullscreen) {
           getContentPane().add(toolBar, BorderLayout.NORTH);
           setLocation(normalpoint);
           setResizable(true);
@@ -3366,7 +3355,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       ou.setVisible(true);
     }
     if (e.getSource() == wavItem || e.getSource() == wavbutton) {
-      if (spectrumExist == false) messageBox("Waveform", "Please open Mediafile first.", 1);
+      if (!spectrumExist) messageBox("Waveform", "Please open Mediafile first.", 1);
       else {
         wv.getLen();
         if (samplesall > wv.len) {
@@ -3380,7 +3369,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       if (fullscreen != fulItem.isSelected() || e.getSource() == fullbutton) {
         if (e.getSource() == fullbutton) fulItem.setSelected(true);
         fullscreen = fulItem.isSelected();
-        if (fullscreen == true) {
+        if (fullscreen) {
           normaldimension = getSize();
           normalpoint = getLocation();
           remove(toolBar);
@@ -3405,7 +3394,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       }
     }
     if (e.getSource() == walbutton || e.getSource() == walItem) { // Cepstrum View
-      if (spectrumExist == false) messageBox("Wavelet", "Please open Mediafile first.", 1);
+      if (!spectrumExist) messageBox("Wavelet", "Please open Mediafile first.", 1);
       else if (samplesall > gad.walwindowlength) {
         System.out.println("--> Show Wavelet View");
         gad.p1.setSelectedIndex(17);
@@ -3452,8 +3441,8 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     int s56sh = sh * 5 / 6;
     int ssw = sw - 485; // window width for the main window
     int ssh =
-        (int) ((double) ssw / goldencut)
-            + 94; // 94 is the offset for the border the toolbar and the menuebar
+        (int) (ssw / goldencut)
+            + 94; // 94 is the offset for the border the toolbar and the menubar
     int sww = sw - ssw; // window width for the anayse windows
     int swh = s16sh;
     setSize(ssw, ssh);
@@ -3504,7 +3493,8 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
    */
   class Filename {
     private String fullPath;
-    private char pathSeparator, extensionSeparator;
+    private char pathSeparator;
+    private char extensionSeparator;
 
     public Filename(String str) {
       fullPath = str;
@@ -3535,7 +3525,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
    * an Filechooser.
    */
   public void openFile(String fp) {
-    if (wvconfig.isVisible() == true) wvconfig.setVisible(false);
+    if (wvconfig.isVisible()) wvconfig.setVisible(false);
     if (fp == null) {
       // If no File is given Filechooser is activated
       System.out.println("--> FileChooser opened");
@@ -3633,7 +3623,6 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     System.out.println("--> Opening URL: " + url);
     setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     reader = null;
-    System.gc();
     reader = new DataSourceReader();
     reader.setMainRef(this);
     reader.generateSamplesFromURL(url);
@@ -3647,12 +3636,12 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
    * This Funktion is caled from 'readerIsBack' method and normalized the komplette Spektrum from 0
    * to 255.
    */
-  private void normalizeSpekt() {
+  private void normalizeSpectrum() {
     float[] tempSpektrum;
     float min = Float.MAX_VALUE;
     float max = -Float.MAX_VALUE;
-    for (int x = 0; x < spektrum.size(); x++) { // find min/max Points of Spektrum
-      tempSpektrum = (float[]) spektrum.get(x);
+    for (int x = 0; x < spectrum.size(); x++) { // find min/max Points of Spektrum
+      tempSpektrum = spectrum.get(x);
       for (int y = 0; y < (timewindowlength / 2); y++) {
         if (max < tempSpektrum[y]) {
           max = tempSpektrum[y];
@@ -3665,8 +3654,8 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     System.out.println("--> Normalize: MAX = " + max + ", MIN = " + min);
     float diff = max - min;
     // Normalizes the Spektrum to 0..255 and test the range
-    for (int x = 0; x < spektrum.size(); x++) {
-      tempSpektrum = (float[]) spektrum.get(x);
+    for (int x = 0; x < spectrum.size(); x++) {
+      tempSpektrum = spectrum.get(x);
       for (int y = 0; y < (timewindowlength / 2); y++) {
         tempSpektrum[y] = ((tempSpektrum[y] - min) / diff * 255.0f); // Normalisation
         if (tempSpektrum[y] < 0.0f) {
@@ -3696,7 +3685,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
   }
   // -------------------------------------------------------------------------------------------------------------------------
   /**
-   * This Funktion saves the current Sonogram Settings in SonogramConfig.xml file, by starting the
+   * This Function saves the current Sonogram Settings in SonogramConfig.xml file, by starting the
    * Constructor of the SaveConfig CLASS.
    */
   public void saveConfig() {
@@ -3751,7 +3740,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     iantialise = true;
     iantialisconfirmed = false;
     iwvconfirmed = false;
-    wvconfig.wvmessage = false;
+    WvSettingsDialog.wvmessage = false;
     iwfnorm = false;
     icepsmooth = true;
     irotate = true;

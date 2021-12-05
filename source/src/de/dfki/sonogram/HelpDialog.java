@@ -2,7 +2,6 @@ package de.dfki.sonogram;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 import java.net.URL;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -49,7 +48,8 @@ public class HelpDialog extends JDialog {
     scroll.getVerticalScrollBar().setPreferredSize(new Dimension(12, 0));
     cp.add(scroll, "Center");
 
-    JButton okay, home;
+    JButton okay;
+    JButton home;
     okay = new JButton("Close");
     home = new JButton("Home");
     okay.addActionListener(

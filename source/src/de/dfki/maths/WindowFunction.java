@@ -9,7 +9,7 @@
  */
 package de.dfki.maths;
 
-public class WindowFunktion {
+public class WindowFunction {
 
   // ------------------------------------------------------------------------------------------
 

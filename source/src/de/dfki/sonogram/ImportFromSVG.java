@@ -315,10 +315,10 @@ class ImportFromSVG {
 
         this.reftomain.gad.applyChanges();
         System.out.println("--> Configuration tag read: w=" + var9 + " heigth=" + var10);
-        this.reftomain.spektrum.removeAllElements();
+        this.reftomain.spectrum.removeAllElements();
 
         for (int var19 = 0; var19 < var9; ++var19) {
-          this.reftomain.spektrum.addElement(new float[var10]);
+          this.reftomain.spectrum.addElement(new float[var10]);
         }
 
         float[][] var34 = new float[var9][var10];
@@ -341,12 +341,12 @@ class ImportFromSVG {
             var29 = var5.indexOf("\"", var28);
             var6 = var5.substring(var28, var29);
             int var31 = Integer.parseInt(var6);
-            var34[var30 / var14][var31 / var14] = (float) var32;
+            var34[var30 / var14][var31 / var14] = var32;
           }
         }
 
         for (int var21 = 0; var21 < var9; ++var21) {
-          float[] var20 = (float[]) this.reftomain.spektrum.get(var21);
+          float[] var20 = (float[]) this.reftomain.spectrum.get(var21);
 
           for (int var22 = 0; var22 < var10; ++var22) {
             var20[var10 - var22 - 1] = var34[var21][var22];

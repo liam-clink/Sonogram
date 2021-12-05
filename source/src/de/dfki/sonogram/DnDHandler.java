@@ -35,7 +35,7 @@ public class DnDHandler implements DropTargetListener {
       File f = (File) files.get(0);
       evt.dropComplete(true);
       reftosonogram.openFile(f.getAbsolutePath());
-    } catch (Throwable ex) {
+    } catch (Exception ex) {
       evt.dropComplete(true);
     }
     evt.dropComplete(true);

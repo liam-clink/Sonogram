@@ -26,9 +26,9 @@ class SelectLookAndFeelDialog extends JDialog {
     p1.setBorder(new TitledBorder(new EtchedBorder(), "Look And Feel"));
     p1.setLayout(new BoxLayout(p1, BoxLayout.Y_AXIS));
 
-    slider = new JSlider(JSlider.VERTICAL, 0, 7, 3);
+    slider = new JSlider(SwingConstants.VERTICAL, 0, 7, 3);
     slider.setToolTipText("<html>Change <i>\"Look and Feel\"</i> of <b>all</b> Sonogram Windows");
-    Hashtable h = new Hashtable();
+    Hashtable<Integer,JLabel> h = new Hashtable<>();
     h.put(Integer.valueOf(0), new JLabel("Metal")); // NOTE --> HT.PUT(K,V)
     h.put(
         Integer.valueOf(1),
@@ -46,7 +46,7 @@ class SelectLookAndFeelDialog extends JDialog {
     slider.setPaintTicks(true);
     p1.add(slider);
     JLabel hint = new JLabel("<html> <font size=-3 color=#000066><i>(* = needs restart)");
-    hint.setHorizontalAlignment(JLabel.LEFT);
+    hint.setHorizontalAlignment(SwingConstants.LEFT);
     p1.add(hint);
     getContentPane().add(p1, BorderLayout.CENTER);
 

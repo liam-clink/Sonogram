@@ -91,6 +91,7 @@ public class InfoDialog extends JFrame {
 
     addWindowListener(
         new WindowAdapter() {
+          @Override
           public void windowClosing(WindowEvent e) {
             reftomain.infovisible = false;
           }
@@ -102,45 +103,45 @@ public class InfoDialog extends JFrame {
   // -------------------------------------------------------------------------------------------------------------------------
   void update() {
 
-    if (reftomain.spectrumExist == true && (this.isVisible() == true)) {
+    if (reftomain.spectrumExist && (this.isVisible())) {
       double sfr = ((double) (reftomain.samplerate) / (double) reftomain.timewindowlength);
       sfr = Math.round(sfr * 100.0) / 100.0;
       double str =
           ((double) reftomain.samplesall
               / (double) (reftomain.samplerate)
-              / (double) reftomain.timewindowlength
+              / reftomain.timewindowlength
               * 2.0);
       str = Math.round(str * 100000.0) / 100.0;
       int swu = (reftomain.timewindowlength);
-      int swn = (reftomain.spektrum.size());
+      int swn = (reftomain.spectrum.size());
       double swt = ((double) swu / (double) (reftomain.samplerate));
       swt = Math.round(swt * 100000.0) / 100.0;
       double sid = ((double) reftomain.samplesall / (double) (reftomain.samplerate));
       sid = Math.round(sid * 1000.0) / 1000.0;
       double sed =
-          ((double) reftomain.selecedwidth
-              * (double) reftomain.samplesall
-              / (double) (reftomain.samplerate));
+          (reftomain.selecedwidth
+              * reftomain.samplesall
+              / (reftomain.samplerate));
       sed = Math.round(sed * 1000.0) / 1000.0;
-      int ses = (int) ((double) reftomain.selecedwidth * (double) reftomain.samplesall);
+      int ses = (int) (reftomain.selecedwidth * reftomain.samplesall);
       String fin = "File load from URL";
       String fip = "File load from URL";
-      if (reftomain.fileisfromurl == false) {
+      if (!reftomain.fileisfromurl) {
         java.io.File file = reftomain.chooser.getSelectedFile();
         fin = file.getName();
         fip = file.getPath();
       }
       int sar = reftomain.samplerate;
       int ovl = reftomain.gad.sliderwinspeed.getValue();
-      if (reftomain.gad.coverlapping.isSelected() == false) ovl = 1;
+      if (!reftomain.gad.coverlapping.isSelected()) ovl = 1;
       String dst = reftomain.reader.dstype;
       String sef = reftomain.selectedFilter;
       double pef =
           (double) reftomain.peaky
               / (double) reftomain.timewindowlength
-              * (double) (reftomain.samplerate);
+              * (reftomain.samplerate);
       pef = Math.round(pef * 100.0) / 100.0;
-      double pet = (double) reftomain.peakx / (double) reftomain.spektrum.size() * (double) sid;
+      double pet = (double) reftomain.peakx / (double) reftomain.spectrum.size() * sid;
       pet = Math.round(pet * 1000.0) / 1000.0;
       double ffw = ((double) reftomain.fv.len / (double) (reftomain.samplerate));
       ffw = Math.round(ffw * 100000.0) / 100.0;
@@ -159,11 +160,11 @@ public class InfoDialog extends JFrame {
       int blu = reftomain.gad.bgcol.getBlue();
       int flp = reftomain.gad.sliderpitch.getValue();
       String ren = "";
-      if (reftomain.gad.s1.isSelected() == true) ren = "Point Cloud Plot";
-      if (reftomain.gad.s2.isSelected() == true) ren = "Line Grid Plot";
-      if (reftomain.gad.s3.isSelected() == true) ren = "Area Surface Plot";
-      double mes = Math.round(Math.round((double) sel * 83.175 / 1024.0) / 1024.0 * 100.0) / 100.0;
-      String was = reftomain.gad.wavelets.getSet(reftomain.gad.wcb.getSelectedIndex()).getName();
+      if (reftomain.gad.s1.isSelected()) ren = "Point Cloud Plot";
+      if (reftomain.gad.s2.isSelected()) ren = "Line Grid Plot";
+      if (reftomain.gad.s3.isSelected()) ren = "Area Surface Plot";
+      double mes = Math.round(Math.round(sel * 83.175 / 1024.0) / 1024.0 * 100.0) / 100.0;
+      String was = GeneralAdjustmentDialog.wavelets.getSet(reftomain.gad.wcb.getSelectedIndex()).getName();
       int oct = reftomain.gad.sliderwaltl.getValue();
       int wat = reftomain.gad.walwindowlength;
       double awl = reftomain.kv.windowlength;
@@ -171,48 +172,47 @@ public class InfoDialog extends JFrame {
       double apt = reftomain.kv.ptime;
       double apf = reftomain.kv.pfrequency;
 
-      data[0][1] = new String(sfr + " Hz");
-      data[1][1] = new String(str + " millisec.");
-      data[2][1] = new String(swu + " Samples");
-      data[3][1] = new String(swn + " Windows");
-      ;
-      data[4][1] = new String(swt + " millisec.");
-      data[5][1] = new String(sid + " sec.");
-      data[6][1] = new String(sed + " sec.");
-      data[7][1] = new String(ses + " Samples");
+      data[0][1] = sfr + " Hz";
+      data[1][1] = str + " millisec";
+      data[2][1] = swu + " Samples";
+      data[3][1] = swn + " Windows";
+      data[4][1] = swt + " millisec.";
+      data[5][1] = sid + " sec.";
+      data[6][1] = sed + " sec.";
+      data[7][1] = ses + " Samples";
       data[8][1] = fin;
       data[9][1] = fip;
       data[10][1] = dst;
-      data[11][1] = new String(sar + " s/sec.");
-      data[12][1] = new String(ovl + " Trans./Win.");
+      data[11][1] = sar + " samples/sec";
+      data[12][1] = ovl + " Trans./Win.";
       data[13][1] = sef;
-      data[14][1] = new String(pef + " Hz.");
-      data[15][1] = new String(pet + " sec.");
-      data[16][1] = new String(ffw + " millisec.");
-      data[17][1] = new String(ffr + " Hz");
-      data[18][1] = new String(cwl + " millisec.");
-      data[19][1] = new String(lpt + " millisec.");
-      data[20][1] = new String(lco + " Coefficents");
-      data[21][1] = new String("Factor " + sut);
-      data[22][1] = new String("Factor " + suf);
-      data[23][1] = new String("Red:" + red + " Green:" + gre + " Blue:" + blu);
+      data[14][1] = pef + " Hz.";
+      data[15][1] = pet + " sec.";
+      data[16][1] = ffw + " millisec";
+      data[17][1] = ffr + " Hz";
+      data[18][1] = cwl + " millisec";
+      data[19][1] = lpt + " millisec";
+      data[20][1] = lco + " Coefficents";
+      data[21][1] = "Factor " + sut;
+      data[22][1] = "Factor " + suf;
+      data[23][1] = "Red:" + red + " Green:" + gre + " Blue:" + blu;
       data[24][1] = ren;
-      data[25][1] = new String(flp + "Hz");
-      data[26][1] = new String(mes + " MB");
-      data[27][1] = new String(sel + " Spectral points");
-      data[28][1] = new String(scd.width + " x " + scd.height);
-      data[29][1] = new String(scr + " dots-per-inch");
+      data[25][1] = flp + "Hz";
+      data[26][1] = mes + " MB";
+      data[27][1] = sel + " Spectral points";
+      data[28][1] = scd.width + " x " + scd.height;
+      data[29][1] = scr + " dots-per-inch";
       data[30][1] = was;
-      data[31][1] = new String(oct + " Octaves");
-      data[32][1] = new String(wat + " Samples");
-      data[33][1] = new String(awl + " millisec");
-      data[34][1] = new String(aws + " millisec");
-      data[35][1] = new String(apt + " millisec");
-      data[36][1] = new String(apf + " Hz");
-      if (awl == 0.0) data[32][1] = new String("Not Enabled");
-      if (aws == 0.0) data[33][1] = new String("Not Enabled");
-      if (apt == 0.0) data[34][1] = new String("Not Enabled");
-      if (apf == 0.0) data[35][1] = new String("Not Enabled");
+      data[31][1] = oct + " Octaves";
+      data[32][1] = wat + " Samples";
+      data[33][1] = awl + " millisec";
+      data[34][1] = aws + " millisec";
+      data[35][1] = apt + " millisec";
+      data[36][1] = apf + " Hz";
+      if (awl == 0.0) data[32][1] = "Not Enabled";
+      if (aws == 0.0) data[33][1] = "Not Enabled";
+      if (apt == 0.0) data[34][1] = "Not Enabled";
+      if (apf == 0.0) data[35][1] = "Not Enabled";
       repaint();
     }
   }

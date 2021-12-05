@@ -122,7 +122,7 @@ public class AutoCorrelationView extends JFrame {
         mouseisintimespan = true;
       }
       for (int i = 0; i < winlenall; i++) {
-        tempbyte = (Byte) refToMain.reader.audioStream.get(startp + i);
+        tempbyte = refToMain.reader.audioStream.get(startp + i);
         buffer[i] = tempbyte.floatValue();
       }
       // Call the Autocorrelation function

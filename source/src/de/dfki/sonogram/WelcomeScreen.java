@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import com.incors.plaf.kunststoff.KunststoffLookAndFeel;
+
 /**
  * Copyright (c) 2010 Christoph Lauer @ DFKI, All Rights Reserved. clauer@dfki.de - www.dfki.de
  *
@@ -18,7 +20,7 @@ public class WelcomeScreen extends JPanel {
   private ImageIcon pic;
   private JWindow splash = new JWindow();
   private JButton button;
-  // This special Strings fro the Licensing will be later exchanged by the webshop system
+  // This special Strings for the Licensing will be later exchanged by the webshop system
   String UponStr = "WelcomeCalledFromStartFirstStart";
 
   // ------------------------------------------------------------------------------------------
@@ -28,10 +30,10 @@ public class WelcomeScreen extends JPanel {
     try {
       com.incors.plaf.kunststoff.KunststoffLookAndFeel kunststoffLF =
           new com.incors.plaf.kunststoff.KunststoffLookAndFeel();
-      kunststoffLF.setCurrentTheme(new com.incors.plaf.kunststoff.KunststoffTheme());
+      KunststoffLookAndFeel.setCurrentTheme(new com.incors.plaf.kunststoff.KunststoffTheme());
       UIManager.setLookAndFeel(kunststoffLF);
       SwingUtilities.updateComponentTreeUI(this);
-    } catch (Throwable t) {
+    } catch (Exception t) {
     }
     if (!show) return;
 
@@ -72,6 +74,7 @@ public class WelcomeScreen extends JPanel {
     splash.toFront();
   }
   // ------------------------------------------------------------------------------------------
+  @Override
   public void paintComponent(Graphics g) {
     pic.paintIcon(splash, g, 0, 0);
     button.repaint();

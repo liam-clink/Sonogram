@@ -10,12 +10,8 @@
 package de.dfki.sonogram;
 
 import java.awt.*;
-import java.awt.color.*;
 import java.awt.event.*;
-// import com.sun.awt.AWTUtilities;
-import java.awt.image.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
 import javax.swing.*;
 
 public class SonoSplashScreen {
@@ -27,7 +23,7 @@ public class SonoSplashScreen {
   static ImageIcon ownSplashPic;
   static java.awt.SplashScreen splash;
   static int width;
-  static String OS;
+  static String operatingSystem;
   static boolean licensePainted = false;
 
   // ------------------------------------------------------------------------------------------
@@ -36,7 +32,7 @@ public class SonoSplashScreen {
     splash = java.awt.SplashScreen.getSplashScreen();
 
     if (splash != null) {
-      g = (Graphics2D) splash.createGraphics();
+      g = splash.createGraphics();
       javaSplash = true;
       width = (int) splash.getBounds().getWidth();
       nativeTransparency = 1;
@@ -58,8 +54,8 @@ public class SonoSplashScreen {
       Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
       int x = (screen.width - width) / 2;
       int y;
-      OS = System.getProperties().getProperty("os.name");
-      if (OS.contains("Mac") == true) y = (int) ((double) (screen.height - height) / 3);
+      operatingSystem = System.getProperties().getProperty("os.name");
+      if (operatingSystem.contains("Mac")) y = (int) ((double) (screen.height - height) / 3);
       else y = (int) ((double) (screen.height - height) / 2);
       ownSplashWindow.setBounds(x, y, width, height);
       ownSplashPanel = new OwnPanel(ownSplashWindow);
@@ -70,10 +66,11 @@ public class SonoSplashScreen {
       ownSplashWindow.setVisible(true);
       ownSplashWindow.toFront();
       // close the splash screen in demo mode when mouse is pressed
-      if (demoMode == true) {
+      if (demoMode) {
         // add the mouse handler
         MouseAdapter m =
             new MouseAdapter() {
+              @Override
               public void mouseClicked(MouseEvent e) {
                 ownSplashWindow.dispose();
               }
@@ -89,6 +86,7 @@ public class SonoSplashScreen {
   // ------------------------------------------------------------------------------------------
 
   class DemoMessageThread extends Thread {
+    @Override
     public void run() {
       String text = "Sonogram  \u00A9 by Christoph Lauer                    ";
       int stringLen = text.length();
@@ -106,7 +104,6 @@ public class SonoSplashScreen {
           sleep(80);
         } catch (Exception e) {
         }
-        ;
       }
       for (int i = stringLen - 2; i >= 0; i--) {
         // build the text block
@@ -119,7 +116,6 @@ public class SonoSplashScreen {
           sleep(80);
         } catch (Exception e) {
         }
-        ;
       }
       for (int i = 200; i > 0; i--) {
         if (i < 20) setProgress(99, "closing in " + (float) i / 10 + " second (click to close)");
@@ -128,7 +124,6 @@ public class SonoSplashScreen {
           sleep(100);
         } catch (Exception e) {
         }
-        ;
       }
       setProgress(100, "");
     }
@@ -145,12 +140,12 @@ public class SonoSplashScreen {
       fini = true;
     }
     // in case of the java splash screen
-    if (javaSplash == true) {
+    if (javaSplash) {
       // normal update
       renderProgressBar(g, percent, progressmessage);
-      if (splash != null) if (splash.isVisible() == true) splash.update();
+      if (splash != null) if (splash.isVisible()) splash.update();
       // sleep if we reach the end
-      if (fini == true)
+      if (fini)
         try {
           Thread.sleep(250);
         } catch (Exception e) {
@@ -159,7 +154,7 @@ public class SonoSplashScreen {
     // in case of my own splash screen
     else {
       // if we reach the end
-      if (fini == true && ownSplashWindow != null) {
+      if (fini && ownSplashWindow != null) {
         ownSplashPanel.updateStatus(percent, progressmessage);
         ownSplashPanel.repaint();
         try {
@@ -210,10 +205,10 @@ public class SonoSplashScreen {
       Color.RED
     };
     float[] dist = {0.0f, 0.25f, 0.35f, 0.52f, 0.68f, 0.78f, 0.92f};
-    LinearGradientPaint gp = new LinearGradientPaint(0f, 0f, (float) size, 0f, dist, colors);
+    LinearGradientPaint gp = new LinearGradientPaint(0f, 0f, size, 0f, dist, colors);
     g2.setPaint(gp);
     g2.fillRect(
-        1 + offsetX, 197 + offsetY, 1 + (int) ((double) size / 100.0 * (double) percent), 4);
+        1 + offsetX, 197 + offsetY, 1 + (int) (size / 100.0 * percent), 4);
 
     // Text
     g2.setColor(new Color(10, 5, 20));
@@ -226,7 +221,7 @@ public class SonoSplashScreen {
     g2.setPaint(gp);
     g2.drawString(progressmessage, width - textWidth - 36, 212 + offsetY);
 
-    if (licensePainted == false) {
+    if (!licensePainted) {
       // License and version/build text
       g2.setColor(new Color(100, 100, 100));
       g2.setFont(new Font("Tahoma", Font.BOLD, 9));
@@ -235,7 +230,7 @@ public class SonoSplashScreen {
       String versionString = "Version: " + Sonogram.VERSION;
       String buildString = "Build: " + Sonogram.BUILD;
       String licenString = "Licensed to:";
-      if (Licenses.zoda1.equals("HIRN1HIRN1HIRN1HIRN1HIRN1HIRN1HI") == true)
+      if (Licenses.zoda1.equals("HIRN1HIRN1HIRN1HIRN1HIRN1HIRN1HI"))
         licenString = /*Integer.toString(Sonogram.isetu) + " Minute*/ "Trial Version";
       String nameString = Licenses.zoda1.replaceAll("\\s+$", "");
       // draw the text
@@ -245,7 +240,7 @@ public class SonoSplashScreen {
       g2.drawString(buildString, width - textWidth - 61, offsetY - 22);
       textWidth = metrics.stringWidth(licenString);
       g2.drawString(licenString, width - textWidth - 61, offsetY - 14);
-      if (Licenses.zoda1.equals("HIRN1HIRN1HIRN1HIRN1HIRN1HIRN1HI") == false) {
+      if (!Licenses.zoda1.equals("HIRN1HIRN1HIRN1HIRN1HIRN1HIRN1HI")) {
         g2.setFont(new Font("Tahoma", Font.BOLD, 12));
         metrics = g2.getFontMetrics();
         textWidth = metrics.stringWidth(nameString);
@@ -271,7 +266,7 @@ public class SonoSplashScreen {
 
     OwnPanel(JWindow win) {
       window = win;
-      if (OS.contains("Mac") == false) {
+      if (!operatingSystem.contains("Mac")) {
         Rectangle rect = window.getBounds();
         try {
           bgImage = new Robot().createScreenCapture(rect);
@@ -292,7 +287,7 @@ public class SonoSplashScreen {
     }
 
     public void paintComponent(Graphics g) {
-      if (OS.contains("Mac") == false) g.drawImage(bgImage, 0, 0, ownSplashWindow);
+      if (!operatingSystem.contains("Mac")) g.drawImage(bgImage, 0, 0, ownSplashWindow);
       // paint the image
       ownSplashPic.paintIcon(ownSplashWindow, g, 0, 0);
       // the progress bar and text

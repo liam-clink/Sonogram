@@ -20,7 +20,7 @@ public class SaveConfig {
     try {
       File f = new File("SonogramConfig.xml");
 
-      if (sono.gad.cssaveconf.isSelected() == false) {
+      if (!sono.gad.cssaveconf.isSelected()) {
         // Make sure the file or directory exists and isn't write protected
         if (!f.exists()) System.out.println("--> Delete: no such file or directory.");
         if (!f.canWrite()) System.out.println("--> Delete: write protected.");
@@ -232,7 +232,7 @@ public class SaveConfig {
           "\t\t\t<AntialiseAnalyseWins     value=\"" + sono.gad.cantialise.isSelected() + "\"/>");
       out.println(
           "\t\t\t<AntialiseConfirmed       value=\"" + sono.gad.cperantialiasconfirm + "\"/>");
-      out.println("\t\t\t<WvConfirmed              value=\"" + sono.wvconfig.wvmessage + "\"/>");
+      out.println("\t\t\t<WvConfirmed              value=\"" + WvSettingsDialog.wvmessage + "\"/>");
       out.println(
           "\t\t\t<NormalizeWaveForm        value=\"" + sono.gad.cwfnorm.isSelected() + "\"/>");
       out.println(
@@ -270,7 +270,7 @@ public class SaveConfig {
       out.println("\t\t\t<PerKeysConfirm           value=\"" + sono.perkeysconfirm + "\"/>");
       out.println("\t\t\t<RecorderLedColors        value=\"" + sono.la.tp.colorSwitch + "\"/>");
 
-      if (sono.spectrumExist == true)
+      if (sono.spectrumExist)
         out.println("\t\t\t<LastOpenedFile           value=\"" + sono.filepath + "\"/>");
       out.println("\t\t\t<LookAndFeel              value=\"" + sono.ilaf + "\"/>");
       out.println(
@@ -334,16 +334,16 @@ public class SaveConfig {
       out.println(
           "\t\t\t<SliderACPitchMaxFrequ    value=\"" + sono.gad.sliderpitchmax.getValue() + "\"/>");
       int color = 0;
-      if (sono.gad.r1.isSelected() == true) color = 1;
-      if (sono.gad.r2.isSelected() == true) color = 2;
-      if (sono.gad.r3.isSelected() == true) color = 3;
-      if (sono.gad.r4.isSelected() == true) color = 4;
-      if (sono.gad.r5.isSelected() == true) color = 5;
+      if (sono.gad.r1.isSelected()) color = 1;
+      if (sono.gad.r2.isSelected()) color = 2;
+      if (sono.gad.r3.isSelected()) color = 3;
+      if (sono.gad.r4.isSelected()) color = 4;
+      if (sono.gad.r5.isSelected()) color = 5;
       out.println("\t\t\t<SelectedColor            value=\"" + color + "\"/>");
 
       int ren = 3;
-      if (sono.gad.s1.isSelected() == true) ren = 1;
-      if (sono.gad.s2.isSelected() == true) ren = 2;
+      if (sono.gad.s1.isSelected()) ren = 1;
+      if (sono.gad.s2.isSelected()) ren = 2;
       out.println("\t\t\t<SurfaceRendering         value=\"" + ren + "\"/>");
       out.println("\t\t\t<BgColorForSurface        value=\"" + sono.gad.bgcol + "\"/>");
       out.println(
@@ -377,7 +377,7 @@ public class SaveConfig {
       out.close();
       System.out.println("--> Configuration saved in SonogramConfig.xml");
       System.out.println("--> " + sono.filehistory.size() + " hotlistitems saved");
-      sono.chooser.saveDirectoryEntries();
+      EFileChooser.saveDirectoryEntries();
     } catch (Exception e) {
       System.out.println("--> Error occured while writing the config fIle .");
     }

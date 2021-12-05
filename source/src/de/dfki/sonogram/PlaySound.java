@@ -1,10 +1,6 @@
 package de.dfki.sonogram;
 
-import java.io.*;
-import java.net.*;
 import javax.media.*;
-import javax.media.control.*;
-import javax.media.format.*;
 
 /**
  * Copyright (c) 2001 Christoph Lauer @ DFKI, All Rights Reserved. clauer@dfki.de - www.dfki.de
@@ -46,7 +42,6 @@ public class PlaySound implements ControllerListener, Runnable {
       player.realize();
     } catch (Exception e) {
       System.out.println("Error creating player");
-      return;
     }
   }
   // ----------------------------------------------------------------------------
@@ -58,7 +53,7 @@ public class PlaySound implements ControllerListener, Runnable {
     } else if (ce instanceof PrefetchCompleteEvent) {
       // Get the GainControl from the player, if any, to control sound volume
       gain = (GainControl) player.getControl("javax.media.GainControl");
-      gain.setDB((float) reftomain.gad.sliderdb.getValue());
+      gain.setDB(reftomain.gad.sliderdb.getValue());
       gain.setMute(reftomain.gad.cmute.isSelected());
     } else if (ce instanceof RealizeCompleteEvent) {
     }
@@ -79,9 +74,9 @@ public class PlaySound implements ControllerListener, Runnable {
     player.stop();
     oneplayerisrunning = false;
     // When loop is selected.
-    if (reftomain.gad.csloop.isSelected() == true
-        && reftomain.stopbuttonpressed == false
-        && reftomain.playbuttonpressed == true
+    if (reftomain.gad.csloop.isSelected()
+        && !reftomain.stopbuttonpressed
+        && reftomain.playbuttonpressed
         && oneplayerisrunning == false) {
       if (reftomain.pp.plstop == reftomain.pp.plstart) reftomain.pp.plstop = 1.0;
       springTo(
@@ -92,7 +87,7 @@ public class PlaySound implements ControllerListener, Runnable {
       return;
     }
     // When no loop is selected buttons are change back to her default status.
-    if (reftomain.stopbuttonpressed == true || reftomain.gad.csloop.isSelected() == false) {
+    if (reftomain.stopbuttonpressed || !reftomain.gad.csloop.isSelected()) {
       reftomain.stopbuttonpressed = false;
       reftomain.playbuttonpressed = false;
       reftomain.stopItem.setEnabled(false);

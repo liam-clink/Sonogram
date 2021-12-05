@@ -163,8 +163,6 @@ public class SmoothedPseudoWignerVilleDistribution {
     // call the core algorithm
     algorithmSmoothedPseudoWignerVilleDistribution(
         input, WindowT, WindowT_Length, WindowF, WindowF_Length);
-    // call the grabage collector
-    System.gc();
     // finally give the result back
     return tfr.spwvd;
   }

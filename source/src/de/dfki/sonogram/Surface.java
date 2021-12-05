@@ -9,9 +9,8 @@
  */
 package de.dfki.sonogram;
 
-import com.sun.j3d.utils.behaviors.keyboard.*;
 import com.sun.j3d.utils.behaviors.mouse.*;
-import com.sun.j3d.utils.geometry.Sphere;
+import com.sun.j3d.utils.geometry.*;
 import com.sun.j3d.utils.image.TextureLoader;
 import com.sun.j3d.utils.universe.*;
 import java.awt.*;
@@ -41,7 +40,7 @@ public class Surface extends JFrame {
     }
     setSize(600, 600);
     setLocation(150, 150);
-    if (isWv == true) setTitle("Wigner-Ville - Perspectogram");
+    if (isWv) setTitle("Wigner-Ville - Perspectogram");
     else setTitle("Perspectogram");
     Toolkit tk = Toolkit.getDefaultToolkit();
     setIconImage(tk.getImage(Sonogram.class.getResource("Sonogram.gif")));
@@ -56,50 +55,61 @@ public class Surface extends JFrame {
     Canvas3D canvas3D = new Canvas3D(configuration);
     canvas3D.addMouseListener(
         new MouseInputAdapter() {
+          @Override
           public void mouseClicked(MouseEvent e) {
             rotateThread.resetTime();
           }
 
+          @Override
           public void mouseDragged(MouseEvent e) {
             rotateThread.resetTime();
           }
 
+          @Override
           public void mouseEntered(MouseEvent e) {
             rotateThread.resetTime();
           }
 
+          @Override
           public void mouseMoved(MouseEvent e) {
             rotateThread.resetTime();
           }
 
+          @Override
           public void mousePressed(MouseEvent e) {
             rotateThread.resetTime();
           }
 
+          @Override
           public void mouseReleased(MouseEvent e) {
             rotateThread.resetTime();
           }
         });
     canvas3D.addMouseMotionListener(
         new MouseMotionAdapter() {
+          @Override
           public void mouseDragged(MouseEvent e) {
             rotateThread.resetTime();
           }
 
+          @Override
           public void mouseMoved(MouseEvent e) {
             rotateThread.resetTime();
           }
         });
     canvas3D.addKeyListener(
         new KeyAdapter() {
+          @Override
           public void keyPressed(KeyEvent e) {
             rotateThread.resetTime();
           }
 
+          @Override
           public void keyReleased(KeyEvent e) {
             rotateThread.resetTime();
           }
 
+          @Override
           public void keyTyped(KeyEvent e) {
             rotateThread.resetTime();
           }
@@ -118,6 +128,7 @@ public class Surface extends JFrame {
 
     WindowListener wndCloser = new WindowAdapter() // Windowlistener
         {
+          @Override
           public void windowClosing(WindowEvent e) {
             dispose();
           }
@@ -127,17 +138,18 @@ public class Surface extends JFrame {
 
     setVisible(true);
 
-    if (sono.perkeysconfirm == false) {
-      message m = new message();
+    if (!sono.perkeysconfirm) {
+      Message m = new Message();
       m.start();
     }
   }
 
   // ---------------------------------------------------------------------------------------------------------------
 
-  class message extends Thread implements ActionListener {
+  class Message extends Thread implements ActionListener {
     private JCheckBox askAgain;
 
+    @Override
     public void run() {
       askAgain =
           new JCheckBox("<html><i><font size = -2>Do not show this information message again");
@@ -167,7 +179,7 @@ public class Surface extends JFrame {
     }
 
     public void actionPerformed(ActionEvent e) {
-      if (askAgain.isSelected() == true) Surface.reftomain.perkeysconfirm = true;
+      if (askAgain.isSelected()) Surface.reftomain.perkeysconfirm = true;
     }
   }
 
@@ -182,9 +194,9 @@ public class Surface extends JFrame {
     objRoot.addChild(objTransform);
 
     // add the shapes to the transormation obejct
-    if (reftomain.gad.cpercoord.isSelected() == true) {
+    if (reftomain.gad.cpercoord.isSelected()) {
       objTransform.addChild(new CoordSysLines(reftomain));
-      objTransform.addChild(new CoordSysText(reftomain));
+      objTransform.addChild(new CoordSysText());
     }
     SurfacePane sp = new SurfacePane(reftomain, this, false, isWv);
     if (sp.getGeometry() == null) {
@@ -200,20 +212,24 @@ public class Surface extends JFrame {
     BoundingSphere bounds = new BoundingSphere(new Point3d(0.0, 0.0, 0.0), 100.0);
 
     // add the background universe texture
-    if (reftomain.gad.cuniverse.isSelected() == true) {
+    if (reftomain.gad.cuniverse.isSelected()) {
       Background bg = new Background();
       bg.setApplicationBounds(bounds);
       Sphere sphereObj =
           new Sphere(
               3.0f,
-              Sphere.GENERATE_NORMALS
-                  | Sphere.GENERATE_NORMALS_INWARD
-                  | Sphere.GENERATE_TEXTURE_COORDS,
+              Primitive.GENERATE_NORMALS
+                  | Primitive.GENERATE_NORMALS_INWARD
+                  | Primitive.GENERATE_TEXTURE_COORDS,
               40);
       Appearance backApp = sphereObj.getAppearance();
-      TextureLoader tex =
-          new TextureLoader(Sonogram.class.getResource("bg.jpg"), new String("RGB"), this);
-      if (tex != null) backApp.setTexture(tex.getTexture());
+      try {
+        TextureLoader tex =
+          new TextureLoader(Sonogram.class.getResource("bg.jpg"), "RGB", this);
+        backApp.setTexture(tex.getTexture());
+      } catch (Exception e) {
+        System.out.println("Could not load bg.jpg");
+      }
       objTransform.addChild(bg);
       objTransform.addChild(sphereObj);
     }
@@ -253,26 +269,32 @@ public class Surface extends JFrame {
     objRoot.addChild(myMouseZoom);
     addMouseListener(
         new MouseInputAdapter() {
+          @Override
           public void mouseClicked(MouseEvent e) {
             rotateThread.resetTime();
           }
 
+          @Override
           public void mouseDragged(MouseEvent e) {
             rotateThread.resetTime();
           }
 
+          @Override
           public void mouseEntered(MouseEvent e) {
             rotateThread.resetTime();
           }
 
+          @Override
           public void mouseMoved(MouseEvent e) {
             rotateThread.resetTime();
           }
 
+          @Override
           public void mousePressed(MouseEvent e) {
             rotateThread.resetTime();
           }
 
+          @Override
           public void mouseReleased(MouseEvent e) {
             rotateThread.resetTime();
           }
@@ -300,6 +322,7 @@ public class Surface extends JFrame {
       time = 0;
     }
 
+    @Override
     public void run() {
       for (; ; ) {
         // sleep

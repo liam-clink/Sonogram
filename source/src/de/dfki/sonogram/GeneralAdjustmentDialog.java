@@ -1929,59 +1929,59 @@ class GeneralAdjustmentDialog extends JFrame {
       // build winfunktion
       float[] fktvect = null;
       if (winfunktion == 1) {
-        fktvect = WindowFunktion.rectangleWindow(width - 50);
+        fktvect = WindowFunction.rectangleWindow(width - 50);
         minimunstoppbandattenuation = -21;
         peakamplitudeofsidelobe = -13;
         fktvect[0] = 0.0f;
         fktvect[width - 51] = 0.0f;
       }
       if (winfunktion == 2) {
-        fktvect = WindowFunktion.blackmanWindow(width - 50);
+        fktvect = WindowFunction.blackmanWindow(width - 50);
         minimunstoppbandattenuation = -74;
         peakamplitudeofsidelobe = -57;
       }
       if (winfunktion == 3) {
-        fktvect = WindowFunktion.triangleWindow(width - 50);
+        fktvect = WindowFunction.triangleWindow(width - 50);
         minimunstoppbandattenuation = -25;
         peakamplitudeofsidelobe = -25;
       }
       if (winfunktion == 4) {
-        fktvect = WindowFunktion.hammingWindow(width - 50);
+        fktvect = WindowFunction.hammingWindow(width - 50);
         minimunstoppbandattenuation = -53;
         peakamplitudeofsidelobe = -42;
       }
       if (winfunktion == 5) {
-        fktvect = WindowFunktion.welchWindow(width - 50);
+        fktvect = WindowFunction.welchWindow(width - 50);
         minimunstoppbandattenuation = -33;
         peakamplitudeofsidelobe = -22;
       }
       if (winfunktion == 6) {
-        fktvect = WindowFunktion.gaussWindow(width - 50);
+        fktvect = WindowFunction.gaussWindow(width - 50);
         minimunstoppbandattenuation = -55;
         peakamplitudeofsidelobe = -58;
       }
       if (winfunktion == 7) {
-        fktvect = WindowFunktion.hanningWindow(width - 50);
+        fktvect = WindowFunction.hanningWindow(width - 50);
         minimunstoppbandattenuation = -44;
         peakamplitudeofsidelobe = -31;
       }
       if (winfunktion == 8) {
-        fktvect = WindowFunktion.flattopWindow(width - 50);
+        fktvect = WindowFunction.flattopWindow(width - 50);
         minimunstoppbandattenuation = -54;
         peakamplitudeofsidelobe = -93;
       }
       if (winfunktion == 9) {
-        fktvect = WindowFunktion.harrisWindow(width - 50);
+        fktvect = WindowFunction.harrisWindow(width - 50);
         minimunstoppbandattenuation = -56;
         peakamplitudeofsidelobe = -90;
       }
       if (winfunktion == 10) {
-        fktvect = WindowFunktion.cosineWindow(width - 50);
+        fktvect = WindowFunction.cosineWindow(width - 50);
         minimunstoppbandattenuation = -31;
         peakamplitudeofsidelobe = -52;
       }
       if (winfunktion == 11) {
-        fktvect = WindowFunktion.asymetricalWindow(width - 50);
+        fktvect = WindowFunction.asymetricalWindow(width - 50);
         minimunstoppbandattenuation = -35;
         peakamplitudeofsidelobe = -24;
       }

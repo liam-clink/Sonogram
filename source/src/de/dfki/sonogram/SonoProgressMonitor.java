@@ -7,7 +7,7 @@ import javax.swing.*;
 /**
  * Copyright (c) 2001 Christoph Lauer @ DFKI, All Rights Reserved. clauer@dfki.de - www.dfki.de
  *
- * <p>This is my own ProgressBar implementation for the Soogram main frame
+ * <p>This is my own ProgressBar implementation for the Sonogram main frame
  *
  * @author Christoph Lauer
  * @version 1.0, Begin 15/09/2002, Current 26/09/2002
@@ -24,13 +24,26 @@ class SonoProgressMonitor extends JWindow implements Runnable {
   int min;
   int max;
   Sonogram owner;
-  int locsx, locsy;
-  int locpx, locpy;
-  int dimsx, dimsy;
-  int dimpx, dimpy;
-  int dimx, dimy;
-  int locx, locy;
-  int progressheigth = 12;
+  
+  int locsx;
+  int locsy;
+
+  int locpx;
+  int locpy;
+
+  int dimsx;
+  int dimsy;
+
+  int dimpx;
+  int dimpy;
+
+  int dimx;
+  int dimy;
+
+  int locx;
+  int locy;
+
+  int progressHeight = 12;
   String str;
 
   // ----------------------------------------------------------------------------
@@ -42,7 +55,7 @@ class SonoProgressMonitor extends JWindow implements Runnable {
     setBackground(new Color(50, 50, 70));
     progressbar = new JProgressBar(0, 100);
     progressbar.setToolTipText("Press with mouse on this progressbar to interrupt curent task.");
-    ProgressBarUI spui = new ProgressBarUI(progressheigth);
+    ProgressBarUI spui = new ProgressBarUI(progressHeight);
     progressbar.setUI(spui);
     progressbar.setStringPainted(true);
     progressbar.setFont(new Font("SansSerif", 0, 10));
@@ -50,13 +63,12 @@ class SonoProgressMonitor extends JWindow implements Runnable {
     progressbar.setBorderPainted(false);
     MouseListener mlst =
         new MouseAdapter() {
+          @Override
           public void mousePressed(MouseEvent e) {
             cancelispressed = true;
-            ((Sonogram) owner)
-                .messageBox(
+            owner.messageBox(
                     "Interrupted !", "Mouse pressed in progressbar.\n" + note + " Interrupted.", 2);
           }
-          ;
         };
     progressbar.addMouseListener(mlst);
 
@@ -97,34 +109,34 @@ class SonoProgressMonitor extends JWindow implements Runnable {
   }
   // ----------------------------------------------------------------------------
   public void run() {
-    while (endthread == false) {
+    while (!endthread) {
 
-      if (((Sonogram) owner).getState() == Frame.ICONIFIED) {
+      if (owner.getState() == Frame.ICONIFIED) {
         setVisible(false);
         return;
       } else {
         setVisible(true);
         toFront();
       }
-      locsx = (int) ((Sonogram) owner).getLocation().getX();
-      locsy = (int) ((Sonogram) owner).getLocation().getY();
-      locpx = (int) ((Sonogram) owner).pp.getLocation().getX();
-      locpy = (int) ((Sonogram) owner).pp.getLocation().getY();
-      dimsx = (int) ((Sonogram) owner).getSize().getWidth();
-      dimsy = (int) ((Sonogram) owner).getSize().getHeight();
-      dimpx = (int) ((Sonogram) owner).pp.getSize().getWidth();
-      dimpy = (int) ((Sonogram) owner).pp.getSize().getHeight();
+      locsx = (int) owner.getLocation().getX();
+      locsy = (int) owner.getLocation().getY();
+      locpx = (int) owner.pp.getLocation().getX();
+      locpy = (int) owner.pp.getLocation().getY();
+      dimsx = (int) owner.getSize().getWidth();
+      dimsy = (int) owner.getSize().getHeight();
+      dimpx = (int) owner.pp.getSize().getWidth();
+      dimpy = (int) owner.pp.getSize().getHeight();
       locx = locsx + (dimsx - dimpx) / 2;
-      locy = locsy + dimsy - progressheigth;
-      if (owner.javaWinDeco == true) locy -= 5;
+      locy = locsy + dimsy - progressHeight;
+      if (Sonogram.javaWinDeco) locy -= 5;
       dimx = dimpx - 1;
-      dimy = progressheigth;
+      dimy = progressHeight;
       setSize(dimx, dimy);
       setLocation(locx, locy);
       // For Mac dim-3 -- Size
       // For mac Locx+2, locy+3
 
-      if (valuehaschanged == true || progress == 100) {
+      if (valuehaschanged || progress == 100) {
         valuehaschanged = false;
         if (progress == 100) {
           str = "100% - Painting the Spectrum to the internal Image...";
@@ -134,9 +146,10 @@ class SonoProgressMonitor extends JWindow implements Runnable {
         paint(getGraphics());
       }
       try {
-        Thread.currentThread().sleep(20);
+        Thread.sleep(20);
       } catch (InterruptedException ie) {
         System.out.println("--> Interupt Exception in SonoProgressMonitor (Sleep)");
+        Thread.currentThread().interrupt();
       }
     }
   }

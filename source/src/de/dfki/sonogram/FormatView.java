@@ -27,19 +27,19 @@ public class FormatView extends JFrame {
     setLocation(10, 10);
     Toolkit tk = Toolkit.getDefaultToolkit();
     setIconImage(tk.getImage(Sonogram.class.getResource("Sonogram.gif")));
-    cvPanel cv = new cvPanel(); // Panel for Winfunktion
+    FormatViewPanel cv = new FormatViewPanel(); // Panel for Winfunktion
     getContentPane().add(cv);
   }
   // -------------------------------------------------------------------------------------------------------------------------
   public void update() {
-    if (isVisible() == true && refToMain.openingflag == false && refToMain.spectrumExist == true) {
+    if (isVisible() && !refToMain.openingflag && refToMain.spectrumExist) {
       repaint();
     }
   }
   // -------------------------------------------------------------------------------------------------------------------------
   // =========================================================================================================================
   /** Inner Panel class to paint Windowfunktion */
-  class cvPanel extends JPanel {
+  class FormatViewPanel extends JPanel {
     // -------------------------------------------------------------------------------------------------------------------------
     public void paintComponent(Graphics gr) {
       Graphics2D g = (Graphics2D) gr;
@@ -122,8 +122,8 @@ public class FormatView extends JFrame {
       // Copy Timelinearray to buffer
       buffer = new float[len];
       double start =
-          refToMain.selectedstartold + (double) refToMain.pp.wnf * refToMain.selecedwidthold;
-      startp = (int) (start * (double) refToMain.samplesall);
+          refToMain.selectedstartold + refToMain.pp.wnf * refToMain.selecedwidthold;
+      startp = (int) (start * refToMain.samplesall);
       if (startp > (refToMain.samplesall - len)) {
         startp = refToMain.samplesall - len;
         mouseisintimespan = true;

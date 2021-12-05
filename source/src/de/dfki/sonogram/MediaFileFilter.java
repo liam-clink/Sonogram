@@ -12,14 +12,14 @@ import java.io.File;
 
 class MediaFileFilter extends javax.swing.filechooser.FileFilter {
   // -------------------------------------------------------------------------
-  private String m_description = null;
-  private String m_extension = null;
+  private String mediaDescription = null;
+  private String mediaExtension = null;
   private boolean allMediaFilesFlag = false;
   // -------------------------------------------------------------------------
   /** The Construkltor */
   public MediaFileFilter(String extension, String description) {
-    m_description = description;
-    m_extension = "." + extension.toLowerCase();
+    mediaDescription = description;
+    mediaExtension = "." + extension.toLowerCase();
   }
   // -------------------------------------------------------------------------
   public void aceptAllMediaFiles(boolean flag) {
@@ -27,13 +27,13 @@ class MediaFileFilter extends javax.swing.filechooser.FileFilter {
   }
   // -------------------------------------------------------------------------
   public String getDescription() {
-    return m_description;
+    return mediaDescription;
   }
   // -------------------------------------------------------------------------
   public boolean accept(File f) {
     if (f == null) return false;
     if (f.isDirectory()) return true;
-    if (allMediaFilesFlag == false) return f.getName().toLowerCase().endsWith(m_extension);
+    if (!allMediaFilesFlag) return f.getName().toLowerCase().endsWith(mediaExtension);
     else
       return (f.getName().toLowerCase().endsWith("wav")
           || f.getName().toLowerCase().endsWith("au")

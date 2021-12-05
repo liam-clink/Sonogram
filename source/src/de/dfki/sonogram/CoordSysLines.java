@@ -25,7 +25,7 @@ public class CoordSysLines extends Shape3D {
 
   private Geometry axisGeometry() {
 
-    LineArray axis = new LineArray(18 + 44, LineArray.COORDINATES | LineArray.COLOR_3);
+    LineArray axis = new LineArray(18 + 44, GeometryArray.COORDINATES | GeometryArray.COLOR_3);
 
     // Frequency Axis & Dart
     axis.setCoordinate(0, new Point3f(-0.6f, -0.6f, -0.4f)); // Axis
@@ -98,8 +98,9 @@ public class CoordSysLines extends Shape3D {
     polyAttrib.setPolygonMode(PolygonAttributes.POLYGON_LINE);
     app.setPolygonAttributes(polyAttrib);
 
-    // 	PointAttributes pointAttrib = new PointAttributes(2,true);
-    //         app.setPointAttributes(pointAttrib);
+    // NOTE: These two lines were commented out before, not clear why, may need to remove later
+    PointAttributes pointAttrib = new PointAttributes(2,true);
+    app.setPointAttributes(pointAttrib);
 
     if (reftomain.iperantialias) {
       LineAttributes lineAttrib = new LineAttributes(2f, LineAttributes.PATTERN_SOLID, true);

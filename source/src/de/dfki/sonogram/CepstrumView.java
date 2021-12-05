@@ -44,7 +44,7 @@ public class CepstrumView extends JFrame {
     setLocation(10, 10);
     Toolkit tk = Toolkit.getDefaultToolkit();
     setIconImage(tk.getImage(Sonogram.class.getResource("Sonogram.gif")));
-    cvPanel cv = new cvPanel(); // Panel for Winfunktion
+    CepstrumViewPanel cv = new CepstrumViewPanel(); // Panel for Winfunktion
     getContentPane().add(cv);
   }
   // -------------------------------------------------------------------------------------------------------------------------
@@ -57,8 +57,9 @@ public class CepstrumView extends JFrame {
   // =========================================================================================================================
   /** Inner Panel class to paint Windowfunktion */
   // NOTE: origin is at top left, with y increasing down and x increasing right
-  class cvPanel extends JPanel {
+  class CepstrumViewPanel extends JPanel {
     // -------------------------------------------------------------------------------------------------------------------------
+    @Override
     public void paintComponent(Graphics gr) {
       Graphics2D g = (Graphics2D) gr;
       if (refToMain.gad.cantialise.isSelected())

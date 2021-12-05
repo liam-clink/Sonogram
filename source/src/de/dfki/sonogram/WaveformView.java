@@ -1,10 +1,7 @@
 package de.dfki.sonogram;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
 import javax.swing.*;
-import javax.swing.event.*;
 
 /**
  * Copyright (c) 2001 Christoph Lauer @ DFKI, All Rights Reserved. clauer@dfki.de - www.dfki.de
@@ -50,7 +47,7 @@ public class WaveformView extends JFrame {
     if (refToMain.gad.sliderwave.getValue() == 5) sec = 0.100;
     if (refToMain.gad.sliderwave.getValue() == 6) sec = 0.250;
     if (refToMain.gad.sliderwave.getValue() == 7) sec = 1.000;
-    len = (int) (sec * (double) refToMain.samplerate);
+    len = (int) (sec * (double) refToMain.sampleRate);
   }
   // =========================================================================================================================
   /** Inner Panel class to paint Windowfunktion */
@@ -99,9 +96,9 @@ public class WaveformView extends JFrame {
       buffer = new float[len];
       double start =
           refToMain.selectedstartold + (double) refToMain.pp.wnf * refToMain.selecedwidthold;
-      startp = (int) (start * (double) refToMain.samplesall);
-      if (startp > (refToMain.samplesall - len)) {
-        startp = refToMain.samplesall - len;
+      startp = (int) (start * (double) refToMain.samplesAll);
+      if (startp > (refToMain.samplesAll - len)) {
+        startp = refToMain.samplesAll - len;
         mouseisintimespan = true;
       }
       for (int i = 0; i < len; i++) {
@@ -148,8 +145,8 @@ public class WaveformView extends JFrame {
       tmp =
           ((double) refToMain.selectedstartold
                   + (double) refToMain.pp.wnf * (double) refToMain.selecedwidthold)
-              * (double) refToMain.samplesall
-              / (double) refToMain.samplerate;
+              * (double) refToMain.samplesAll
+              / (double) refToMain.sampleRate;
       tmp = Math.round(tmp * 1000.0) / 1000.0;
       str = "Begin time = " + tmp + " Seconds";
       g.drawString(str, 20, 12);

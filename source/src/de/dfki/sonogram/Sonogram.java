@@ -44,13 +44,13 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
   Boolean shaking = false; // flag stores if the ZinButton shaking
   static boolean java3disinstalled = true;
   public boolean d3ison = false;
-  short timewindowlength = 0; // length of Timewindow to Transform
+  short timeWindowLength = 0; // length of Timewindow to Transform
   byte[] timeline = new byte[4000];
-  int samplestotal = 0; // Number of used samples
-  int samplesall = 0; // Number of all samples obtain from DataSourceReader
+  int samplesTotal = 0; // Number of used samples
+  int samplesAll = 0; // Number of all samples obtain from DataSourceReader
   int peakx = 0; // Peak in Time in Spec-Units
   int peaky = 0; // Peak in Frequency in Frequ-Diff Units
-  int samplerate = 0; // Set from GAD
+  int sampleRate = 0; // Set from GAD
   int zoompreviousindex = 0; // For Zoomback
   int gadx = 200;
   int gady = 200;
@@ -936,9 +936,9 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         return;
       }
       progressMonitor.setProgress(
-          10 + (int) (i / (samplestotal - timewindowlength) * 70.0));
+          10 + (int) (i / (samplesTotal - timeWindowLength) * 70.0));
       float[] timebuffer = new float[transformationlength]; // allokate the buffer for timeSignal
-      offset = (int) (samplesall * selectedstart); // offset for marked selection
+      offset = (int) (samplesAll * selectedstart); // offset for marked selection
       for (int v = 0; v < transformationlength; v++) { // Copy from DataSourceReader
         b = reader.audioStream.get(v + (int) i + offset);
         if (ffttrans) timebuffer[v] = b.floatValue() * windowbuffer[v];
@@ -947,12 +947,12 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       if (!ffttrans) // Select Transformtion
         spekbuffer =
             LinearPredictionTransform.doLinearPredictionTransform(
-                timebuffer, timewindowlength, gad.sliderlpccoef.getValue(), windowbuffer);
+                timebuffer, timeWindowLength, gad.sliderlpccoef.getValue(), windowbuffer);
       else spekbuffer = fft.doFFT(timebuffer); // Transformation Call for FFT
       // Smooth over Frequency
       if (gad.csmooth.isSelected()) { // if Smooth Spektrum ower frequency is set
-        float[] spekbuffertmp = new float[timewindowlength / 2];
-        for (int k = 2; k < (timewindowlength / 2 - 2); k++)
+        float[] spekbuffertmp = new float[timeWindowLength / 2];
+        for (int k = 2; k < (timeWindowLength / 2 - 2); k++)
           spekbuffertmp[k] =
               (spekbuffer[k - 2]
                       + spekbuffer[k - 1]
@@ -963,13 +963,13 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         spekbuffertmp[1] =
             (spekbuffertmp[0] + spekbuffertmp[1] + spekbuffertmp[2]) / 3.0f; // BOUNDS
         spekbuffertmp[0] = (spekbuffertmp[0] + spekbuffertmp[1]) / 2.0f;
-        spekbuffertmp[timewindowlength / 2 - 2] =
-            (spekbuffertmp[timewindowlength / 2 - 1]
-                    + spekbuffertmp[timewindowlength / 2 - 2]
-                    + spekbuffertmp[timewindowlength / 2 - 3])
+        spekbuffertmp[timeWindowLength / 2 - 2] =
+            (spekbuffertmp[timeWindowLength / 2 - 1]
+                    + spekbuffertmp[timeWindowLength / 2 - 2]
+                    + spekbuffertmp[timeWindowLength / 2 - 3])
                 / 3.0f;
-        spekbuffertmp[timewindowlength / 2 - 1] =
-            (spekbuffertmp[timewindowlength / 2 - 1] + spekbuffertmp[timewindowlength / 2 - 2])
+        spekbuffertmp[timeWindowLength / 2 - 1] =
+            (spekbuffertmp[timeWindowLength / 2 - 1] + spekbuffertmp[timeWindowLength / 2 - 2])
                 / 2.0f;
         spectrum.set(index, spekbuffertmp); // Adding Transformvector to Spektrum
       } else spectrum.set(index, spekbuffer);
@@ -1016,20 +1016,20 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       // Store Old Numbers to calculate inner zooms
       selectedstartold = selectedstart;
       selecedwidthold = selecedwidth;
-      samplesall = reader.audioStream.size();
-      samplestotal = (int) ((double) samplesall * selecedwidth);
-      timetostreamfakt = samplesall / 2000.0; // Faktor to read the Timeline-Vektor
+      samplesAll = reader.audioStream.size();
+      samplesTotal = (int) ((double) samplesAll * selecedwidth);
+      timetostreamfakt = samplesAll / 2000.0; // Faktor to read the Timeline-Vektor
       // if Auto-length is selected
       if (gad.cauto.isSelected() == true) {
-        timewindowlength = 1;
-        sqrtsize = (short) Math.sqrt(samplestotal * 2);
+        timeWindowLength = 1;
+        sqrtsize = (short) Math.sqrt(samplesTotal * 2);
         do {
-          timewindowlength *= 2;
+          timeWindowLength *= 2;
           logdualis++;
-        } while (timewindowlength < sqrtsize);
+        } while (timeWindowLength < sqrtsize);
         // timewindowlength *= 2;
         gad.sliderwinsize.setValue(logdualis);
-      } else timewindowlength = (short) Math.pow(2.0, gad.sliderwinsize.getValue());
+      } else timeWindowLength = (short) Math.pow(2.0, gad.sliderwinsize.getValue());
       // allokate Windowbuffer
       float windowbuffer[] = null;
       // For LPC-Transformation Transformationlength is "previous Samples" in GAD
@@ -1052,13 +1052,13 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
                 + "» (using "
                 + NTHREADS
                 + " cores)");
-        transformationlength = timewindowlength; // FFT
+        transformationlength = timeWindowLength; // FFT
       }
       System.out.println("--> Use " + transformationlength + " transformationlegth");
       // Then calculate Windowingbuffers which is selected in GeneralAdjustmentDialog
       int winfunclen = 0;
       if (ffttrans) winfunclen = transformationlength;
-      else winfunclen = timewindowlength;
+      else winfunclen = timeWindowLength;
       if (hamItem.isSelected()) {
         windowbuffer = WindowFunction.hammingWindow(winfunclen);
         selectedFilter = "Hamming";
@@ -1112,7 +1112,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       // START OF THE PARALLELIZATION
       int index = 0;
       // precalc the size
-      for (double i = 0; i < (samplestotal - transformationlength); i += timewindowlength / overlapping) {
+      for (double i = 0; i < (samplesTotal - transformationlength); i += timeWindowLength / overlapping) {
         index++;
       }
       spectrum.setSize(index);
@@ -1120,7 +1120,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       System.out.println("--> Max Number of parallel FFT Threads: " + NTHREADS);
       index = 0;
       ExecutorService executor = Executors.newFixedThreadPool(NTHREADS);
-      for (double i = 0; i < (samplestotal - transformationlength); i += timewindowlength / overlapping) {
+      for (double i = 0; i < (samplesTotal - transformationlength); i += timeWindowLength / overlapping) {
         CalcThread thread = new CalcThread(index, i, transformationlength, offset, windowbuffer);
         executor.execute(thread);
         index++;
@@ -1133,7 +1133,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       // **********************************/
 
       System.out.println("--> Transformation finished, generate  " + spectrum.size() + " spektras");
-      System.out.println("--> Window lentgh: " + timewindowlength);
+      System.out.println("--> Window lentgh: " + timeWindowLength);
       // Smooth ower time is set
       if (gad.csmoothx.isSelected()) {
         float[] spekbuffersuba; // b,a,0,a,b
@@ -1147,8 +1147,8 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
           spekbuffer = spectrum.get(time);
           spekbufferadda = spectrum.get(time + 1);
           spekbufferaddb = spectrum.get(time + 2);
-          spekbuffertmp = new float[timewindowlength / 2];
-          for (int frequency = 0; frequency < timewindowlength / 2; frequency++) {
+          spekbuffertmp = new float[timeWindowLength / 2];
+          for (int frequency = 0; frequency < timeWindowLength / 2; frequency++) {
             spekbuffertmp[frequency] =
                 (spekbuffer[frequency]
                         + spekbufferadda[frequency]
@@ -1159,7 +1159,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
           }
           spectrum.setElementAt(spekbuffertmp, time);
         }
-        for (int frequency = 0; frequency < timewindowlength / 2; frequency++) { // Bounds
+        for (int frequency = 0; frequency < timeWindowLength / 2; frequency++) { // Bounds
           spekbuffer = spectrum.get(0);
           spekbuffersuba = spectrum.get(1);
           spekbuffersubb = spectrum.get(2);
@@ -1188,7 +1188,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         double logkonst = 255.0 / Math.log(256.0);
         for (int time = 0; time < spectrum.size(); time++) {
           spekbuffer = spectrum.get(time);
-          for (int frequency = 0; frequency < timewindowlength / 2; frequency++) {
+          for (int frequency = 0; frequency < timeWindowLength / 2; frequency++) {
             spekbuffer[frequency] =
                 (int) (Math.log(spekbuffer[frequency] * logscale + 1) * logkonst);
           }
@@ -1201,12 +1201,12 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       for (int t = 0; t < 2000; t++) { // Copy and find min/max of timeline
         streampoint = (int) (t * timetostreamfakt);
         // If Energytimesignal is not Selected
-        if (!energyflag && streampoint > 0 && streampoint < samplesall) { 
+        if (!energyflag && streampoint > 0 && streampoint < samplesAll) { 
             b = reader.audioStream.get(streampoint);
             timeline[t] = b.byteValue();
         }
         if (energyflag) { // If Energytimesignal is Selected
-          if ((streampoint > energywinlength) && (streampoint < samplesall - energywinlength)) {
+          if ((streampoint > energywinlength) && (streampoint < samplesAll - energywinlength)) {
             sum = 0.0f;
             for (int i = 0; i < energywinlength; i++) {
               b1 = reader.audioStream.get(streampoint + i);
@@ -2889,7 +2889,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         playbuttonpressed = true;
         System.out.println("--> START playing");
         if (pp.plstop == pp.plstart) pp.plstop = 1.0;
-        player.springTo((selectedstartold + pp.plstart * selecedwidthold) * samplesall / samplerate);
+        player.springTo((selectedstartold + pp.plstart * selecedwidthold) * samplesAll / sampleRate);
         player.play();
         stopItem.setEnabled(true);
         stopbutton.setEnabled(true);
@@ -2950,7 +2950,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     }
     if (e.getSource() == cepbutton || e.getSource() == cepItem) { // Cepstrum View
       if (!spectrumExist) messageBox("Cepstrum", "Please open Mediafile first.", 1);
-      else if (samplesall > cv.samples()) {
+      else if (samplesAll > cv.samples()) {
         System.out.println("--> Show Cepstrum View");
         gad.p1.setSelectedIndex(8);
         cv.setVisible(!cv.isVisible());
@@ -2996,7 +2996,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     }
     if (e.getSource() == forbutton || e.getSource() == forItem) { // FFT View
       if (!spectrumExist) messageBox("Fast Fourier", "Please open Mediafile first.", 1);
-      else if (samplesall > fv.len) {
+      else if (samplesAll > fv.len) {
         System.out.println("--> Fast Fourier Transform View");
         fv.setVisible(!fv.isVisible());
         gad.p1.setSelectedIndex(6);
@@ -3030,7 +3030,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     }
     if (e.getSource() == lpcbutton || e.getSource() == lpcItem) { // Linear Prediction  Dialog
       if (!spectrumExist) messageBox("LPC", "Please open Mediafile first.", 1);
-      else if (samplesall > lv.len) {
+      else if (samplesAll > lv.len) {
         System.out.println("--> Show Linear Prediction View");
         lv.setVisible(!lv.isVisible());
         gad.p1.setSelectedIndex(7);
@@ -3358,7 +3358,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       if (!spectrumExist) messageBox("Waveform", "Please open Mediafile first.", 1);
       else {
         wv.getLen();
-        if (samplesall > wv.len) {
+        if (samplesAll > wv.len) {
           System.out.println("--> Show Linear Prediction View");
           wv.setVisible(!wv.isVisible());
           gad.p1.setSelectedIndex(11);
@@ -3395,7 +3395,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     }
     if (e.getSource() == walbutton || e.getSource() == walItem) { // Cepstrum View
       if (!spectrumExist) messageBox("Wavelet", "Please open Mediafile first.", 1);
-      else if (samplesall > gad.walwindowlength) {
+      else if (samplesAll > gad.walwindowlength) {
         System.out.println("--> Show Wavelet View");
         gad.p1.setSelectedIndex(17);
         av.setVisible(!av.isVisible());
@@ -3642,7 +3642,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     float max = -Float.MAX_VALUE;
     for (int x = 0; x < spectrum.size(); x++) { // find min/max Points of Spektrum
       tempSpektrum = spectrum.get(x);
-      for (int y = 0; y < (timewindowlength / 2); y++) {
+      for (int y = 0; y < (timeWindowLength / 2); y++) {
         if (max < tempSpektrum[y]) {
           max = tempSpektrum[y];
           peaky = y;
@@ -3656,7 +3656,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     // Normalizes the Spektrum to 0..255 and test the range
     for (int x = 0; x < spectrum.size(); x++) {
       tempSpektrum = spectrum.get(x);
-      for (int y = 0; y < (timewindowlength / 2); y++) {
+      for (int y = 0; y < (timeWindowLength / 2); y++) {
         tempSpektrum[y] = ((tempSpektrum[y] - min) / diff * 255.0f); // Normalisation
         if (tempSpektrum[y] < 0.0f) {
           System.out.println("--> BEEP: min = " + tempSpektrum[y]);

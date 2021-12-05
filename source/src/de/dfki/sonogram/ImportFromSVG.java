@@ -98,8 +98,8 @@ class ImportFromSVG {
             var28 += 18;
             var29 = var5.indexOf("\"", var28);
             var6 = var5.substring(var28, var29);
-            this.reftomain.timewindowlength = (short) Integer.parseInt(var6);
-            var10 = this.reftomain.timewindowlength / 2;
+            this.reftomain.timeWindowLength = (short) Integer.parseInt(var6);
+            var10 = this.reftomain.timeWindowLength / 2;
           }
 
           if (var5.indexOf("WindowNumbers") > 0) {
@@ -301,7 +301,7 @@ class ImportFromSVG {
             var28 += 12;
             var29 = var5.indexOf("\"", var28);
             var6 = var5.substring(var28, var29);
-            this.reftomain.samplerate = Integer.parseInt(var6);
+            this.reftomain.sampleRate = Integer.parseInt(var6);
           }
 
           if (var5.indexOf("SamplesTotal") > 0) {
@@ -309,7 +309,7 @@ class ImportFromSVG {
             var28 += 14;
             var29 = var5.indexOf("\"", var28);
             var6 = var5.substring(var28, var29);
-            this.reftomain.samplestotal = Integer.parseInt(var6);
+            this.reftomain.samplesTotal = Integer.parseInt(var6);
           }
         }
 

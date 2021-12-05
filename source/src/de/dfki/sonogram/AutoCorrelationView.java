@@ -78,7 +78,7 @@ public class AutoCorrelationView extends JFrame {
       else if (sliderwl == 6) windowlength = 1000;
       else if (sliderwl == 7) windowlength = 2500;
       else windowlength = 5000;
-      winlensamples = (int) (windowlength / 1000.0 * refToMain.samplerate);
+      winlensamples = (int) (windowlength / 1000.0 * refToMain.sampleRate);
       int sliderws = refToMain.gad.slideracwinshift.getValue();
       if (sliderws == 0) windowshift = 2.5;
       else if (sliderws == 1) windowshift = 5;
@@ -89,7 +89,7 @@ public class AutoCorrelationView extends JFrame {
       else if (sliderws == 6) windowshift = 250;
       else if (sliderws == 7) windowshift = 500;
       else windowshift = 1000;
-      winshiftsamples = (int) (windowshift / 1000.0 * refToMain.samplerate);
+      winshiftsamples = (int) (windowshift / 1000.0 * refToMain.sampleRate);
       winlenall = winlensamples + winshiftsamples;
       // Coords and Grid and background
       g.setColor(new Color(15, 50, 20));
@@ -116,9 +116,9 @@ public class AutoCorrelationView extends JFrame {
       float[] buffer = new float[winlenall];
       double start =
           refToMain.selectedstartold + refToMain.pp.wnf * refToMain.selecedwidthold;
-      startp = (int) (start * refToMain.samplesall);
-      if (startp > (refToMain.samplesall - (winlenall))) {
-        startp = refToMain.samplesall - (winlenall);
+      startp = (int) (start * refToMain.samplesAll);
+      if (startp > (refToMain.samplesAll - (winlenall))) {
+        startp = refToMain.samplesAll - (winlenall);
         mouseisintimespan = true;
       }
       for (int i = 0; i < winlenall; i++) {
@@ -173,8 +173,8 @@ public class AutoCorrelationView extends JFrame {
       tmp =
           (refToMain.selectedstartold
                   + refToMain.pp.wnf * refToMain.selecedwidthold)
-              * refToMain.samplesall
-              / refToMain.samplerate;
+              * refToMain.samplesAll
+              / refToMain.sampleRate;
       tmp = Math.round(tmp * 1000.0) / 1000.0;
       str = "Begin time = " + tmp + " Seconds";
       g.drawString(str, 20, 12);
@@ -228,7 +228,7 @@ public class AutoCorrelationView extends JFrame {
           ptime =
               Math.round(
                       (Math.abs(toppeakx1samples - toppeakx2samples)
-                              / (double) refToMain.samplerate)
+                              / (double) refToMain.sampleRate)
                           * 10000.0)
                   / 10.0;
           pfrequency = (double) Math.round(1.0 / (ptime / 1000.0) * 10) / 10;

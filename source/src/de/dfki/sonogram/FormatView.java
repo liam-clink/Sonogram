@@ -2,10 +2,7 @@ package de.dfki.sonogram;
 
 import de.dfki.maths.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
 import javax.swing.*;
-import javax.swing.event.*;
 
 /**
  * Copyright (c) 2001 Christoph Lauer @ DFKI, All Rights Reserved. clauer@dfki.de - www.dfki.de
@@ -108,7 +105,7 @@ public class FormatView extends JFrame {
       g.setFont(new Font("Courier", 0, 10));
       g.drawString("Frequency(kHz)", xm - 100, ym - 2);
       for (int i = 0; i <= 10; i++) {
-        temp = (double) i * ((double) refToMain.samplerate / 20000.0) / (double) slfre;
+        temp = (double) i * ((double) refToMain.sampleRate / 20000.0) / (double) slfre;
         round = (double) ((int) (temp * 10)) / 10.0;
         str = String.valueOf(round);
         x = (int) ((double) i / 10.0 * (double) (xm - 25.0));
@@ -123,9 +120,9 @@ public class FormatView extends JFrame {
       buffer = new float[len];
       double start =
           refToMain.selectedstartold + refToMain.pp.wnf * refToMain.selecedwidthold;
-      startp = (int) (start * refToMain.samplesall);
-      if (startp > (refToMain.samplesall - len)) {
-        startp = refToMain.samplesall - len;
+      startp = (int) (start * refToMain.samplesAll);
+      if (startp > (refToMain.samplesAll - len)) {
+        startp = refToMain.samplesAll - len;
         mouseisintimespan = true;
       }
       for (int i = 0; i < len; i++) {
@@ -232,7 +229,7 @@ public class FormatView extends JFrame {
           temp =
               (double) f
                   / (double) (len / 2)
-                  * ((double) refToMain.samplerate / 2.0)
+                  * ((double) refToMain.sampleRate / 2.0)
                   / (double) slfre;
           str = String.valueOf((int) temp);
           x = (int) ((double) (lm[(int) f] - 2) / 11 * (double) (xm - 25)) + 30;

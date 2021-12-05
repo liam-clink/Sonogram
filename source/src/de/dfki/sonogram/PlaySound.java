@@ -81,8 +81,8 @@ public class PlaySound implements ControllerListener, Runnable {
       if (reftomain.pp.plstop == reftomain.pp.plstart) reftomain.pp.plstop = 1.0;
       springTo(
           (reftomain.selectedstartold + reftomain.pp.plstart * reftomain.selecedwidthold)
-              * (double) reftomain.samplesall
-              / (double) reftomain.samplerate);
+              * (double) reftomain.samplesAll
+              / (double) reftomain.sampleRate);
       play();
       return;
     }

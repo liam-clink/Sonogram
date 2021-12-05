@@ -1522,7 +1522,7 @@ class GeneralAdjustmentDialog extends JFrame {
               len = 8192;
               break;
           }
-          if (sono.samplesall < len)
+          if (sono.samplesAll < len)
             sono.messageBox("Sonogram Settings", "Signal to short for this bufferlength", 1);
           else {
             sono.fv.update();

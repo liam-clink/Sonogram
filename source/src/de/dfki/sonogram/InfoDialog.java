@@ -104,26 +104,26 @@ public class InfoDialog extends JFrame {
   void update() {
 
     if (reftomain.spectrumExist && (this.isVisible())) {
-      double sfr = ((double) (reftomain.samplerate) / (double) reftomain.timewindowlength);
+      double sfr = ((double) (reftomain.sampleRate) / (double) reftomain.timeWindowLength);
       sfr = Math.round(sfr * 100.0) / 100.0;
       double str =
-          ((double) reftomain.samplesall
-              / (double) (reftomain.samplerate)
-              / reftomain.timewindowlength
+          ((double) reftomain.samplesAll
+              / (double) (reftomain.sampleRate)
+              / reftomain.timeWindowLength
               * 2.0);
       str = Math.round(str * 100000.0) / 100.0;
-      int swu = (reftomain.timewindowlength);
+      int swu = (reftomain.timeWindowLength);
       int swn = (reftomain.spectrum.size());
-      double swt = ((double) swu / (double) (reftomain.samplerate));
+      double swt = ((double) swu / (double) (reftomain.sampleRate));
       swt = Math.round(swt * 100000.0) / 100.0;
-      double sid = ((double) reftomain.samplesall / (double) (reftomain.samplerate));
+      double sid = ((double) reftomain.samplesAll / (double) (reftomain.sampleRate));
       sid = Math.round(sid * 1000.0) / 1000.0;
       double sed =
           (reftomain.selecedwidth
-              * reftomain.samplesall
-              / (reftomain.samplerate));
+              * reftomain.samplesAll
+              / (reftomain.sampleRate));
       sed = Math.round(sed * 1000.0) / 1000.0;
-      int ses = (int) (reftomain.selecedwidth * reftomain.samplesall);
+      int ses = (int) (reftomain.selecedwidth * reftomain.samplesAll);
       String fin = "File load from URL";
       String fip = "File load from URL";
       if (!reftomain.fileisfromurl) {
@@ -131,25 +131,25 @@ public class InfoDialog extends JFrame {
         fin = file.getName();
         fip = file.getPath();
       }
-      int sar = reftomain.samplerate;
+      int sar = reftomain.sampleRate;
       int ovl = reftomain.gad.sliderwinspeed.getValue();
       if (!reftomain.gad.coverlapping.isSelected()) ovl = 1;
       String dst = reftomain.reader.dstype;
       String sef = reftomain.selectedFilter;
       double pef =
           (double) reftomain.peaky
-              / (double) reftomain.timewindowlength
-              * (reftomain.samplerate);
+              / (double) reftomain.timeWindowLength
+              * (reftomain.sampleRate);
       pef = Math.round(pef * 100.0) / 100.0;
       double pet = (double) reftomain.peakx / (double) reftomain.spectrum.size() * sid;
       pet = Math.round(pet * 1000.0) / 1000.0;
-      double ffw = ((double) reftomain.fv.len / (double) (reftomain.samplerate));
+      double ffw = ((double) reftomain.fv.len / (double) (reftomain.sampleRate));
       ffw = Math.round(ffw * 100000.0) / 100.0;
-      double ffr = ((double) (reftomain.samplerate) / (double) reftomain.fv.len);
-      double cwl = ((double) reftomain.cv.samples() / (double) (reftomain.samplerate) / 2.0);
+      double ffr = ((double) (reftomain.sampleRate) / (double) reftomain.fv.len);
+      double cwl = ((double) reftomain.cv.samples() / (double) (reftomain.sampleRate) / 2.0);
       cwl = Math.round(cwl * 100000.0) / 100.0;
       double lpt =
-          ((double) reftomain.gad.sliderlpcsamfutur.getValue() / (double) (reftomain.samplerate));
+          ((double) reftomain.gad.sliderlpcsamfutur.getValue() / (double) (reftomain.sampleRate));
       lpt = Math.round(lpt * 100000.0) / 100.0;
       int lco = (reftomain.gad.sliderlpccoef.getValue());
       int sel = swu / 2 * swn;

@@ -106,7 +106,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
         AudioFormat newaf = (AudioFormat) traCont[i].getFormat();
         System.out.println("--> Format processed in:" + newaf);
         System.out.println("--> Samplerate=" + samplerate);
-        reftomain.samplerate = samplerate;
+        reftomain.sampleRate = samplerate;
       }
     }
     reftomain.progressMonitor.setProgress(8);

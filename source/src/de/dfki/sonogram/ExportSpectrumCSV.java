@@ -1,10 +1,7 @@
 package de.dfki.sonogram;
 
-import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
 import javax.swing.*;
-import javax.swing.border.*;
 
 /**
  * Copyright (c) 2011 Christoph Lauer @ DFKI, All Rights Reserved. christoph.lauer@me.com -
@@ -41,7 +38,7 @@ class ExportSpectrumCSV {
       // write the CSV file
       for (int x = 0; x < reftosonogram.spectrum.size(); x++) {
         float[] spec = (float[]) reftosonogram.spectrum.get(x);
-        for (int y = 0; y < (reftosonogram.timewindowlength / 2); y++) {
+        for (int y = 0; y < (reftosonogram.timeWindowLength / 2); y++) {
           float ampl = spec[y];
           out.print(ampl);
           out.print(" ; ");

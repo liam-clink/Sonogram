@@ -162,7 +162,7 @@ class ExportSpectrumSVG extends JFrame {
     Color color;
     int r, g, b;
     int width = reftomain.spectrum.size();
-    int heigth = reftomain.timewindowlength / 2;
+    int heigth = reftomain.timeWindowLength / 2;
     int scale = slidersize.getValue();
     if (scale == 0) scale = 1;
 
@@ -171,7 +171,7 @@ class ExportSpectrumSVG extends JFrame {
       return (false);
     }
     if (width * heigth > 30000) {
-      double sel = reftomain.spectrum.size() * reftomain.timewindowlength / 2;
+      double sel = reftomain.spectrum.size() * reftomain.timeWindowLength / 2;
       double mes = Math.round(Math.round((double) sel * 83.175 / 1024.0) / 1024.0 * 100.0) / 100.0;
 
       int confirm =
@@ -216,7 +216,7 @@ class ExportSpectrumSVG extends JFrame {
       for (int x = 0; x < width; x++) {
         tempSpektrum = (float[]) reftomain.spectrum.get(x);
         for (int y = 0; y < heigth; y++) {
-          amplitude = (int) tempSpektrum[(reftomain.timewindowlength / 2 - 1) - y];
+          amplitude = (int) tempSpektrum[(reftomain.timeWindowLength / 2 - 1) - y];
           color = colors[amplitude];
           r = color.getRed();
           g = color.getGreen();
@@ -265,7 +265,7 @@ class ExportSpectrumSVG extends JFrame {
             x < width * scale;
             x +=
                 ((double) width * scale)
-                    / ((double) reftomain.samplestotal / (double) reftomain.samplerate))
+                    / ((double) reftomain.samplesTotal / (double) reftomain.sampleRate))
           out.println(
               "\t\t<line x1=\""
                   + (int) x
@@ -292,7 +292,7 @@ class ExportSpectrumSVG extends JFrame {
       if (cpure.isSelected() == false) {
         out.println("\t<SpectrumSettingsForGeneration/>");
         out.println("\t\t<FilePath=\"" + reftomain.filepath + "\"/>");
-        out.println("\t\t<TimewindowLength=\"" + reftomain.timewindowlength + "\"/>");
+        out.println("\t\t<TimewindowLength=\"" + reftomain.timeWindowLength + "\"/>");
         out.println("\t\t<WindowNumbers=\"" + reftomain.spectrum.size() + "\"/>");
         out.println("\t\t<WindowNumberAuto=\"" + reftomain.gad.cauto.isSelected() + "\"/>");
         String wf = "Error";
@@ -317,8 +317,8 @@ class ExportSpectrumSVG extends JFrame {
         out.println("\t\t<LPCCoeficients=\"" + reftomain.gad.sliderlpccoef.getValue() + "\"/>");
         out.println("\t\t<LPCFFTPoints=\"" + reftomain.gad.sliderlpcfftnum.getValue() + "\"/>");
         out.println("\t\t<PaintScaleFact=\"" + scale + "\"/>");
-        out.println("\t\t<SampleRate=\"" + reftomain.samplerate + "\"/>");
-        out.println("\t\t<SamplesTotal=\"" + reftomain.samplestotal + "\"/>");
+        out.println("\t\t<SampleRate=\"" + reftomain.sampleRate + "\"/>");
+        out.println("\t\t<SamplesTotal=\"" + reftomain.samplesTotal + "\"/>");
         out.println("\t<SpectrumSettingsForGeneration/>");
       }
 

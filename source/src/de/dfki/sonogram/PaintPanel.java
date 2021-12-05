@@ -182,7 +182,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
       wnf = (double) (x - 39) / (double) (panelWidth - 101); // fractional X position in the spectrogram from the left
       wsf = (double) (y) / (double) (panelHeight - 70); // fractional Y position in the spectrogram from the top
       wnp = (int) ((double) refToSonogram.spectrum.size() * wnf); // time position in samples
-      wsp = (int) ((double) (refToSonogram.timewindowlength / 2) * wsf); // frequency position in Hz
+      wsp = (int) ((double) (refToSonogram.timeWindowLength / 2) * wsf); // frequency position in Hz
       paintOneSpectrum(false);
     }
   }
@@ -219,7 +219,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
   // ------------------------------------------------------------------------------------------------
 
   public void updateWvButton() {
-    int len = (int) ((double) refToSonogram.selecedwidth * (double) refToSonogram.samplesall);
+    int len = (int) ((double) refToSonogram.selecedwidth * (double) refToSonogram.samplesAll);
     refToSonogram.wvconfig.setSelectedSamples(len);
     if (len <= 32768 && refToSonogram.spectrumExist) {
       refToSonogram.wvbutton.setEnabled(true);
@@ -291,7 +291,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
   public void paintOneSpectrum(boolean calledfromplaying) {
     if (refToSonogram.spectrumExist && !refToSonogram.openingflag && !refToSonogram.transformflag) {
       Graphics2D g = (Graphics2D) this.getGraphics();
-      double ffakt = (double) (panelHeight - 70) / (double) (refToSonogram.timewindowlength / 2);
+      double ffakt = (double) (panelHeight - 70) / (double) (refToSonogram.timeWindowLength / 2);
       float peakamp = 0.0f;
       float peakfrequ = 0.0f;
       float mousefrequ = 0.0f;
@@ -300,7 +300,6 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
       float[] spectrumBuffer;
       float[] orginalbuff;
       int peakplace = 0;
-      int x, y;
       
       // For Logarithm Frequencyview
       double powfact = 0.0; // Logarithm Scale fact
@@ -311,23 +310,23 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       
       // Paint Spectrum
+      // Background Rectangle for Single Spectrum view
       g.setColor(colorDarkGreen);
-      g.fillRect(panelWidth - 55, 2, 53, panelHeight - 71); // Background Rectangle for Single Spectrum view
-      g.setColor(colorLavender);
-      g.drawLine(panelWidth - 55, panelHeight - 69, panelWidth - 2, panelHeight - 69);
-      // GRID
+      g.fillRect(panelWidth - 55, 2, 53, panelHeight - 71); 
+
+      // Draw Horizontal Grid Lines
       g.setColor(colorPurple);
-      for (double yGridLine = 0; yGridLine < panelHeight - 69.0; yGridLine += (panelHeight - 70.0) / 10.0)
+      for (double yLinearTick = 0; yLinearTick <= (panelHeight - 70); yLinearTick += (panelHeight - 70) / 10.0)
         // logarithm Frequency
         if (refToSonogram.gad.cslogfr.isSelected()) {
           double ymax = (panelHeight - 69); // the max value
-          double yni = ymax - yGridLine; // y not inverse
+          double yni = ymax - yLinearTick; // y not inverse
           double ylog = Math.log(yni) / Math.log(ymax) * ymax; // calc log scale
           yLogPixelPos = (int) (ymax - ylog); // reinverse
           if (yLogPixelPos > 2) g.drawLine(panelWidth - 60, yLogPixelPos, panelWidth - 3, yLogPixelPos);
         }
         // Non Logarithm
-        else if (yGridLine > 2) g.drawLine(panelWidth - 60, (int) yGridLine, panelWidth - 3, (int) yGridLine);
+        else if (yLinearTick > 2) g.drawLine(panelWidth - 60, (int) yLinearTick, panelWidth - 3, (int) yLinearTick);
         // When playing take position from plbutton
         if (calledfromplaying && refToSonogram.gad.csspecwhileplaying.isSelected()) {
           int spectimepos = (int) (plbutton * refToSonogram.spectrum.size());
@@ -340,26 +339,30 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         if (wnp < 0) wnp = 0;
         orginalbuff = refToSonogram.spectrum.get(wnp);
       }
-      // If Normalize is on
+
+      // Normalize the spectrum if enabled
       if (refToSonogram.gad.cback.isSelected()) {
         float peak = 0.0f;
-        spectrumBuffer = new float[refToSonogram.timewindowlength / 2];
-        for (int i = 0; i < (refToSonogram.timewindowlength / 2); i++)
+        spectrumBuffer = new float[refToSonogram.timeWindowLength / 2];
+        for (int i = 0; i < (refToSonogram.timeWindowLength / 2); i++)
           if (peak < orginalbuff[i]) peak = orginalbuff[i];
-        for (int i = 0; i < (refToSonogram.timewindowlength / 2); i++)
+        for (int i = 0; i < (refToSonogram.timeWindowLength / 2); i++)
           spectrumBuffer[i] = orginalbuff[i] / peak * 255.0f;
       } else spectrumBuffer = orginalbuff;
       
-      // Draw the spectrum
-      for (int f = 0; f < (refToSonogram.timewindowlength / 2); f++) {
-        // color of the spectrum
+      // Draw the spectrum bars
+      for (int freqIndex = 0; freqIndex < (refToSonogram.timeWindowLength / 2); freqIndex++) {
+        // If single color spectrum is enabled, paint it neon green
         if (refToSonogram.gad.cscolsi.isSelected()) {
           g.setColor(colorNeonGreen);
-        } else selectColor(g, (int) spectrumBuffer[f]);
+        }
+        // Otherwise, get color by color mapping the spectral amplitude
+        else selectColor(g, (int) spectrumBuffer[freqIndex]);
+        
         // cords
-        x = (int) (spectrumBuffer[f] / 255.0f * 52.0f);
-        double yd = (panelHeight - 69) * (1.0 - (double) (f) / (double) (refToSonogram.timewindowlength / 2 - 1));
-        double ydnext = (panelHeight - 69) * (1.0 - (double) (f+1) / (double) (refToSonogram.timewindowlength / 2 - 1));
+        int scaledWidth = (int) (spectrumBuffer[freqIndex] / 255.0f * 52.0f); // rescale amplitude to maximum width 52pix
+        double yd = (panelHeight - 69) * (1.0 - (double) (freqIndex) / (double) (refToSonogram.timeWindowLength / 2 - 1));
+        double ydnext = (panelHeight - 69) * (1.0 - (double) (freqIndex+1) / (double) (refToSonogram.timeWindowLength / 2 - 1));
         // logarithm scale
         if (refToSonogram.gad.cslogfr.isSelected()) {
           double ymax = (panelHeight - 69); // the max value
@@ -372,33 +375,33 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
           if (yLogPixelPos - yppownext < 1) yppownext++;
           // Add a rectangle
           if (yLogPixelPos > 2 && yppownext < ymax)
-            g.fillRect(panelWidth - 2 - x, yppownext, x, Math.abs(yLogPixelPos - yppownext));
+            g.fillRect(panelWidth - 2 - scaledWidth, yppownext, scaledWidth, Math.abs(yLogPixelPos - yppownext));
         }
         // linear scale
-        else if (yd > 2.0) g.fillRect(panelWidth - 3 - x, (int) yd, x, (int) yd - (int) ydnext + 1);
+        else if (yd > 2.0) g.fillRect(panelWidth - 3 - scaledWidth, (int) yd, scaledWidth, (int) yd - (int) ydnext + 1);
       }
       // Smoothed single spectrum red curve
       if (refToSonogram.gad.csmoothsi.isSelected()) {
         // Search and draw peak point
-        for (int f = 0; f < (refToSonogram.timewindowlength / 2); f++) {
+        for (int f = 0; f < (refToSonogram.timeWindowLength / 2); f++) {
           if (peakamp < spectrumBuffer[f]) {
             peakplace = f;
             peakamp = spectrumBuffer[f];
           }
         }
         g.setColor(new Color(200, 0, 0));
-        x = (int) (spectrumBuffer[peakplace] / 255.0f * 50f);
-        y = (int) ((panelHeight - 69) - peakplace * ffakt);
+        int scaledWidth = (int) (spectrumBuffer[peakplace] / 255.0f * 50f); // rescale amplitude to maximum width 50pix
+        int y = (int) ((panelHeight - 69) - peakplace * ffakt);
         if (refToSonogram.gad.cslogfr.isSelected()) {
           double ymax = (panelHeight - 69); // the max value
           double yni = ymax - y; // y not inverse
           double ylog = Math.log(yni) / Math.log(ymax) * ymax; // calc log scale
           y = (int) (ymax - ylog); // reinverse
         }
-        if (x > 5 && y > 5) g.fillOval(panelWidth - x - 4, y - 4, 8, 8);
+        if (scaledWidth > 5 && y > 5) g.fillOval(panelWidth - scaledWidth - 4, y - 4, 8, 8);
         // Draw Smooth
-        float[] smoothspek = new float[refToSonogram.timewindowlength / 2];
-        for (int f = 3; f < (refToSonogram.timewindowlength / 2 - 3); f++) {
+        float[] smoothspek = new float[refToSonogram.timeWindowLength / 2];
+        for (int f = 3; f < (refToSonogram.timeWindowLength / 2 - 3); f++) {
           smoothspek[f] =
               (spectrumBuffer[f - 1]
                       + spectrumBuffer[f - 2]
@@ -412,9 +415,9 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         int xa = panelWidth - 3;
         int ya = panelHeight - 72;
         for (double f = 0.0f;
-            f < (float) (refToSonogram.timewindowlength / 2);
-            f += ((double) refToSonogram.timewindowlength / 2.0 / (double) (panelHeight - 60))) {
-          x = panelWidth - 3 - (int) (smoothspek[(int) f] / 255.0f * 52.0f);
+            f < (float) (refToSonogram.timeWindowLength / 2);
+            f += ((double) refToSonogram.timeWindowLength / 2.0 / (double) (panelHeight - 60))) {
+          scaledWidth = panelWidth - 3 - (int) (smoothspek[(int) f] / 255.0f * 52.0f);
           y = (int) ((panelHeight - 69) - f * ffakt) + 2;
           if (refToSonogram.gad.cslogfr.isSelected() == true) {
             double ymax = (double) (panelHeight - 69); // the max value
@@ -422,17 +425,17 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
             double ylog = Math.log(yni) / Math.log(ymax) * ymax; // calc log scale
             y = (int) (ymax - ylog); // reinverse
           }
-          if (y > 2 && y < (panelHeight - 71)) g.drawLine(x, y, xa, ya);
+          if (y > 2 && y < (panelHeight - 71)) g.drawLine(scaledWidth, y, xa, ya);
           ya = y;
-          xa = x;
+          xa = scaledWidth;
         }
       }
 
       // And Now let's paint and Calculate the numbers for the right upper display
       peakfrequ =
           (float) peakplace
-              / (float) (refToSonogram.timewindowlength / 2)
-              * (float) refToSonogram.samplerate
+              / (float) (refToSonogram.timeWindowLength / 2)
+              * (float) refToSonogram.sampleRate
               / 2.0f;
       // logarithm scale
       String ampText;
@@ -444,40 +447,40 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         double wsflog = ylin / ymax; // relative y position
         double wsplog =
             (int)
-                ((double) (refToSonogram.timewindowlength / 2) * wsflog); // frequenz position in Hz
+                ((double) (refToSonogram.timeWindowLength / 2) * wsflog); // frequenz position in Hz
         mousefrequ =
-            (float) refToSonogram.samplerate / 2.0f
+            (float) refToSonogram.sampleRate / 2.0f
                 - (float) wsplog
-                    / (float) (refToSonogram.timewindowlength / 2)
-                    * (float) refToSonogram.samplerate
+                    / (float) (refToSonogram.timeWindowLength / 2)
+                    * (float) refToSonogram.sampleRate
                     / 2.0f;
-        int index = refToSonogram.timewindowlength / 2 - (int) wsplog - 2;
-        index = Math.min(index, refToSonogram.timewindowlength / 2 - 1);
+        int index = refToSonogram.timeWindowLength / 2 - (int) wsplog - 2;
+        index = Math.min(index, refToSonogram.timeWindowLength / 2 - 1);
         index = Math.max(index, 0);
         mouseamp = (float) orginalbuff[index] / 255.0f * 100.0f; // in %
       }
       // linear scale
       else {
         mousefrequ =
-            (float) refToSonogram.samplerate / 2.0f
+            (float) refToSonogram.sampleRate / 2.0f
                 - (float) wsp
-                    / (float) (refToSonogram.timewindowlength / 2)
-                    * (float) refToSonogram.samplerate
+                    / (float) (refToSonogram.timeWindowLength / 2)
+                    * (float) refToSonogram.sampleRate
                     / 2.0f;
         mouseamp =
-            (float) orginalbuff[refToSonogram.timewindowlength / 2 - wsp - 1] / 255.0f * 100.0f;
+            (float) orginalbuff[refToSonogram.timeWindowLength / 2 - wsp - 1] / 255.0f * 100.0f;
       }
       if (calledfromplaying && refToSonogram.gad.csspecwhileplaying.isSelected()) // When playing take position from plbutton
         mousetime =
             (float) ((plbutton) * refToSonogram.selecedwidthold + refToSonogram.selectedstartold)
-                * (float) refToSonogram.samplesall
-                / (float) refToSonogram.samplerate;
+                * (float) refToSonogram.samplesAll
+                / (float) refToSonogram.sampleRate;
       else
         mousetime =
             ((float) refToSonogram.selectedstartold
                     + (float) wnf * (float) refToSonogram.selecedwidthold)
-                * (float) refToSonogram.samplesall
-                / (float) refToSonogram.samplerate;
+                * (float) refToSonogram.samplesAll
+                / (float) refToSonogram.sampleRate;
       mousetime = (float) Math.round(mousetime * 1000) / 1000.0f;
       mousefrequ = (float) Math.round(mousefrequ);
       double mouselevel = mouseamp / 100.0;
@@ -665,25 +668,20 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
 
       // Paint only when File is opened
       if (refToSonogram.spectrumExist && !refToSonogram.openingflag) { 
-
-        double diffx =
-            (double) (panelWidth - 100)
-                / (double) refToSonogram.spectrum.size(); // difference in Pixel from WFFT to WFFT
-        double fakt = (double) (panelWidth - 100) / 2000.0; // To draw Timesignal
-        double diffy =
-            (double) (panelHeight - 70)
-                / (double) refToSonogram.timewindowlength
-                * 2.0; // difference in Pixel from fr.-point to fr.-point
+        // Width of spectrogram rectangles in pixels
+        double xDiff = (double) (panelWidth - 100) / (double) refToSonogram.spectrum.size();
+        // Height of spectrogram rectangles in pixels
+        double yDiff = (panelHeight - 70) / (refToSonogram.timeWindowLength / 2.0);
+        
         int xPosition = 0; // Startpoint x for drawing the Rect.
         int yPosition = 0; // Startpoint y for drawing the Rect.
-        int xDiffRounded = (int) Math.ceil(diffx); // rounded off diffx
-        int yDiffRounded = (int) Math.ceil(diffy); // rounded off diffy
-        float[] tempSpektrum; // Reference to FFT Window
-        int bwcolor; // Black/white Color
+        int xDiffRounded = (int) Math.ceil(xDiff); // rounded off diffx
+        int yDiffRounded = (int) Math.ceil(yDiff); // rounded off diffy
+        float[] tempSpectrum; // Reference to FFT Window
+        int brightnessEightBit;
         
-        int frequ = refToSonogram.samplerate / 2;
         double secs = 0.0;
-        double timetoscreenfakt = (panelWidth - 100) / 2000.0; // To draw Timesignal
+        double timeToScreenFactor = (panelWidth - 100) / 2000.0; // To draw Timesignal
         float pitchtmp = 0.0f;
         float pitchamp = 0.0f;
         int pitchplace = 0;
@@ -702,74 +700,69 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         if (refToSonogram.gad.highlightedbutton == 1) refToSonogram.gad.highLightButton(0);
         refToSonogram.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         System.out.println("--> Updating Sonogram-Image: Paintwindowsize x=" + panelWidth + ", y=" + panelHeight);
-        System.out.println("--> diffx=" + diffx + ", diffy=" + diffy);
+        System.out.println("--> diffx=" + xDiff + ", diffy=" + yDiff);
         // Blank the entire panel
         g.setColor(colorLavender);
         g.fillRect(0, 0, panelWidth, panelHeight);
         
         // Draw the y (frequency) axis labels and ticks
+        int frequency = refToSonogram.sampleRate / 2;
         if (refToSonogram.updateimageflag) refToSonogram.updateimageflag = false;
         g.setColor(colorPurple);
         g.setFont(new Font("Courier", 0, 9));
-        for (double y = 0; y <= (panelHeight - 70); y += (panelHeight - 70) / 10.0) {
+        for (double yLinearTick = 0; yLinearTick <= (panelHeight - 70); yLinearTick += (panelHeight - 70) / 10.0) {
           if (refToSonogram.gad.cslogfr.isSelected()) {
             double ymax = (panelHeight - 69); // the max value
-            double yni = ymax - y; // y not inverse
+            double yni = ymax - yLinearTick; // y not inverse
             double ylog = Math.log(yni) / Math.log(ymax) * ymax; // calc log scale
             yLogPixelPos = (int) (ymax - ylog); // reinverse
             g.drawLine(0, yLogPixelPos, 40, yLogPixelPos);
-            g.drawString(((double) (frequ / 10) / 100.0) + "kHz", 3, yLogPixelPos + 9);
-            frequ -= refToSonogram.samplerate / 20;
+            g.drawString((frequency / 1000.0) + "kHz", 3, yLogPixelPos + 9);
+            frequency -= refToSonogram.sampleRate / 20;
           } else {
-            g.drawLine(0, (int) y, 40, (int) y);
-            g.drawString(((double) (frequ / 10) / 100.0) + "kHz", 3, (int) y + 9);
-            frequ -= refToSonogram.samplerate / 20;
+            g.drawLine(0, (int) yLinearTick, 40, (int) yLinearTick);
+            g.drawString((frequency / 1000.0) + "kHz", 3, (int) yLinearTick + 9);
+            frequency -= refToSonogram.sampleRate / 20;
           }
         }
 
-        // UPPER DISPLAY Grid over Time
+        // Draw second marks (x axis ticks)
         secs =
             refToSonogram.selectedstartold
-                * (double) refToSonogram.samplesall
-                / (double) refToSonogram.samplerate;
+                * (double) refToSonogram.samplesAll
+                / (double) refToSonogram.sampleRate;
         int isecs = (int) secs;
         int offset =
             (int)
                 (1.0
-                    - (secs - (double) isecs)
+                    - (secs - isecs)
                         * ((double) panelWidth - 100.0)
-                        / ((double) refToSonogram.samplestotal
-                            / (double) refToSonogram.samplerate));
+                        / ((double) refToSonogram.samplesTotal
+                            / (double) refToSonogram.sampleRate));
         secs = isecs;
         if (refToSonogram.selectedstartold == 0.0) secs = 0.0;
-        
-        // Draw second marks
         for (int x = 40 + offset;
             x < panelWidth - 60;
             x +=
                 (int)
-                    (((double) panelWidth - 100.0)
-                        / ((double) refToSonogram.samplestotal
-                            / (double) refToSonogram.samplerate))) {
+                    ((panelWidth - 100)
+                        / ((double) refToSonogram.samplesTotal
+                            / (double) refToSonogram.sampleRate))) {
           g.drawLine(x - 1, panelHeight - 60, x - 1, panelHeight - 40);
           g.drawString(secs + "s", x + 1, panelHeight - 52);
           secs++;
         }
 
-        // Draw left side number background rectangle
+        // Draw trapezoid from bottom of spectrogram to audio selection
         int[] polygonx = new int[4];
         int[] polygony = new int[4];
         polygonx[0] = 40;
         polygony[0] = panelHeight - 60;
         polygonx[1] = panelWidth - 60;
         polygony[1] = panelHeight - 60;
-        polygonx[2] =
-            40
-                + (int)
-                    (((double) panelWidth - 100.0)
-                        * (refToSonogram.selectedstartold + refToSonogram.selecedwidthold));
+        polygonx[2] = 40 + (int) ((panelWidth - 100) * (refToSonogram.selectedstartold + refToSonogram.selecedwidthold));
         polygony[2] = panelHeight - 50;
-        polygonx[3] = 40 + (int) (((double) panelWidth - 100.0) * refToSonogram.selectedstartold);
+        polygonx[3] = 40 + (int) ((panelWidth - 100) * refToSonogram.selectedstartold);
         polygony[3] = panelHeight - 50;
         if (refToSonogram.selectedstartold != 0.0 && refToSonogram.selecedwidthold != 1.0) {
           g.setComposite(compositeGr);
@@ -782,28 +775,32 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         }
 
         // Painting Sonogram on the Image
-        for (int x = 0; x < refToSonogram.spectrum.size(); x++) { // loop over FFT Vectors
-          if (x == refToSonogram.peakx) // If peakpoint is reached
-          peakTimeIsReached = true;
+        // Loop over spectra
+        for (int i = 0; i < refToSonogram.spectrum.size(); i++) {
+          // If peakpoint is reached
+          if (i == refToSonogram.peakx) peakTimeIsReached = true;
           else peakTimeIsReached = false;
-          tempSpektrum = refToSonogram.spectrum.get(x); // WFT Frequ. Vector
+          tempSpectrum = refToSonogram.spectrum.get(i); // WFT Frequ. Vector
+          
           // loop over FFT Vector-Elements
-          for (int y = 0; y < (refToSonogram.timewindowlength / 2); y++) {
-            bwcolor = (int) tempSpektrum[(refToSonogram.timewindowlength / 2 - 1) - y];
-            if (bwcolor < 0) bwcolor = 0; // Range-test
-            if (bwcolor > 255) bwcolor = 255; // Range-test
-            selectColor(g, bwcolor);
-            xPosition = (int) ((double) x * diffx) + 40; // Startpoint in Pixels
-            yPosition = (int) ((double) y * diffy); // Startpoint in Pixels
+          for (int j = 0; j < (refToSonogram.timeWindowLength / 2); j++) {
+            // Determine the color of the rectangle from amplitude
+            brightnessEightBit = (int) tempSpectrum[(refToSonogram.timeWindowLength / 2 - 1) - j];
+            if (brightnessEightBit < 0) brightnessEightBit = 0; // Range-test
+            if (brightnessEightBit > 255) brightnessEightBit = 255; // Range-test
+            selectColor(g, brightnessEightBit);
+            // Position of top left of rectangle
+            xPosition = (int) (i * xDiff) + 40; // Startpoint in Pixels
+            yPosition = (int) (j * yDiff); // Startpoint in Pixels
             // Logarithm Frequency View
             if (refToSonogram.gad.cslogfr.isSelected()) {
               // Calculate position for logview
-              double ymax = (double) (panelHeight - 69); // the max value
+              double ymax = (panelHeight - 69); // the max value
               double yni = ymax - yPosition; // y not inverse
               double ylog = Math.log(yni) / Math.log(ymax) * ymax; // calc log scale
               yLogPixelPos = (int) (ymax - ylog); // reinverse
               // Calculate diffy for logview by calculating next point
-              yni = ymax - ((y + 1) * diffy); // y not inverse
+              yni = ymax - ((j + 1) * yDiff); // y not inverse
               ylog = Math.log(yni) / Math.log(ymax) * ymax; // calc log scale
               yppownext = (int) (ymax - ylog); // reinverse
 
@@ -818,7 +815,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
                 g.setComposite(compositeNo);
               }
               if (peakTimeIsReached) // Absolute Peak
-                if (y == (refToSonogram.timewindowlength / 2 - refToSonogram.peaky - 1)) {
+                if (j == (refToSonogram.timeWindowLength / 2 - refToSonogram.peaky - 1)) {
                   xpointpeak = xPosition + xDiffRounded / 2 - 10;
                   ypointpeak = yLogPixelPos + yDiffLog / 2 - 10;
                 }
@@ -833,7 +830,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
                 g.setComposite(compositeNo);
               }
               if (peakTimeIsReached) // Absolute Peak
-                if (y == (refToSonogram.timewindowlength / 2 - refToSonogram.peaky - 1)) {
+                if (j == (refToSonogram.timeWindowLength / 2 - refToSonogram.peaky - 1)) {
                   xpointpeak = xPosition + xDiffRounded / 2 - 10;
                   ypointpeak = yPosition + yDiffRounded / 2 - 10;
                 }
@@ -848,48 +845,48 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
             // PITCH:Frequencylimitation for Pitchdetection
             if (refToSonogram.gad.cspitchlimitation.isSelected() == true) {
               begin =
-                  (refToSonogram.timewindowlength / 2)
+                  (refToSonogram.timeWindowLength / 2)
                       - (int)
-                          ((double) (refToSonogram.timewindowlength / 2)
-                              / refToSonogram.samplerate
+                          ((double) (refToSonogram.timeWindowLength / 2)
+                              / refToSonogram.sampleRate
                               * 2
                               * refToSonogram.gad.sliderpitch.getValue());
-              if (begin >= (refToSonogram.timewindowlength / 2 - 1))
-                begin = (refToSonogram.timewindowlength / 2 - 2);
+              if (begin >= (refToSonogram.timeWindowLength / 2 - 1))
+                begin = (refToSonogram.timeWindowLength / 2 - 2);
             }
-            float smoothspek[] = new float[refToSonogram.timewindowlength / 2];
+            float smoothspek[] = new float[refToSonogram.timeWindowLength / 2];
             // PITCH:Smooth out for Pitchdetection
             if (refToSonogram.gad.cspitchsmooth.isSelected() == true) {
-              for (int y = 3; y < (refToSonogram.timewindowlength / 2 - 3); y++) {
+              for (int y = 3; y < (refToSonogram.timeWindowLength / 2 - 3); y++) {
                 smoothspek[y] =
-                    (tempSpektrum[y - 1]
-                            + tempSpektrum[y - 2]
-                            + tempSpektrum[y - 3]
-                            + tempSpektrum[y]
-                            + tempSpektrum[y + 1]
-                            + tempSpektrum[y + 2]
-                            + tempSpektrum[y + 3])
+                    (tempSpectrum[y - 1]
+                            + tempSpectrum[y - 2]
+                            + tempSpectrum[y - 3]
+                            + tempSpectrum[y]
+                            + tempSpectrum[y + 1]
+                            + tempSpectrum[y + 2]
+                            + tempSpectrum[y + 3])
                         / 7.0f;
               }
             }
             // PITCH:If Smooth out for Pitch is not selected
             else
-              for (int y = 3; y < (refToSonogram.timewindowlength / 2 - 3); y++) {
-                smoothspek[y] = tempSpektrum[y];
+              for (int y = 3; y < (refToSonogram.timeWindowLength / 2 - 3); y++) {
+                smoothspek[y] = tempSpectrum[y];
               }
             // PITCH: Main loop over frequency
             // local absolute peak
             pitchplace = begin;
-            for (int y = begin; y < (refToSonogram.timewindowlength / 2); y++) {
-              pitchtmp = (int) smoothspek[(refToSonogram.timewindowlength / 2 - 1) - y];
+            for (int y = begin; y < (refToSonogram.timeWindowLength / 2); y++) {
+              pitchtmp = (int) smoothspek[(refToSonogram.timeWindowLength / 2 - 1) - y];
               if (pitchtmp > pitchamp) {
                 pitchamp = pitchtmp;
                 pitchplace = y;
               }
             }
 
-            xPosition = (int) ((double) x * diffx) + 40; // Startpoint in Pixels
-            yPosition = (int) ((double) pitchplace * diffy); // Startpoint in Pixels
+            xPosition = (int) ((double) i * xDiff) + 40; // Startpoint in Pixels
+            yPosition = (int) ((double) pitchplace * yDiff); // Startpoint in Pixels
             if (refToSonogram.gad.cspitchblack.isSelected() == false) g.setColor(colorRed);
             else g.setColor(colorWhite);
             if (refToSonogram.gad.cslogfr.isSelected() == true) { // Logarithm Frequency View
@@ -929,7 +926,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
               x < panelWidth - 60;
               x +=
                   ((double) panelWidth - 100.0)
-                      / ((double) refToSonogram.samplestotal / (double) refToSonogram.samplerate))
+                      / ((double) refToSonogram.samplesTotal / (double) refToSonogram.sampleRate))
             if (x >= 40) g.drawLine(x - 1, 0, x - 1, panelHeight - 70);
           // grid over Frequencies
           for (double y = 0; y < panelHeight - 69.0; y += ((double) panelHeight - 70.0) / 10.0)
@@ -957,8 +954,8 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
             xg < panelWidth - 60;
             xg +=
                 ((double) panelWidth - 100.0)
-                    / ((double) refToSonogram.samplesall
-                        / (double) refToSonogram.samplerate)) // Timegrid
+                    / ((double) refToSonogram.samplesAll
+                        / (double) refToSonogram.sampleRate)) // Timegrid
         g.drawLine(xg - 1, panelHeight - 50, xg - 1, panelHeight);
         int amp, x, y;
         // UPPER DISPLAY WITH ENERGY INTENSITY
@@ -978,7 +975,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
           g.setColor(new Color(200, 255, 0));
           for (int t = 0; t < 2000; t++) {
             y = (int) ((float) refToSonogram.timeline[t] / 2.5);
-            x = (int) ((double) t * timetoscreenfakt) + 40;
+            x = (int) ((double) t * timeToScreenFactor) + 40;
             if ((double) t / 2000.0 > refToSonogram.selectedstart
                 && (double) t / 2000.0 < (refToSonogram.selectedstart + refToSonogram.selecedwidth))
               if (refToSonogram.selecedwidth == 1.0)
@@ -1028,7 +1025,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
           g.setComposite(compositeAl);
           for (int t = 0; t < 2000; t++) {
             y = refToSonogram.timeline[t] / 5;
-            x = (int) ((double) t * timetoscreenfakt) + 40;
+            x = (int) ((double) t * timeToScreenFactor) + 40;
             if ((double) t / 2000.0 > refToSonogram.selectedstart
                 && (double) t / 2000.0 < (refToSonogram.selectedstart + refToSonogram.selecedwidth))
               if (refToSonogram.selecedwidth == 1.0) g.setColor(colorNeonGreen);
@@ -1069,7 +1066,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         if (refToSonogram.gad.rfft.isSelected() == true) tr = "FFT";
         else tr = "LPC";
         String wn = "wn:" + String.valueOf(refToSonogram.spectrum.size());
-        String wl = "wl:" + String.valueOf(refToSonogram.timewindowlength);
+        String wl = "wl:" + String.valueOf(refToSonogram.timeWindowLength);
         g.drawString(tr, 3, panelHeight - 21);
         g.drawString(wn, 3, panelHeight - 12);
         g.drawString(wl, 3, panelHeight - 3);

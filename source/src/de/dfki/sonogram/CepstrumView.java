@@ -121,7 +121,7 @@ public class CepstrumView extends JFrame {
       g.drawString("Quefrenz (ms)", width - 85, height - 2);
       
       for (int i = 0; i <= divisions; i++) {
-        double qufr = i * 100 / (double) refToMain.samplerate * samples / 2.0;
+        double qufr = i * 100 / (double) refToMain.sampleRate * samples / 2.0;
         qufr = ((int) qufr * 10) / 10.0;
         str = String.valueOf(qufr);
         int xGridLine = (int) (i / 10.0 * axisWidth);
@@ -139,9 +139,9 @@ public class CepstrumView extends JFrame {
       buffer = new float[samples];
       double start =
           refToMain.selectedstartold + refToMain.pp.wnf * refToMain.selecedwidthold;
-      startp = (int) (start * refToMain.samplesall);
-      if (startp > (refToMain.samplesall - samples)) {
-        startp = refToMain.samplesall - samples;
+      startp = (int) (start * refToMain.samplesAll);
+      if (startp > (refToMain.samplesAll - samples)) {
+        startp = refToMain.samplesAll - samples;
         mouseIsInTimeSpan = true;
       }
       for (int i = 0; i < samples; i++) {

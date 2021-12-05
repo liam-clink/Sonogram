@@ -100,7 +100,7 @@ public class SurfacePane extends Shape3D {
     int ly;
     if (!isWv) {
       lx = reftomain.spectrum.size();
-      ly = reftomain.timewindowlength / 2;
+      ly = reftomain.timeWindowLength / 2;
     } else {
       lx = WvSettingsDialog.length;
       ly = WvSettingsDialog.resolution;

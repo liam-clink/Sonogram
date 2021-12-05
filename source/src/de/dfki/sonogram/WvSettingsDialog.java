@@ -409,7 +409,7 @@ class WvSettingsDialog extends JDialog {
                   setVisible(false);
                   // determine window size
                   length = (int) Math.pow(2.0, (double) sliderx.getValue());
-                  if (sono.samplesall < 256) {
+                  if (sono.samplesAll < 256) {
                     JOptionPane.showMessageDialog(
                         sono,
                         "<html><font size=5 Color=#AA0000>The Signal length is to Short !",
@@ -421,9 +421,9 @@ class WvSettingsDialog extends JDialog {
                   // access the start point of the selection
                   double[] buffer = new double[length];
                   double start = sono.selectedstart;
-                  startp = (int) (start * (double) sono.samplesall);
-                  if (startp > (sono.samplesall - length)) {
-                    startp = sono.samplesall - length;
+                  startp = (int) (start * (double) sono.samplesAll);
+                  if (startp > (sono.samplesAll - length)) {
+                    startp = sono.samplesAll - length;
                     if (startp >= 0) {
                       JOptionPane.showMessageDialog(
                           sono,
@@ -1077,10 +1077,10 @@ class WvSettingsDialog extends JDialog {
           Math.round(
               (double) (scaledImage.getHeight(this) - y)
                   / (double) scaledImage.getHeight(this)
-                  * (double) sono.samplerate
+                  * (double) sono.sampleRate
                   / 2.0);
       double t =
-          Math.round(((double) (startp) + (double) x / zoomX) / (double) sono.samplerate * 1000.0)
+          Math.round(((double) (startp) + (double) x / zoomX) / (double) sono.sampleRate * 1000.0)
               / 1000.0;
       int indexX = (int) Math.min(length - 1, Math.max(0.0, ((double) x / zoomX)));
       int indexY = (int) Math.min(resolution - 1, Math.max(0.0, (resolution - (double) y / zoomY)));
@@ -1145,7 +1145,7 @@ class WvSettingsDialog extends JDialog {
       double bigTicks = 10;
       int sampleStart = startp;
       int sampleEnd = startp + length;
-      int sampleRate = sono.samplerate;
+      int sampleRate = sono.sampleRate;
       int size;
 
       // init the values
@@ -1153,25 +1153,25 @@ class WvSettingsDialog extends JDialog {
         size = Math.max(scaledImage.getWidth(this), 1);
       } else {
         size = Math.max(scaledImage.getHeight(this), 1);
-        if (sono.samplerate <= 48000) {
-          bigTicks = sono.samplerate / 4000.0;
-          smallTicks = sono.samplerate / 400.0;
+        if (sono.sampleRate <= 48000) {
+          bigTicks = sono.sampleRate / 4000.0;
+          smallTicks = sono.sampleRate / 400.0;
         }
-        if (sono.samplerate <= 32000) {
-          bigTicks = sono.samplerate / 2000.0;
-          smallTicks = sono.samplerate / 200.0;
+        if (sono.sampleRate <= 32000) {
+          bigTicks = sono.sampleRate / 2000.0;
+          smallTicks = sono.sampleRate / 200.0;
         }
-        if (sono.samplerate <= 16000) {
-          bigTicks = sono.samplerate / 1000.0;
-          smallTicks = sono.samplerate / 100.0;
+        if (sono.sampleRate <= 16000) {
+          bigTicks = sono.sampleRate / 1000.0;
+          smallTicks = sono.sampleRate / 100.0;
         }
-        if (sono.samplerate <= 8000) {
-          bigTicks = sono.samplerate / 500.0;
-          smallTicks = sono.samplerate / 50.0;
+        if (sono.sampleRate <= 8000) {
+          bigTicks = sono.sampleRate / 500.0;
+          smallTicks = sono.sampleRate / 50.0;
         }
-        if (sono.samplerate <= 4000) {
-          bigTicks = sono.samplerate / 250.0;
-          smallTicks = sono.samplerate / 25.0;
+        if (sono.sampleRate <= 4000) {
+          bigTicks = sono.sampleRate / 250.0;
+          smallTicks = sono.sampleRate / 25.0;
         }
         // reduce the point density for small sizes
         if (size < 300) smallTicks /= 2.0;
@@ -1302,7 +1302,7 @@ class WvSettingsDialog extends JDialog {
           g.drawLine(0, y, 22, y);
           // the text
           double frequency =
-              Math.round((double) sono.samplerate * (double) i / (double) bigTicks / 20.0) / 100.0;
+              Math.round((double) sono.sampleRate * (double) i / (double) bigTicks / 20.0) / 100.0;
           String s = Double.toString(frequency) + "k";
           if (frequency == 0.0 && (resolution - size) < 10) y -= 12;
           g.drawString(s, 30 - g.getFontMetrics().stringWidth(s), y + 10);

@@ -2,11 +2,8 @@ package de.dfki.sonogram;
 
 import de.dfki.maths.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
 import java.util.Vector;
 import javax.swing.*;
-import javax.swing.event.*;
 
 /**
  * Copyright (c) 2001 Christoph Lauer @ DFKI, All Rights Reserved. clauer@dfki.de - www.dfki.de
@@ -73,9 +70,9 @@ public class WaveletView extends JFrame {
       // Calculate only when values have changed
       if (len != lenold || startold != start) {
         buffer = new float[len];
-        startp = (int) (start * (double) refToMain.samplesall);
-        if (startp > (refToMain.samplesall - len)) {
-          startp = refToMain.samplesall - len;
+        startp = (int) (start * (double) refToMain.samplesAll);
+        if (startp > (refToMain.samplesAll - len)) {
+          startp = refToMain.samplesAll - len;
           mouseisintimespan = true;
         }
         for (int i = 0; i < len; i++) {
@@ -153,7 +150,7 @@ public class WaveletView extends JFrame {
         g.drawLine(
             xm + 20, 9 + (int) (ym - (count * diffy)), xm + 30, 9 + (int) (ym - (count * diffy)));
       }
-      double timespan = (double) len / (double) refToMain.samplerate;
+      double timespan = (double) len / (double) refToMain.sampleRate;
       double temp;
       for (int count = 0; count <= 4; count++) {
         x1 = 20 + (int) ((float) xm / 4.0f * count);

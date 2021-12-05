@@ -4,7 +4,6 @@ import de.dfki.maths.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.*;
 
 /**
  * Copyright (c) 2001 Christoph Lauer @ DFKI, All Rights Reserved. clauer@dfki.de - www.dfki.de
@@ -17,7 +16,7 @@ import javax.swing.event.*;
  * @version 1.0, Begin 17/10/2002
  */
 public class PitchDetectorView extends JFrame {
-  private Sonogram reftosonogram;
+  private Sonogram refToSonogram;
   private float[] pitches; // holds the pitch frequencies
   private float[]
       energies; // the median energie of the window (don't paint pitches for silent areas)
@@ -37,7 +36,7 @@ public class PitchDetectorView extends JFrame {
   private int pitchcounter = 0;
 
   public PitchDetectorView(Sonogram ref) {
-    reftosonogram = ref;
+    refToSonogram = ref;
     setTitle("Autocorrealtion based Pitch Tracking");
     Toolkit tk = Toolkit.getDefaultToolkit();
     setIconImage(tk.getImage(Sonogram.class.getResource("Sonogram.gif")));
@@ -46,8 +45,8 @@ public class PitchDetectorView extends JFrame {
   }
 
   public void placePitchwindowUnderTheMainWindow() {
-    Dimension sonosize = reftosonogram.getSize();
-    Point sonoposition = reftosonogram.getLocation();
+    Dimension sonosize = refToSonogram.getSize();
+    Point sonoposition = refToSonogram.getLocation();
     int pitchwinwidth = (int) sonosize.getWidth();
     int pitchwinheigth = 220;
     int pitchwinposx = (int) sonoposition.getX();
@@ -65,12 +64,12 @@ public class PitchDetectorView extends JFrame {
     pitchcounter = 0;
     // The Duration of the displayed span in seconds
     double timespanduration =
-        (double) reftosonogram.samplestotal / (double) reftosonogram.samplerate;
+        (double) refToSonogram.samplesTotal / (double) refToSonogram.sampleRate;
     // The offset for the span in seconds
     double timespanoffset =
-        (double) reftosonogram.selectedstartold
-            * (double) reftosonogram.samplesall
-            / (double) reftosonogram.samplerate;
+        (double) refToSonogram.selectedstartold
+            * (double) refToSonogram.samplesAll
+            / (double) refToSonogram.sampleRate;
     // Check if recalculating is needed
     if (timespanoffset != oldtimespanoffset
         || timespanduration != oldtimespanduration
@@ -82,7 +81,7 @@ public class PitchDetectorView extends JFrame {
       oldtimespanduration = timespanduration;
       oldtimespanoffset = timespanoffset;
       // First read out the numbers from the sliders in the gad
-      int sliderwl = reftosonogram.gad.sliderpwinlength.getValue();
+      int sliderwl = refToSonogram.gad.sliderpwinlength.getValue();
       if (sliderwl == 0) windowlength = 5;
       else if (sliderwl == 1) windowlength = 10;
       else if (sliderwl == 2) windowlength = 25;
@@ -90,8 +89,8 @@ public class PitchDetectorView extends JFrame {
       else if (sliderwl == 4) windowlength = 100;
       else if (sliderwl == 5) windowlength = 250;
       windowlengthsamples =
-          (int) ((double) windowlength / 1000.0 * (double) reftosonogram.samplerate);
-      int sliderws = reftosonogram.gad.sliderpwinshift.getValue();
+          (int) ((double) windowlength / 1000.0 * (double) refToSonogram.sampleRate);
+      int sliderws = refToSonogram.gad.sliderpwinshift.getValue();
       if (sliderws == 0) windowshift = 1.25;
       else if (sliderws == 1) windowshift = 2.5;
       else if (sliderws == 2) windowshift = 5;
@@ -100,11 +99,11 @@ public class PitchDetectorView extends JFrame {
       else if (sliderws == 5) windowshift = 50;
       else if (sliderws == 6) windowshift = 100;
       windowshiftsamples =
-          (int) ((double) windowshift / 1000.0 * (double) reftosonogram.samplerate);
+          (int) ((double) windowshift / 1000.0 * (double) refToSonogram.sampleRate);
       windowsamplesall = windowshiftsamples + windowlengthsamples;
       // The main callcualtion loop
-      beginsamples = (int) ((double) oldtimespanoffset * (double) reftosonogram.samplerate);
-      spansamples = (int) ((double) oldtimespanduration * (double) reftosonogram.samplerate);
+      beginsamples = (int) ((double) oldtimespanoffset * (double) refToSonogram.sampleRate);
+      spansamples = (int) ((double) oldtimespanduration * (double) refToSonogram.sampleRate);
       endsamples = beginsamples + spansamples;
       // Allocate the tmp buffer and some other needed fields
       float[] buffer = new float[windowsamplesall];
@@ -121,13 +120,13 @@ public class PitchDetectorView extends JFrame {
         float energy = 0.0f;
         // Copy the stepped window in the buffer with the length of the windowlength
         for (int i = step; i < (step + windowsamplesall); i++) {
-          tempbyte = (Byte) reftosonogram.reader.audioStream.get(i);
+          tempbyte = (Byte) refToSonogram.reader.audioStream.get(i);
           buffer[i - step] = tempbyte.floatValue();
-          if (reftosonogram.gad.cplimitfr.isSelected() == true)
+          if (refToSonogram.gad.cplimitfr.isSelected() == true)
             energy += tempbyte.floatValue() * tempbyte.floatValue();
         }
         // store the window energy
-        if (reftosonogram.gad.cplimitfr.isSelected() == true) energies[pitchcounter] = energy;
+        if (refToSonogram.gad.cplimitfr.isSelected() == true) energies[pitchcounter] = energy;
         // call the autocorrelation
         autocorrelation =
             AutoCorrelation.autoCorrelate(buffer, windowlengthsamples, windowshiftsamples);
@@ -146,7 +145,7 @@ public class PitchDetectorView extends JFrame {
         if (-minpeak > maxpeak) peak = -minpeak;
         else peak = maxpeak;
         // Smooth before searching for peaks
-        if (reftosonogram.gad.cpsmooth.isSelected() == true)
+        if (refToSonogram.gad.cpsmooth.isSelected() == true)
           autocorrelation = VectorSmoother.smoothWithDegreeFour(autocorrelation);
         // Search the Local Maximas
         PeakSearcher peaksearcher = new PeakSearcher(autocorrelation, (float) (peak * 0.2), 5, 0);
@@ -155,7 +154,7 @@ public class PitchDetectorView extends JFrame {
                     (Math.abs(
                         peaksearcher.getHighestPeakPosition()
                             - peaksearcher.getSecondHighestPeakPosition()))
-                / (float) reftosonogram.samplerate;
+                / (float) refToSonogram.sampleRate;
         frequency = 1 / frequency;
         pitches[pitchcounter] = frequency;
         pitchcounter++;
@@ -169,7 +168,7 @@ public class PitchDetectorView extends JFrame {
         energies[i] /= maxenergy;
       }
       // remove pitches in silent
-      if (reftosonogram.gad.cplimitfr.isSelected() == true) {
+      if (refToSonogram.gad.cplimitfr.isSelected() == true) {
         float[] pitches_copy = new float[spansamples / windowlengthsamples];
         System.arraycopy(pitches, 0, pitches_copy, 0, pitches.length);
         for (int i = 0; i < pitches.length; i++) {
@@ -179,7 +178,7 @@ public class PitchDetectorView extends JFrame {
       }
 
       // remove runaways
-      if (reftosonogram.gad.cpraway.isSelected() == true) {
+      if (refToSonogram.gad.cpraway.isSelected() == true) {
         float[] pitches_copy = new float[spansamples / windowlengthsamples];
         System.arraycopy(pitches, 0, pitches_copy, 0, pitches.length);
         for (int i = 0; i < pitches.length; i++) {
@@ -206,8 +205,8 @@ public class PitchDetectorView extends JFrame {
 
   public void update() {
     if (isVisible() == true
-        && reftosonogram.openingflag == false
-        && reftosonogram.spectrumExist == true) {
+        && refToSonogram.openingflag == false
+        && refToSonogram.spectrumExist == true) {
       repaint();
     }
   }
@@ -219,7 +218,7 @@ public class PitchDetectorView extends JFrame {
             public void mouseMoved(MouseEvent e) {
               mouse_x = e.getX();
               mouse_y = e.getY();
-              if (reftosonogram.gad.cptrack.isSelected() == true) repaint();
+              if (refToSonogram.gad.cptrack.isSelected() == true) repaint();
             }
           });
     }
@@ -233,7 +232,7 @@ public class PitchDetectorView extends JFrame {
     public void paintComponent(Graphics gr) {
       calculatePitches();
       Graphics2D g = (Graphics2D) gr;
-      if (reftosonogram.gad.cantialise.isSelected() == true)
+      if (refToSonogram.gad.cantialise.isSelected() == true)
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       Dimension size = getSize();
       int xm = (short) size.getWidth();
@@ -244,7 +243,7 @@ public class PitchDetectorView extends JFrame {
       Color colorbackground = new Color(150, 150, 200);
       Color colorsignalbackground = new Color(15, 50, 20);
       double maxfrequency;
-      maxfrequency = reftosonogram.gad.sliderpitchmax.getValue();
+      maxfrequency = refToSonogram.gad.sliderpitchmax.getValue();
       // Backgrounds
       g.setColor(colorbackground); // main background
       g.fillRect(0, 0, xm, ym);
@@ -263,25 +262,25 @@ public class PitchDetectorView extends JFrame {
       // Grid over the time
       g.setColor(colorgrid);
       double secs =
-          reftosonogram.selectedstartold
-              * (double) reftosonogram.samplesall
-              / (double) reftosonogram.samplerate;
+          refToSonogram.selectedstartold
+              * (double) refToSonogram.samplesAll
+              / (double) refToSonogram.sampleRate;
       int isecs = (int) secs;
       int offset =
           (int)
               (1.0
                   - (secs - (double) isecs)
                       * ((double) xm - 100.0)
-                      / ((double) reftosonogram.samplestotal / (double) reftosonogram.samplerate));
+                      / ((double) refToSonogram.samplesTotal / (double) refToSonogram.sampleRate));
       secs = isecs;
-      if (reftosonogram.selectedstartold == 0.0) secs = 0.0;
+      if (refToSonogram.selectedstartold == 0.0) secs = 0.0;
       for (x = 40 + offset;
           x < xm - 60;
           x +=
               (int)
                   (((double) xm - 100.0)
-                      / ((double) reftosonogram.samplestotal
-                          / (double) reftosonogram.samplerate))) {
+                      / ((double) refToSonogram.samplesTotal
+                          / (double) refToSonogram.sampleRate))) {
         g.drawLine(x - 1, 10, x - 1, ym);
         g.drawString(secs + "s", x + 1, ym - 1);
         secs++;
@@ -295,7 +294,7 @@ public class PitchDetectorView extends JFrame {
       Color colorpoint = new Color(255, 50, 0);
       Color colorline = new Color(255, 255, 0);
       int xa = 0, ya = 0, ia = 0;
-      boolean paintlines = reftosonogram.gad.cppoints.isSelected();
+      boolean paintlines = refToSonogram.gad.cppoints.isSelected();
       boolean paintthisline = false;
       boolean paintinfo = false;
       int pitches_painted = 0;
@@ -312,8 +311,8 @@ public class PitchDetectorView extends JFrame {
         y = ym - (int) (pitches[i] * amplitudefactor) - 10;
         // look for pitch points under the mouse pointer
         if (Math.abs(mouse_x + 3 - x) < highlight_area
-            && reftosonogram.gad.cptrack.isSelected() == true) {
-          if (reftosonogram.gad.cpfog.isSelected() == true) {
+            && refToSonogram.gad.cptrack.isSelected() == true) {
+          if (refToSonogram.gad.cpfog.isSelected() == true) {
             g.setComposite(
                 AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER,
@@ -329,7 +328,7 @@ public class PitchDetectorView extends JFrame {
             paintinfo = true;
             pitch_f = pitches[i];
             pitch_t =
-                (float) (beginsamples + windowlengthsamples * i) / (float) reftosonogram.samplerate;
+                (float) (beginsamples + windowlengthsamples * i) / (float) refToSonogram.sampleRate;
             pitch_x = x;
             pitch_y = y;
             pitch_is_tracked = true;

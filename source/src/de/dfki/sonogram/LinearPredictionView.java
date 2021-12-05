@@ -114,7 +114,7 @@ public class LinearPredictionView extends JFrame {
       g.setFont(new Font("Courier", 0, 10));
       g.drawString("Frequency(kHz)", xm - 100, ym - 2);
       for (int i = 0; i <= 10; i++) {
-        temp = i * (refToMain.samplerate / 20000.0) / slfre;
+        temp = i * (refToMain.sampleRate / 20000.0) / slfre;
         round = ((int) (temp * 100)) / 100.0;
         str = String.valueOf(round);
         x = (int) ((double) i / 10 * (xm - 25.0));
@@ -129,9 +129,9 @@ public class LinearPredictionView extends JFrame {
       // Copy Timelinearray to buffer
       double start =
           refToMain.selectedstartold + refToMain.pp.wnf * refToMain.selecedwidthold;
-      startp = (int) (start * refToMain.samplesall);
-      if (startp > (refToMain.samplesall - len)) {
-        startp = refToMain.samplesall - len;
+      startp = (int) (start * refToMain.samplesAll);
+      if (startp > (refToMain.samplesAll - len)) {
+        startp = refToMain.samplesAll - len;
         mouseIsInTimespan = true;
       }
       for (int i = 0; i < len; i++) {
@@ -193,7 +193,7 @@ public class LinearPredictionView extends JFrame {
             g.setColor(col[lm[f] - 2]);
             g.drawLine(x, y - 10, x, y + 10);
             g.drawLine(x - 10, y, x + 10, y);
-            temp = (double) f / (double) (speclen) * (refToMain.samplerate / 2.0) / slfre;
+            temp = (double) f / (double) (speclen) * (refToMain.sampleRate / 2.0) / slfre;
             str = String.valueOf((int) temp);
             x = (int) ((double) (lm[f] - 2) / 11 * (xm - 25)) + 30;
             g.drawString(str, x, ym - 5 + yt);

@@ -102,7 +102,7 @@ public class InfoDialog extends JFrame {
   // -------------------------------------------------------------------------------------------------------------------------
   void update() {
 
-    if (reftomain.spektrumExist == true && (this.isVisible() == true)) {
+    if (reftomain.spectrumExist == true && (this.isVisible() == true)) {
       double sfr = ((double) (reftomain.samplerate) / (double) reftomain.timewindowlength);
       sfr = Math.round(sfr * 100.0) / 100.0;
       double str =
@@ -145,7 +145,7 @@ public class InfoDialog extends JFrame {
       double ffw = ((double) reftomain.fv.len / (double) (reftomain.samplerate));
       ffw = Math.round(ffw * 100000.0) / 100.0;
       double ffr = ((double) (reftomain.samplerate) / (double) reftomain.fv.len);
-      double cwl = ((double) reftomain.cv.len / (double) (reftomain.samplerate) / 2.0);
+      double cwl = ((double) reftomain.cv.samples() / (double) (reftomain.samplerate) / 2.0);
       cwl = Math.round(cwl * 100000.0) / 100.0;
       double lpt =
           ((double) reftomain.gad.sliderlpcsamfutur.getValue() / (double) (reftomain.samplerate));

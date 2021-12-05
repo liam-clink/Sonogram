@@ -210,7 +210,7 @@ class GeneralAdjustmentDialog extends JFrame {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             applyChanges();
-            if (sono.spektrumExist == true) sono.openFile(sono.filepath);
+            if (sono.spectrumExist == true) sono.openFile(sono.filepath);
           }
         };
     btro.addActionListener(rlst);
@@ -222,7 +222,7 @@ class GeneralAdjustmentDialog extends JFrame {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             applyChanges();
-            if (sono.spektrumExist == true) sono.readerIsBack();
+            if (sono.spectrumExist == true) sono.readerIsBack();
           }
         };
     btap.addActionListener(alst);
@@ -233,7 +233,7 @@ class GeneralAdjustmentDialog extends JFrame {
     ActionListener dlst =
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (sono.spektrumExist == true) {
+            if (sono.spectrumExist == true) {
               sono.updateimageflag = true;
               sono.repaint();
             }
@@ -770,7 +770,7 @@ class GeneralAdjustmentDialog extends JFrame {
         "<html>The buffer size for the cepstal analyse<br>See the Information Window for the"
             + " resulting time");
     p.add(slidercep);
-    sono.cv.len = (int) Math.pow(2.0, slidercep.getValue());
+    sono.cv.samples((int) Math.pow(2.0, slidercep.getValue()));
     p1.addTab("Cepstrum", new ImageIcon(Sonogram.class.getResource("small_cep.gif")), p);
 
     // Autocorrelation based Pitch Detection
@@ -1504,7 +1504,7 @@ class GeneralAdjustmentDialog extends JFrame {
       }
       if (e.getSource() == sliderformantlen) {
         int len = 0;
-        if (sono.spektrumExist) {
+        if (sono.spectrumExist) {
           switch (sliderformantlen.getValue()) {
             case 1:
               len = 512;
@@ -1549,7 +1549,7 @@ class GeneralAdjustmentDialog extends JFrame {
       if (e.getSource() == csampl) { // Reopen File by changing Samplerate
         if (csampl.isSelected() != markcsamp) {
           markcsamp = csampl.isSelected();
-          if (sono.filepath != null && sono.spektrumExist == true) {
+          if (sono.filepath != null && sono.spectrumExist == true) {
             System.out.println("--> Reopen from Samplerateselector");
             sono.openFile(sono.filepath);
           }
@@ -1560,7 +1560,7 @@ class GeneralAdjustmentDialog extends JFrame {
           applyChanges();
           repaint();
           inv = cinv.isSelected();
-          if (sono.spektrumExist == true) {
+          if (sono.spectrumExist == true) {
             sono.updateimageflag = true;
             sono.repaint();
             sono.av.update();
@@ -1568,7 +1568,7 @@ class GeneralAdjustmentDialog extends JFrame {
         }
       }
       if (e.getSource() == cenergy) { // Energy flag event
-        if (cenergy.isSelected() != markste && sono.spektrumExist == true) {
+        if (cenergy.isSelected() != markste && sono.spectrumExist == true) {
           markste = cenergy.isSelected();
           System.out.println("--> Update from Energy Select");
           applyChanges();
@@ -1581,7 +1581,7 @@ class GeneralAdjustmentDialog extends JFrame {
         // prevents error when fullbutton is not instantiated during startup
         else if (sono.fullbutton != null) 
           sono.smoothfrbutton.setBorder(sono.fullbutton.getBorder());
-        if (csmooth.isSelected() != marksmothy && sono.spektrumExist) {
+        if (csmooth.isSelected() != marksmothy && sono.spectrumExist) {
           marksmothy = csmooth.isSelected();
           applyChanges();
           sono.readerIsBack();
@@ -1593,7 +1593,7 @@ class GeneralAdjustmentDialog extends JFrame {
         // prevents error when fullbutton is not instantiated while startup
         else if (sono.fullbutton != null) 
           sono.smoothtmbutton.setBorder(sono.fullbutton.getBorder());
-        if (csmoothx.isSelected() != marksmothx && sono.spektrumExist) {
+        if (csmoothx.isSelected() != marksmothx && sono.spectrumExist) {
           marksmothx = csmoothx.isSelected();
           applyChanges();
           sono.readerIsBack();
@@ -1602,7 +1602,7 @@ class GeneralAdjustmentDialog extends JFrame {
       if (e.getSource() == clog) sono.logItem.setSelected(clog.isSelected());
       if (e.getSource() == clog && clog.isEnabled()) { // Logrithm-Checker Event
         sliderlog.setEnabled(clog.isSelected());
-        if (clog.isSelected() != marklog && sono.spektrumExist) {
+        if (clog.isSelected() != marklog && sono.spectrumExist) {
           marklog = clog.isSelected();
           applyChanges();
           System.out.println("--> Update from Logarithm Select");
@@ -1615,7 +1615,7 @@ class GeneralAdjustmentDialog extends JFrame {
         markgrid = cgrid2.isSelected();
         cgrid.setSelected(markgrid);
         sono.gridItem.setSelected(markgrid);
-        if (sono.spektrumExist) {
+        if (sono.spectrumExist) {
           applyChanges();
           sono.updateimageflag = true;
           System.out.println("--> Update from Grid Select");
@@ -1631,7 +1631,7 @@ class GeneralAdjustmentDialog extends JFrame {
         markgrid = cgrid.isSelected();
         cgrid2.setSelected(markgrid);
         sono.gridItem.setSelected(markgrid);
-        if (sono.spektrumExist) {
+        if (sono.spectrumExist) {
           applyChanges();
           sono.updateimageflag = true;
           System.out.println("--> Update from Grid Select");
@@ -1653,10 +1653,10 @@ class GeneralAdjustmentDialog extends JFrame {
           sliderlpcsamfutur.setBorder(new TitledBorder(new EtchedBorder(), "Prediction Buffer"));
           sliderlpccoef.setBorder(new TitledBorder(new EtchedBorder(), "LPC Coefficents"));
         }
-        if (rfft.isSelected() != marktrans && !sono.spektrumExist) {
+        if (rfft.isSelected() != marktrans && !sono.spectrumExist) {
           marktrans = rfft.isSelected();
         }
-        if (rfft.isSelected() != marktrans && sono.spektrumExist) {
+        if (rfft.isSelected() != marktrans && sono.spectrumExist) {
           marktrans = rfft.isSelected();
           if (rfft.isSelected()) System.out.println("--> FFT Transformation Selected.");
           else System.out.println("--> LPC Transformation Selected");
@@ -1682,7 +1682,7 @@ class GeneralAdjustmentDialog extends JFrame {
         if (markcolor != color) {
           repaint();
           markcolor = color;
-          if (sono.spektrumExist == true) {
+          if (sono.spectrumExist == true) {
             System.out.println("--> Update from Color Selector");
             sono.updateimageflag = true;
             sono.repaint();
@@ -1702,7 +1702,7 @@ class GeneralAdjustmentDialog extends JFrame {
           cspitchonely.setEnabled(cspitch.isSelected());
           cspitchblack.setEnabled(cspitch.isSelected());
           cspitchsmooth.setEnabled(cspitch.isSelected());
-          if (sono.spektrumExist == true) {
+          if (sono.spectrumExist == true) {
             sono.updateimageflag = true;
             sono.repaint();
           }
@@ -1712,7 +1712,7 @@ class GeneralAdjustmentDialog extends JFrame {
         if (cspitchlimitation.isSelected() != markpitchlim) {
           markpitchlim = cspitchlimitation.isSelected();
           sliderpitch.setEnabled(cspitchlimitation.isSelected());
-          if (sono.spektrumExist == true) {
+          if (sono.spectrumExist == true) {
             sono.updateimageflag = true;
             sono.repaint();
           }
@@ -1721,7 +1721,7 @@ class GeneralAdjustmentDialog extends JFrame {
       if (e.getSource() == cspitchblack) {
         if (cspitchblack.isSelected() != markpitchbla) {
           markpitchbla = cspitchblack.isSelected();
-          if (sono.spektrumExist == true) {
+          if (sono.spectrumExist == true) {
             sono.updateimageflag = true;
             sono.repaint();
           }
@@ -1730,7 +1730,7 @@ class GeneralAdjustmentDialog extends JFrame {
       if (e.getSource() == cspitchonely) {
         if (cspitchonely.isSelected() != markpitchone) {
           markpitchone = cspitchonely.isSelected();
-          if (sono.spektrumExist == true) {
+          if (sono.spectrumExist == true) {
             sono.updateimageflag = true;
             sono.repaint();
           }
@@ -1739,7 +1739,7 @@ class GeneralAdjustmentDialog extends JFrame {
       if (e.getSource() == cspitchsmooth) {
         if (cspitchsmooth.isSelected() != markpitchsmo) {
           markpitchsmo = cspitchsmooth.isSelected();
-          if (sono.spektrumExist == true) {
+          if (sono.spectrumExist == true) {
             sono.updateimageflag = true;
             sono.repaint();
           }
@@ -1749,7 +1749,7 @@ class GeneralAdjustmentDialog extends JFrame {
         if (markoverl != coverlapping.isSelected()) {
           sliderwinspeed.setEnabled(coverlapping.isSelected());
           markoverl = coverlapping.isSelected();
-          if (sono.spektrumExist == true) sono.readerIsBack();
+          if (sono.spectrumExist == true) sono.readerIsBack();
         }
       }
       if (e.getSource() == cslogfr) {
@@ -1788,7 +1788,7 @@ class GeneralAdjustmentDialog extends JFrame {
         csarrange.setEnabled(csopenlast.isSelected());
       }
       if (e.getSource() == ccep || e.getSource() == slidercep || e.getSource() == ccepsmooth) {
-        sono.cv.len = (int) Math.pow(2.0, slidercep.getValue());
+        sono.cv.samples((int) Math.pow(2.0, slidercep.getValue()));
         sono.cv.update();
         sono.infod.update();
       }
@@ -1804,7 +1804,7 @@ class GeneralAdjustmentDialog extends JFrame {
       if (e.getSource() == clocalpeak) {
         if (marklocalpeak != clocalpeak.isSelected()) {
           marklocalpeak = clocalpeak.isSelected();
-          if (sono.spektrumExist) {
+          if (sono.spectrumExist) {
             sono.updateimageflag = true;
             sono.repaint();
           }
@@ -1813,13 +1813,13 @@ class GeneralAdjustmentDialog extends JFrame {
       if (e.getSource() == cuniverse) {
         cb.setEnabled(!cuniverse.isSelected());
       }
-      if (e.getSource() == cscolsi && sono.spektrumExist) {
+      if (e.getSource() == cscolsi && sono.spectrumExist) {
         sono.pp.paintOneSpektrum(false);
       }
-      if (e.getSource() == cback && sono.spektrumExist) {
+      if (e.getSource() == cback && sono.spectrumExist) {
         sono.pp.paintOneSpektrum(false);
       }
-      if (e.getSource() == csmoothsi && sono.spektrumExist) {
+      if (e.getSource() == csmoothsi && sono.spectrumExist) {
         sono.pp.paintOneSpektrum(false);
       }
       if (e.getSource() == cscrennsaver) {
@@ -1864,7 +1864,7 @@ class GeneralAdjustmentDialog extends JFrame {
      * 0 = Reset all buttons to default. 1 = Set redraw button RED 2 = Set redcalculate button RED 3
      * = Set redopen button RED ´
      */
-    if (!sono.spektrumExist) highlighted = 0;
+    if (!sono.spectrumExist) highlighted = 0;
     if (highlighted == 0) {
       btro.setBorder(btcl.getBorder());
       btap.setBorder(btcl.getBorder());

@@ -29,7 +29,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
   static final String VERSION = "5.0";
   public boolean firststart = false;
   boolean infovisible = false;
-  boolean spektrumExist = false; // Flag that prevent painting bevore Transformation
+  boolean spectrumExist = false; // Flag that prevent painting bevore Transformation
   boolean updateimageflag = true;
   boolean openingflag = false; // is set while file opening is make
   boolean transformflag = false; // is set during transformation is make
@@ -925,7 +925,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         progmon.close();
         setTitle("Sonogram Visible Speech - version " + VERSION);
-        spektrumExist = false;
+        spectrumExist = false;
         updateimageflag = true;
         repaint();
         return;
@@ -1233,7 +1233,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       System.out.println("--> begin normalize");
       normalizeSpekt();
       progmon.setProgress(88);
-      spektrumExist = true;
+      spectrumExist = true;
       if (player != null) {
         // player.close();
         player.timeThread.interrupt();
@@ -2660,69 +2660,69 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     if (e.getSource() == closeItem) {
       setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
       setTitle("Sonogram Visible Speech - version " + VERSION);
-      spektrumExist = false;
+      spectrumExist = false;
       updateimageflag = true;
       repaint();
     }
     if (e.getSource() == rectItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(1);
-      if (spektrumExist) readerIsBack();
+      if (spectrumExist) readerIsBack();
     }
     if (e.getSource() == blaItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(2);
-      if (spektrumExist) readerIsBack();
+      if (spectrumExist) readerIsBack();
     }
     if (e.getSource() == triItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(3);
-      if (spektrumExist) readerIsBack();
+      if (spectrumExist) readerIsBack();
     }
     if (e.getSource() == hamItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(4);
-      if (spektrumExist) readerIsBack();
+      if (spectrumExist) readerIsBack();
     }
     if (e.getSource() == welItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(5);
-      if (spektrumExist) readerIsBack();
+      if (spectrumExist) readerIsBack();
     }
     if (e.getSource() == gauItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(6);
-      if (spektrumExist) readerIsBack();
+      if (spectrumExist) readerIsBack();
     }
     if (e.getSource() == hanItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(7);
-      if (spektrumExist) readerIsBack();
+      if (spectrumExist) readerIsBack();
     }
     if (e.getSource() == flaItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(8);
-      if (spektrumExist) readerIsBack();
+      if (spectrumExist) readerIsBack();
     }
     if (e.getSource() == harItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(9);
-      if (spektrumExist) readerIsBack();
+      if (spectrumExist) readerIsBack();
     }
     if (e.getSource() == cosItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(10);
-      if (spektrumExist) readerIsBack();
+      if (spectrumExist) readerIsBack();
     }
     if (e.getSource() == asyItem) {
       gad.p1.setSelectedIndex(1);
       gad.sliderwinfunktion.setValue(11);
-      if (spektrumExist) readerIsBack();
+      if (spectrumExist) readerIsBack();
     }
     if (e.getSource() == logItem) {
       gad.p1.setSelectedIndex(14);
       gad.clog.setSelected(logItem.isSelected());
-      if (spektrumExist) readerIsBack();
+      if (spectrumExist) readerIsBack();
     }
     if (e.getSource() == gridItem) {
       gad.p1.setSelectedIndex(15);
@@ -2887,7 +2887,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       gad.setVisible(!gad.isVisible());
     }
     if (e.getSource() == playbutton || e.getSource() == playItem) {
-      if (spektrumExist == true) {
+      if (spectrumExist == true) {
         playbuttonpressed = true;
         System.out.println("--> START playing");
         if (pp.plstop == pp.plstart) pp.plstop = 1.0;
@@ -2903,14 +2903,14 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       }
     }
     if (e.getSource() == stopbutton || e.getSource() == stopItem) {
-      if (spektrumExist == true) {
+      if (spectrumExist == true) {
         System.out.println("--> STOP playing");
         stopbuttonpressed = true;
         player.stop();
       }
     }
     if (e.getSource() == revbutton || e.getSource() == revItem) { // Play Rewindbutton
-      if (spektrumExist == true) {
+      if (spectrumExist == true) {
         player.springTo(0.0);
         pp.plstart = 0.0;
         pp.plbutton = 0.0;
@@ -2935,7 +2935,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       SonoSplashScreen splash = new SonoSplashScreen(true);
     }
     if (e.getSource() == d3button || e.getSource() == d3Item) { // Surfaceplot
-      if (spektrumExist == false) messageBox("Perspectogram", "Please open Mediafile first.", 2);
+      if (spectrumExist == false) messageBox("Perspectogram", "Please open Mediafile first.", 2);
       else
         try {
           gad.p1.setSelectedIndex(5);
@@ -2953,15 +2953,15 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         }
     }
     if (e.getSource() == cepbutton || e.getSource() == cepItem) { // Cepstrum View
-      if (spektrumExist == false) messageBox("Cepstrum", "Please open Mediafile first.", 1);
-      else if (samplesall > cv.len) {
+      if (spectrumExist == false) messageBox("Cepstrum", "Please open Mediafile first.", 1);
+      else if (samplesall > cv.samples()) {
         System.out.println("--> Show Cepstrum View");
         gad.p1.setSelectedIndex(8);
         cv.setVisible(!cv.isVisible());
       } else messageBox("Cepstrum", "Signal to short !!!.", 1);
     }
     if (e.getSource() == zinbutton || e.getSource() == zinItem) { // Zoomin
-      if (spektrumExist == true) {
+      if (spectrumExist == true) {
         selectedstartpre.add(Double.valueOf(selectedstartold));
         selectedwidthpre.add(Double.valueOf(selecedwidthold));
         zoompreviousindex++;
@@ -2972,7 +2972,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       }
     }
     if (e.getSource() == zbabutton || e.getSource() == zbaItem) { // Zoomfull
-      if (spektrumExist == true) {
+      if (spectrumExist == true) {
         selectedstart = 0.0;
         selecedwidth = 1.0;
         selectedstartpre.removeAllElements();
@@ -2986,7 +2986,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       }
     }
     if (e.getSource() == zprebutton || e.getSource() == zpreItem) { // Zoomback
-      if (spektrumExist == true) {
+      if (spectrumExist == true) {
         if (zoompreviousindex != 0) {
           selectedstart = ((Double) selectedstartpre.get(zoompreviousindex - 1)).doubleValue();
           selecedwidth = ((Double) selectedwidthpre.get(zoompreviousindex - 1)).doubleValue();
@@ -3005,7 +3005,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       }
     }
     if (e.getSource() == forbutton || e.getSource() == forItem) { // FFT View
-      if (spektrumExist == false) messageBox("Fast Fourier", "Please open Mediafile first.", 1);
+      if (spectrumExist == false) messageBox("Fast Fourier", "Please open Mediafile first.", 1);
       else if (samplesall > fv.len) {
         System.out.println("--> Fast Fourier Transform View");
         fv.setVisible(!fv.isVisible());
@@ -3014,7 +3014,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     }
     if (e.getSource() == autocorrelationbutton
         || e.getSource() == autocorrelationItem) { // Autocorrelation
-      if (spektrumExist == false) messageBox("Autocorrelation", "Please open Mediafile first.", 1);
+      if (spectrumExist == false) messageBox("Autocorrelation", "Please open Mediafile first.", 1);
       else {
         System.out.println("--> Autocorrelation View");
         gad.p1.setSelectedIndex(10);
@@ -3022,7 +3022,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       }
     }
     if (e.getSource() == pitchbutton || e.getSource() == pitchItem) { // PitchWindow
-      if (spektrumExist == false) messageBox("Pitch Tracking", "Please open Mediafile first.", 1);
+      if (spectrumExist == false) messageBox("Pitch Tracking", "Please open Mediafile first.", 1);
       else {
         gad.p1.setSelectedIndex(9);
         System.out.println("--> Pitch Tracking View");
@@ -3039,7 +3039,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       }
     }
     if (e.getSource() == lpcbutton || e.getSource() == lpcItem) { // Linear Prediction  Dialog
-      if (spektrumExist == false) messageBox("LPC", "Please open Mediafile first.", 1);
+      if (spectrumExist == false) messageBox("LPC", "Please open Mediafile first.", 1);
       else if (samplesall > lv.len) {
         System.out.println("--> Show Linear Prediction View");
         lv.setVisible(!lv.isVisible());
@@ -3088,7 +3088,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       ;
     }
     if (e.getSource() == saveItem) {
-      if (spektrumExist == true)
+      if (spectrumExist == true)
         try {
           String filename = "Sonogram.png";
           class MyFilter extends javax.swing.filechooser.FileFilter {
@@ -3130,7 +3130,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
     }
 
     if (e.getSource() == csvItem) {
-      if (spektrumExist == true) {
+      if (spectrumExist == true) {
         ExportSpectrumCSV csv = new ExportSpectrumCSV(this);
       }
     }
@@ -3294,7 +3294,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
         logItem.setSelected(true);
         logfrItem.setSelected(false);
         logbutton.setBorder(fullbutton.getBorder());
-        if (spektrumExist == true) openFile(filepath);
+        if (spectrumExist == true) openFile(filepath);
         la.tp.colorSwitch = 0;
         la.tp.initDigitArray();
         la.spec.repaint();
@@ -3366,7 +3366,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       ou.setVisible(true);
     }
     if (e.getSource() == wavItem || e.getSource() == wavbutton) {
-      if (spektrumExist == false) messageBox("Waveform", "Please open Mediafile first.", 1);
+      if (spectrumExist == false) messageBox("Waveform", "Please open Mediafile first.", 1);
       else {
         wv.getLen();
         if (samplesall > wv.len) {
@@ -3405,7 +3405,7 @@ public class Sonogram extends JFrame implements ActionListener, MouseListener {
       }
     }
     if (e.getSource() == walbutton || e.getSource() == walItem) { // Cepstrum View
-      if (spektrumExist == false) messageBox("Wavelet", "Please open Mediafile first.", 1);
+      if (spectrumExist == false) messageBox("Wavelet", "Please open Mediafile first.", 1);
       else if (samplesall > gad.walwindowlength) {
         System.out.println("--> Show Wavelet View");
         gad.p1.setSelectedIndex(17);

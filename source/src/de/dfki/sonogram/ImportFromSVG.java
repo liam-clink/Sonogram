@@ -77,7 +77,7 @@ class ImportFromSVG {
           continue;
         }
 
-        this.reftomain.spektrumExist = false;
+        this.reftomain.spectrumExist = false;
         this.reftomain.openingflag = true;
         var18 = new BufferedReader(new FileReader(this.file));
 
@@ -389,7 +389,7 @@ class ImportFromSVG {
         }
 
         this.reftomain.gad.cenergy.setSelected(false);
-        this.reftomain.spektrumExist = true;
+        this.reftomain.spectrumExist = true;
         this.reftomain.updateimageflag = true;
         this.reftomain.openingflag = false;
         this.reftomain.repaint();
@@ -418,7 +418,7 @@ class ImportFromSVG {
           }
         }
 
-        this.reftomain.spektrumExist = false;
+        this.reftomain.spectrumExist = false;
         this.reftomain.enableItems(true);
         this.reftomain.stopItem.setEnabled(false);
         this.reftomain.stopbutton.setEnabled(false);
@@ -463,7 +463,7 @@ class ImportFromSVG {
         this.reftomain.gad.sliderwinspeed.setEnabled(false);
         this.reftomain.gad.sliderwinsize.setEnabled(false);
         this.reftomain.gad.cauto.setEnabled(false);
-        this.reftomain.spektrumExist = true;
+        this.reftomain.spectrumExist = true;
         if (!var4) {
           this.reftomain.messageBox(
               "Source File not found",

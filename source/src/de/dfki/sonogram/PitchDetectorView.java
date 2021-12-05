@@ -207,7 +207,7 @@ public class PitchDetectorView extends JFrame {
   public void update() {
     if (isVisible() == true
         && reftosonogram.openingflag == false
-        && reftosonogram.spektrumExist == true) {
+        && reftosonogram.spectrumExist == true) {
       repaint();
     }
   }

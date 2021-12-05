@@ -2,10 +2,7 @@ package de.dfki.sonogram;
 
 import de.dfki.maths.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
 import javax.swing.*;
-import javax.swing.event.*;
 
 /**
  * Copyright (c) 2001 Christoph Lauer @ DFKI, All Rights Reserved. clauer@dfki.de - www.dfki.de
@@ -16,13 +13,29 @@ import javax.swing.event.*;
  * @author Christoph Lauer
  * @version 1.0, Current 26/09/2002
  */
+
+/**
+ *  Cepstrum is the result of computing the inverse Fourier transform (IFT) of the logarithm of the estimated signal spectrum.
+ * 
+ * @author Liam Clink
+ * @version 5.1, 2021-12-04
+ */
+
 public class CepstrumView extends JFrame {
   Sonogram refToMain;
-  public int len = 0;
+  
+  // The number of samples used and thus also two times the number of bars to be drawn
+  int samples = 0;
+  public int samples() {
+    return samples;
+  }
+  public void samples(int arg) {
+    samples = arg;
+  }
 
   /**
-   * Construktor for CepstrumView. This Class extendet from JFrame shows cepstral analyse curve in
-   * his window.
+   * Constructor for CepstrumView. This Class extends from JFrame and shows cepstral analysis curve in
+   * this window.
    */
   public CepstrumView(Sonogram sono) {
     refToMain = sono;
@@ -36,136 +49,175 @@ public class CepstrumView extends JFrame {
   }
   // -------------------------------------------------------------------------------------------------------------------------
   public void update() {
-    if (isVisible() == true && refToMain.openingflag == false && refToMain.spektrumExist == true) {
+    if (isVisible() && !refToMain.openingflag && refToMain.spectrumExist) {
       repaint();
     }
   }
   // -------------------------------------------------------------------------------------------------------------------------
   // =========================================================================================================================
   /** Inner Panel class to paint Windowfunktion */
+  // NOTE: origin is at top left, with y increasing down and x increasing right
   class cvPanel extends JPanel {
     // -------------------------------------------------------------------------------------------------------------------------
     public void paintComponent(Graphics gr) {
       Graphics2D g = (Graphics2D) gr;
-      if (refToMain.gad.cantialise.isSelected() == true)
+      if (refToMain.gad.cantialise.isSelected())
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-      Color coldv = new Color(40, 40, 60);
-      Color colred = new Color(255, 0, 0);
-      Color collv = new Color(180, 180, 220);
-      Color colras = new Color(80, 80, 130);
+      
+      Color colorBackground = new Color(40, 40, 60);
+      Color colorRed = new Color(255, 0, 0);
+      Color colorDarkLine = new Color(80, 80, 90);
+      Color colorLightLine = new Color(180, 180, 220);
+      Color colorGridLine = new Color(80, 80, 130);
+      
       Dimension size = getSize(); // Windowsize
-      short xm = (short) size.getWidth();
-      short ym = (short) size.getHeight();
-      int z = 0;
+      short width = (short) size.getWidth();
+      short height = (short) size.getHeight();
+      int margin = 5;
+      int majorTickLength = 15;
+      int minorTickLength = 8;
+      int axisWidth = width - (2*margin+majorTickLength);
+      int axisHeight = height - (2*margin+majorTickLength);
+
+      short divisions = 10;
+      
       int startp = 0;
       float[] buffer;
       float[] cepstrum;
-      float peak = 0.0f;
-      double diff = 0.0;
-      double fakt = 0.0;
-      double qufr = 0.0;
       String str;
-      int x, xa;
-      int y, ya;
+      
       Byte tempbyte;
-      boolean mouseisintimespan = false;
-      // Coords and Grid
-      g.setColor(coldv);
-      g.fillRect(0, 0, xm, ym);
-      g.setColor(colred);
-      g.drawLine(5, ym - 20, xm - 5, ym - 20);
-      g.drawLine(20, 5, 20, ym - 5);
-      for (double yl = 5; yl <= (ym - 20); yl += (double) (((double) ym - 20.0) / 10.0)) {
-        g.setColor(colred);
-        if (z == 0 || z == 5) g.drawLine(5, (int) yl, 20, (int) yl);
-        g.drawLine(12, (int) yl, 20, (int) yl);
-        g.setColor(colras);
-        g.drawLine(21, (int) yl, xm - 5, (int) yl);
-        z++;
+      boolean mouseIsInTimeSpan = false;
+      
+      
+      // Draw Axes and Grid
+      // Fill Background
+      g.setColor(colorBackground);
+      g.fillRect(0, 0, width, height);
+      // Draw plot axes
+      g.setColor(colorRed);
+      g.drawLine(margin, height - (majorTickLength+margin), width - margin, height - (majorTickLength+margin));
+      g.drawLine(majorTickLength+margin, margin, majorTickLength+margin, height - margin);
+      
+      // Draw horizontal lines
+      int verticalDivisionCounter = 0;
+      for (double yGridLine = (height - margin+majorTickLength); yGridLine >= margin; yGridLine -= (double) (height - (margin+majorTickLength)) / divisions) {
+        g.setColor(colorRed);
+        // Draw major tick
+        if (verticalDivisionCounter%5 == 0) g.drawLine(margin, (int) yGridLine, majorTickLength+margin, (int) yGridLine);
+        // Draw minor tick
+        g.drawLine(margin+(majorTickLength-minorTickLength), (int) yGridLine, margin+majorTickLength, (int) yGridLine);
+        // Draw grid line
+        g.setColor(colorGridLine);
+        g.drawLine(1+margin+majorTickLength, (int) yGridLine, width - margin, (int) yGridLine);
+        verticalDivisionCounter++;
       }
-      g.setColor(colred);
+
+      // Draw horizontal axis label
+      // NOTE: the (x,y) in g.drawString() refer to the bottom left of the text
+      g.setColor(colorRed);
       g.setFont(new Font("Courier", 0, 10));
-      g.drawString("Quefrenz(ms)", xm - 85, ym - 2);
-      for (int i = 0; i <= 10; i++) {
-        qufr = (double) i * 100.0 / (double) refToMain.samplerate * (double) len / 2.0;
-        qufr = (double) ((int) qufr * 10) / 10.0;
+      g.drawString("Quefrenz (ms)", width - 85, height - 2);
+      
+      for (int i = 0; i <= divisions; i++) {
+        double qufr = i * 100 / (double) refToMain.samplerate * samples / 2.0;
+        qufr = ((int) qufr * 10) / 10.0;
         str = String.valueOf(qufr);
-        x = (int) ((double) i / 10.0 * (double) (xm - 25.0));
-        g.setColor(colred);
-        g.drawString(str, x, ym - 11);
-        g.setColor(colras);
-        x = (int) ((double) i / 10.0 * (double) (xm - 25.0)) + 21;
-        g.drawLine(x, ym - 21, x, 5);
+        int xGridLine = (int) (i / 10.0 * axisWidth);
+        // Draw horizontal axis values
+        g.setColor(colorRed);
+        g.drawString(str, xGridLine, height - 11);
+        // Draw grid line
+        g.setColor(colorGridLine);
+        xGridLine = (int) (i / 10.0 * axisWidth) + (1+margin+majorTickLength);
+        g.drawLine(xGridLine, height - (1+margin+majorTickLength), xGridLine, margin);
       }
+
+
       // Copy Timelinearray to buffer
-      buffer = new float[len];
+      buffer = new float[samples];
       double start =
-          refToMain.selectedstartold + (double) refToMain.pp.wnf * refToMain.selecedwidthold;
-      startp = (int) (start * (double) refToMain.samplesall);
-      if (startp > (refToMain.samplesall - len)) {
-        startp = refToMain.samplesall - len;
-        mouseisintimespan = true;
+          refToMain.selectedstartold + refToMain.pp.wnf * refToMain.selecedwidthold;
+      startp = (int) (start * refToMain.samplesall);
+      if (startp > (refToMain.samplesall - samples)) {
+        startp = refToMain.samplesall - samples;
+        mouseIsInTimeSpan = true;
       }
-      for (int i = 0; i < len; i++) {
+      for (int i = 0; i < samples; i++) {
         tempbyte = (Byte) refToMain.reader.audioStream.get(startp + i);
         buffer[i] = tempbyte.floatValue();
       }
+
+      // Calculate Cepstrum Transform
       CepstrumTransform ct = new CepstrumTransform();
       cepstrum = ct.doCepstrumTransform(buffer, refToMain.gad.ccep.isSelected());
+      
       // Smooth out the Cepstrum
-      if (refToMain.gad.ccepsmooth.isSelected() == true) {
+      if (refToMain.gad.ccepsmooth.isSelected()) {
         cepstrum[0] = 0.0f;
         cepstrum[2] = (cepstrum[1] + cepstrum[2] + cepstrum[3] + cepstrum[4]) / 4.0f;
         cepstrum[1] = (cepstrum[0] + cepstrum[1] + cepstrum[3]) / 3.0f;
         cepstrum[0] = (cepstrum[0] + cepstrum[1]) / 3.0f;
-        cepstrum[len - 3] = (cepstrum[len - 2] + cepstrum[len - 3] + cepstrum[len - 4]) / 3.0f;
-        cepstrum[len - 2] = (cepstrum[len - 1] + cepstrum[len - 2] + cepstrum[len - 3]) / 3.0f;
-        cepstrum[len - 1] = (cepstrum[len - 1] + cepstrum[len - 2]) / 2.0f;
-        for (int i = 3; i < (len - 3); i++)
+        cepstrum[samples - 3] = (cepstrum[samples - 2] + cepstrum[samples - 3] + cepstrum[samples - 4]) / 3.0f;
+        cepstrum[samples - 2] = (cepstrum[samples - 1] + cepstrum[samples - 2] + cepstrum[samples - 3]) / 3.0f;
+        cepstrum[samples - 1] = (cepstrum[samples - 1] + cepstrum[samples - 2]) / 2.0f;
+        for (int i = 3; i < (samples - 3); i++)
           cepstrum[i] =
-              (cepstrum[i]
-                      + cepstrum[i + 1]
-                      + cepstrum[i - 1]
-                      + cepstrum[i + 2]
-                      + cepstrum[i - 2]
-                      + cepstrum[i + 3]
-                      + cepstrum[i - 3])
-                  / 7.0f;
+                    ( cepstrum[i]
+                    + cepstrum[i + 1]
+                    + cepstrum[i - 1]
+                    + cepstrum[i + 2]
+                    + cepstrum[i - 2]
+                    + cepstrum[i + 3]
+                    + cepstrum[i - 3])
+                        / 7.0f;
       }
       // Search for Peak
-      for (int i = 0; i < len / 2; i++) {
+      float peak = cepstrum[0];
+      for (int i = 0; i < samples / 2; i++) {
         if (peak < cepstrum[i]) peak = cepstrum[i];
       }
+      float normalizationFactor = axisHeight / peak;
+
       // Paint Spectrum
-      g.setColor(collv);
-      fakt = (double) (xm - 25) / (double) (len / 2);
-      diff = ((double) len / 2.0 / (double) (xm - 25));
+      double samplesPerPixel =  samples / 2.0 / axisWidth;
+      double pixelsPerSample = 1.0 / samplesPerPixel;
 
+      // Draw the histogram with dark gray 3 pixel thick line segments
       g.setStroke(new BasicStroke(3));
-      g.setColor(new Color(80, 80, 90));
-      for (double f = diff; f < (float) (len / 2); f += diff) {
-        y = (int) (cepstrum[(int) f] / peak * (ym - 25));
-        ya = (int) (cepstrum[(int) (f - diff)] / peak * (ym - 25));
-        x = (int) (f * fakt);
-        xa = (int) ((f - diff) * fakt);
+      g.setColor(colorDarkLine);
+      int xStart;
+      int xEnd;
+      int yStart;
+      int yEnd;
+      for (double f = samplesPerPixel; f < samples / 2.0; f += samplesPerPixel) {
+        yStart = (int) (cepstrum[(int) (f - samplesPerPixel)] * normalizationFactor);
+        yEnd = (int) (cepstrum[(int) f] * normalizationFactor);
+        xStart = (int) (f * pixelsPerSample - 1);
+        xEnd = (int) (f * pixelsPerSample);
+        
 
-        g.drawLine(xa + 21, ym - 21 - ya, x + 21, ym - 21 - y);
+        g.drawLine(xStart + 21, height - 21 - yStart, xEnd + 21, height - 21 - yEnd);
       }
-      g.setStroke(new BasicStroke(1));
-      g.setColor(new Color(180, 180, 220));
-      for (double f = diff; f < (float) (len / 2); f += diff) {
-        y = (int) (cepstrum[(int) f] / peak * (ym - 25));
-        ya = (int) (cepstrum[(int) (f - diff)] / peak * (ym - 25));
-        x = (int) (f * fakt);
-        xa = (int) ((f - diff) * fakt);
 
-        g.drawLine(xa + 21, ym - 21 - ya, x + 21, ym - 21 - y);
+      // Draw over the histogram with light gray 1 pixel thick line segments
+      g.setStroke(new BasicStroke(1));
+      g.setColor(colorLightLine);
+      for (double f = samplesPerPixel; f < samples / 2.0; f += samplesPerPixel) {
+        // NOTE: In Java, the (int) typecast truncates the decimal part
+        yEnd = (int) (cepstrum[(int) f] * normalizationFactor);
+        yStart = (int) (cepstrum[(int) (f - samplesPerPixel)] * normalizationFactor);
+        xEnd = (int) (f * samplesPerPixel);
+        xStart = (int) ((f - samplesPerPixel) * samplesPerPixel);
+
+        g.drawLine(xStart + 1 + margin + majorTickLength, height - (1 + margin + majorTickLength) - yStart,
+                   xEnd + 1 + margin + majorTickLength, height - (1 + margin + majorTickLength) - yEnd);
       }
       // Mouse in time Span
-      if (mouseisintimespan == true) {
+      if (mouseIsInTimeSpan) {
         g.setFont(new Font("Dialog", 0, 9));
-        g.setColor(colred);
-        g.drawString("Mouse in time span", xm - 110, 15);
+        g.setColor(colorRed);
+        g.drawString("Mouse in time span", width - 110, 15);
       }
     }
     // -------------------------------------------------------------------------------------------------------------------------

@@ -30,7 +30,7 @@ public class AutoCorrelationView extends JFrame {
   }
 
   public void update() {
-    if (isVisible() && !refToMain.openingflag && refToMain.spektrumExist) {
+    if (isVisible() && !refToMain.openingflag && refToMain.spectrumExist) {
       repaint();
     }
   }

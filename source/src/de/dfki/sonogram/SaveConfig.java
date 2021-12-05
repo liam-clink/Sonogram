@@ -270,7 +270,7 @@ public class SaveConfig {
       out.println("\t\t\t<PerKeysConfirm           value=\"" + sono.perkeysconfirm + "\"/>");
       out.println("\t\t\t<RecorderLedColors        value=\"" + sono.la.tp.colorSwitch + "\"/>");
 
-      if (sono.spektrumExist == true)
+      if (sono.spectrumExist == true)
         out.println("\t\t\t<LastOpenedFile           value=\"" + sono.filepath + "\"/>");
       out.println("\t\t\t<LookAndFeel              value=\"" + sono.ilaf + "\"/>");
       out.println(

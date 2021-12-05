@@ -147,7 +147,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         new MouseAdapter() {
           public void mousePressed(MouseEvent e) {
             if (e.getClickCount() == 2
-                && reftosonogram.spektrumExist == true
+                && reftosonogram.spectrumExist == true
                 && reftosonogram.openingflag == false) {
               System.out.println("--> FULLSCREEN");
               reftosonogram.fulItem.doClick();
@@ -223,7 +223,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
   public void updateWvButton() {
     int len = (int) ((double) reftosonogram.selecedwidth * (double) reftosonogram.samplesall);
     reftosonogram.wvconfig.setSelectedSamples(len);
-    if (len <= 32768 && reftosonogram.spektrumExist == true) {
+    if (len <= 32768 && reftosonogram.spectrumExist == true) {
       reftosonogram.wvbutton.setEnabled(true);
       reftosonogram.wvbutton.setBorder(BorderFactory.createLineBorder(new Color(90, 90, 160)));
       int powtwo = getNextPowerOfTwo(len);
@@ -253,7 +253,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
    * @param g Grapgics-Object to paint up. Is g = null so this Method recive it from "this"
    */
   public void paintTimeSlider(Graphics g, boolean shake) {
-    if (reftosonogram.spektrumExist == true) {
+    if (reftosonogram.spectrumExist == true) {
       int xb = (int) (plstart * (double) (xm - 100)) + 40; //
       int xe = (int) (plstop * (double) (xm - 100)) + 40; //
       int xl;
@@ -291,7 +291,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
    *     plbutton variable.
    */
   public void paintOneSpektrum(boolean calledfromplaying) {
-    if (reftosonogram.spektrumExist == true
+    if (reftosonogram.spectrumExist == true
         && reftosonogram.openingflag == false
         && reftosonogram.transformflag == false) {
       Graphics2D g = (Graphics2D) this.getGraphics();
@@ -627,7 +627,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         g.setRenderingHint(
             RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
       }
-      if (reftosonogram.spektrumExist == false) {
+      if (reftosonogram.spectrumExist == false) {
         this.setToolTipText("");
         g.drawImage(defaultimage, 0, 0, xm, ym, new Color(0, 0, 0), this);
         reftosonogram.enableItems(false);
@@ -665,7 +665,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         g.drawString(licenString, 2, ym - 2);
       }
 
-      if (reftosonogram.spektrumExist == true
+      if (reftosonogram.spectrumExist == true
           && reftosonogram.openingflag == false) { // Paint onely when File is opened
 
         double diffx =
@@ -1109,12 +1109,12 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
     reftosonogram.kv.update();
     reftosonogram.pv.update();
     // And the single spectrum too
-    if (reftosonogram.spektrumExist == true && reftosonogram.openingflag == false) {
+    if (reftosonogram.spectrumExist == true && reftosonogram.openingflag == false) {
       paintOneSpektrum(false);
       paintTimeSlider(gr, false);
     }
     // paint the 8KHz marker
-    if (reftosonogram.gad.csampl.isSelected() == true && reftosonogram.spektrumExist == true) {
+    if (reftosonogram.gad.csampl.isSelected() == true && reftosonogram.spectrumExist == true) {
       gr.setColor(Color.red);
       gr.drawRect(49, 8, 39, 13);
       gr.drawRect(48, 7, 41, 15);

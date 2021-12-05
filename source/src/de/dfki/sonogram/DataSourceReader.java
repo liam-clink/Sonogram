@@ -32,7 +32,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
   public String dstype;
   boolean cancelIsPressed = false;
   boolean error = false;
-  int samplerate = 0;
+  int samplerate = 0; // Samples per second
   // ---------------------------------------------------------------------------------------------------
   public void setMainRef(Sonogram ref) {
     reftomain = ref;
@@ -63,7 +63,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
               + dstype,
           JOptionPane.WARNING_MESSAGE);
       System.err.println("--> ERROR: create PROCESSOR: " + e);
-      reftomain.spektrumExist = false;
+      reftomain.spectrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();
       reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
@@ -85,7 +85,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
               + dstype,
           JOptionPane.WARNING_MESSAGE);
       System.err.println("--> Error: configure the JMF-PROCESSORS");
-      reftomain.spektrumExist = false;
+      reftomain.spectrumExist = false;
       reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
       reftomain.updateimageflag = true;
       reftomain.repaint();
@@ -120,7 +120,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           JOptionPane.WARNING_MESSAGE);
       System.err.println("--> ERROR: the JMF-PROCESSOR cant convert this file");
       reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
-      reftomain.spektrumExist = false;
+      reftomain.spectrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();
       p = null;
@@ -141,7 +141,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           JOptionPane.WARNING_MESSAGE);
       reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
       System.err.println("--> ERROR: the JMF-PROCESSOR cant handel this datasource: " + ods);
-      reftomain.spektrumExist = false;
+      reftomain.spectrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();
       return false;
@@ -159,7 +159,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           JOptionPane.WARNING_MESSAGE);
       System.err.println("--> ERROR: prefetch audio data with JMF-PROCESSOR");
       reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
-      reftomain.spektrumExist = false;
+      reftomain.spectrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();
       return false;
@@ -263,7 +263,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
             "<html>This Media File <u>does not contain any Audiotrack</u> !",
             JOptionPane.WARNING_MESSAGE);
         reftomain.updateimageflag = true;
-        reftomain.spektrumExist = false;
+        reftomain.spectrumExist = false;
         reftomain.repaint();
         return;
       }
@@ -495,7 +495,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
             reftomain.progmon.close();
             reftomain.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
-            reftomain.spektrumExist = false;
+            reftomain.spectrumExist = false;
             reftomain.updateimageflag = true;
             reftomain.repaint();
             cancelIsPressed = true;
@@ -529,7 +529,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
             "Error while reading the Samples",
             "<html>A General Error occoured while <u>reading Samples in the JMF-Processor</u> !",
             JOptionPane.WARNING_MESSAGE);
-        reftomain.spektrumExist = false;
+        reftomain.spectrumExist = false;
         reftomain.updateimageflag = true;
         reftomain.repaint();
         reftomain.progmon.close();
@@ -681,7 +681,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
           JOptionPane.WARNING_MESSAGE);
       System.err.println("--> ERROR: Can't Build MediaLocator: " + url);
       reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
-      reftomain.spektrumExist = false;
+      reftomain.spectrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();
       return;
@@ -738,7 +738,7 @@ public class DataSourceReader implements ControllerListener, DataSinkListener {
             JOptionPane.WARNING_MESSAGE);
       System.err.println("--> ERROR:" + e.getMessage());
       reftomain.setTitle("Sonogram Visible Speech - version " + reftomain.VERSION);
-      reftomain.spektrumExist = false;
+      reftomain.spectrumExist = false;
       reftomain.updateimageflag = true;
       reftomain.repaint();
       return;

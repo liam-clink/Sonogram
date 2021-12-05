@@ -34,7 +34,7 @@ public class LinearPredictionView extends JFrame {
   }
   // -------------------------------------------------------------------------------------------------------------------------
   public void update() {
-    if (isVisible() == true && refToMain.openingflag == false && refToMain.spektrumExist == true) {
+    if (isVisible() == true && refToMain.openingflag == false && refToMain.spectrumExist == true) {
       repaint();
     }
   }

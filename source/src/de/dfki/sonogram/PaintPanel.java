@@ -300,11 +300,6 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
       float[] spectrumBuffer;
       float[] orginalbuff;
       int peakplace = 0;
-      
-      // For Logarithm Frequencyview
-      double powfact = 0.0; // Logarithm Scale fact
-      int yLogPixelPos = 0; // Logarithmy Position
-      int diffylog = 0;
 
       if (refToSonogram.gad.cantialise.isSelected())
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -312,18 +307,19 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
       // Paint Spectrum
       // Background Rectangle for Single Spectrum view
       g.setColor(colorDarkGreen);
-      g.fillRect(panelWidth - 55, 0, 53, panelHeight - 70); 
+      g.fillRect(panelWidth - 55, 0, 55, panelHeight - 70); 
 
       // Draw Horizontal Grid Lines
       g.setColor(colorPurple);
+      int yLogTop;
       for (double yLinearTick = 0; yLinearTick < (panelHeight - 71); yLinearTick += (panelHeight - 70) / 10.0) {
         // logarithm Frequency
         if (refToSonogram.gad.cslogfr.isSelected()) {
           double ymax = (panelHeight - 70 + 1); // the max value
           double yni = ymax - yLinearTick; // y not inverse
           double ylog = Math.log(yni) / Math.log(ymax) * ymax; // calc log scale
-          yLogPixelPos = (int) (ymax - ylog); // reinverse
-          if (yLogPixelPos > 2) g.drawLine(panelWidth - 60, yLogPixelPos, panelWidth - 3, yLogPixelPos);
+          yLogTop = (int) (ymax - ylog); // reinverse
+          if (yLogTop > 2) g.drawLine(panelWidth - 60, yLogTop, panelWidth - 3, yLogTop);
         }
         // Non Logarithm
         else if (yLinearTick > 2) g.drawLine(panelWidth - 60, (int) yLinearTick, panelWidth - 3, (int) yLinearTick);
@@ -353,39 +349,49 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
       } else spectrumBuffer = orginalbuff;
       
       // Draw the spectrum bars
+      // Height of spectrogram rectangles in pixels
+      double yDiff = (panelHeight - 70) / (refToSonogram.timeWindowLength / 2.0);
+      int yDiffRounded = (int) Math.ceil(yDiff); // rounded up yDiff
+      double yMax = (panelHeight - 70 - 1);
+      double yLog;
+      int yLogBottom;
+      double yTop;
+      double yBottom;
+
       for (int freqIndex = 0; freqIndex < (refToSonogram.timeWindowLength / 2); freqIndex++) {
+        // Get 8-bit normalized spectral amplitude
+        int brightnessEightBit = (int) spectrumBuffer[(refToSonogram.timeWindowLength / 2 - 1) - freqIndex];
+        
         // If single color spectrum is enabled, paint it neon green
         if (refToSonogram.gad.cscolsi.isSelected()) {
           g.setColor(colorNeonGreen);
         }
         // Otherwise, get color by color mapping the spectral amplitude
-        else selectColor(g, (int) spectrumBuffer[freqIndex]);
+        else selectColor(g, brightnessEightBit);
         
         // Width, and location of bottom and top of the rectangle
-        int scaledWidth = (int) (spectrumBuffer[freqIndex] / 255.0f * 52.0f); // rescale amplitude to maximum width 52pix
-        double yMax = (panelHeight - 70 - 1);
-        double yTop = yMax * (1.0 - (double) (freqIndex) / (double) (refToSonogram.timeWindowLength / 2 - 1));
-        double yBottom = yMax * (1.0 - (double) (freqIndex+1) / (double) (refToSonogram.timeWindowLength / 2 - 1));
+        int scaledWidth = (int) (brightnessEightBit / 255.0f * 52.0f); // rescale amplitude to maximum width 52pix
+        
+        
+        yTop = freqIndex * yDiff;
+        yBottom = (freqIndex+1) * yDiff;
         
         // Convert to log scale if enabled
         if (refToSonogram.gad.cslogfr.isSelected()) {
-          double yni = yMax - yTop; // y not inverse
-          double yLog = Math.log(yni) / Math.log(yMax) * yMax; // calc log scale
-          yLogPixelPos = (int) (yMax - yLog); // reinverse
-          yni = yMax - yBottom; // y not inverse
-          yLog = Math.log(yni) / Math.log(yMax) * yMax; // calc log scale
-          int yppownext = (int) (yMax - yLog); // reinverse
-          if (yLogPixelPos - yppownext < 1) yppownext++;
-          // Add a rectangle
-          if (yLogPixelPos > 2 && yppownext < yMax)
-            g.fillRect(panelWidth - 2 - scaledWidth, yppownext, scaledWidth, Math.abs(yLogPixelPos - yppownext));
+          yLog = Math.log(yMax - yTop) / Math.log(yMax) * yMax; // calc log scale
+          yLogTop = (int) (yMax - yLog); // reinverse
+          yLog = Math.log(yMax - yBottom) / Math.log(yMax) * yMax; // calc log scale
+          yLogBottom = (int) (yMax - yLog); // reinverse
+          if (yLogBottom - yLogTop < 1) yLogTop++;
+          //System.out.println("yBottom: "+yBottom+"\tyMax: "+yMax+"\tyLog: "+yLog+"\tyLogBottom: "+yLogBottom+"\n");
+          // Draw the rectangle
+          if (yLogBottom <= yMax)
+            g.fillRect(panelWidth - scaledWidth, yLogTop, scaledWidth, yLogBottom - yLogTop);
         }
         
-        // Convert to linear scale if enabled
-        else if ((int) (yTop - yBottom) != 0)
-          g.fillRect(panelWidth - 3 - scaledWidth, (int) yTop, scaledWidth, (int) (yTop - yBottom));
-        else if ((int) (yTop - yBottom) == 0)
-          g.fillRect(panelWidth - 3 - scaledWidth, (int) yTop, scaledWidth, 1);
+        // Use linear scale if enabled
+        else 
+          g.fillRect(panelWidth - 3 - scaledWidth, (int) yTop, scaledWidth, yDiffRounded);
       }
       // Smoothed single spectrum red curve
       if (refToSonogram.gad.csmoothsi.isSelected()) {
@@ -678,18 +684,6 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
 
       // Paint only when File is opened
       if (refToSonogram.spectrumExist && !refToSonogram.openingflag) { 
-        // Width of spectrogram rectangles in pixels
-        double xDiff = (double) (panelWidth - 100) / (double) refToSonogram.spectrum.size();
-        // Height of spectrogram rectangles in pixels
-        double yDiff = (panelHeight - 70) / (refToSonogram.timeWindowLength / 2.0);
-        
-        int xPosition = 0; // Startpoint x for drawing the Rect.
-        int yPosition = 0; // Startpoint y for drawing the Rect.
-        int xDiffRounded = (int) Math.ceil(xDiff); // rounded off diffx
-        int yDiffRounded = (int) Math.ceil(yDiff); // rounded off diffy
-        float[] tempSpectrum; // Reference to FFT Window
-        int brightnessEightBit;
-        
         double secs = 0.0;
         double timeToScreenFactor = (panelWidth - 100) / 2000.0; // To draw Timesignal
         float pitchtmp = 0.0f;
@@ -700,8 +694,7 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         int yDiffLog;
         double powfactnext;
         int ypnext;
-        int yppownext;
-        int yLogPixelPos; // Logarithm Position
+
         boolean peakTimeIsReached = false;
         int ypointpeak = 0;
         int xpointpeak = 0;
@@ -710,7 +703,6 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         if (refToSonogram.gad.highlightedbutton == 1) refToSonogram.gad.highLightButton(0);
         refToSonogram.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         System.out.println("--> Updating Sonogram-Image: Paintwindowsize x=" + panelWidth + ", y=" + panelHeight);
-        System.out.println("--> diffx=" + xDiff + ", diffy=" + yDiff);
         // Blank the entire panel
         g.setColor(colorLavender);
         g.fillRect(0, 0, panelWidth, panelHeight);
@@ -725,9 +717,9 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
             double ymax = (panelHeight - 69); // the max value
             double yni = ymax - yLinearTick; // y not inverse
             double ylog = Math.log(yni) / Math.log(ymax) * ymax; // calc log scale
-            yLogPixelPos = (int) (ymax - ylog); // reinverse
-            g.drawLine(0, yLogPixelPos, 40, yLogPixelPos);
-            g.drawString((frequency / 1000.0) + "kHz", 3, yLogPixelPos + 9);
+            int yLogTop = (int) (ymax - ylog); // reinverse
+            g.drawLine(0, yLogTop, 40, yLogTop);
+            g.drawString((frequency / 1000.0) + "kHz", 3, yLogTop + 9);
             frequency -= refToSonogram.sampleRate / 20;
           } else {
             g.drawLine(0, (int) yLinearTick, 40, (int) yLinearTick);
@@ -785,6 +777,20 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         }
 
         // Painting Sonogram on the Image
+        // Width of spectrogram rectangles in pixels
+        double xDiff = (double) (panelWidth - 100) / (double) refToSonogram.spectrum.size();
+        int xDiffRounded = (int) Math.ceil(xDiff); // rounded off diffx
+        // Height of spectrogram rectangles in pixels
+        double yDiff = (panelHeight - 70) / (refToSonogram.timeWindowLength / 2.0);
+        int yDiffRounded = (int) Math.ceil(yDiff); // rounded off diffy
+        System.out.println("--> diffx=" + xDiff + ", diffy=" + yDiff);
+
+        int xPosition; // Startpoint x for drawing the Rect.
+        int yPosition; // Startpoint y for drawing the Rect.
+
+        float[] tempSpectrum; // Reference to FFT Window
+        int brightnessEightBit;
+
         // Loop over spectra
         for (int i = 0; i < refToSonogram.spectrum.size(); i++) {
           // If peakpoint is reached
@@ -805,32 +811,32 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
             // Logarithm Frequency View
             if (refToSonogram.gad.cslogfr.isSelected()) {
               // Calculate position for logview
-              double ymax = (panelHeight - 69); // the max value
-              double yni = ymax - yPosition; // y not inverse
-              double ylog = Math.log(yni) / Math.log(ymax) * ymax; // calc log scale
-              yLogPixelPos = (int) (ymax - ylog); // reinverse
+              double yMax = (panelHeight - 70 - 1); // the max value
+              double yLog = Math.log(yMax - yPosition) / Math.log(yMax) * yMax; // calc log scale
+              int yLogTop = (int) (yMax - yLog); // reinverse
               // Calculate diffy for logview by calculating next point
-              yni = ymax - ((j + 1) * yDiff); // y not inverse
-              ylog = Math.log(yni) / Math.log(ymax) * ymax; // calc log scale
-              yppownext = (int) (ymax - ylog); // reinverse
+              yLog = Math.log(yMax - ((j + 1) * yDiff)) / Math.log(yMax) * yMax; // calc log scale
+              int yLogBottom = (int) (yMax - yLog); // reinverse
 
-              yDiffLog = yppownext - yLogPixelPos;
+              yDiffLog = yLogBottom - yLogTop;
               // Paint logview
-              g.fillRect(xPosition, yLogPixelPos, xDiffRounded, yDiffLog); // Draws Rect
+              if  (yLogBottom <= yMax)
+                g.fillRect(xPosition, yLogTop, xDiffRounded, yDiffLog); // Draws Rect
               if (refToSonogram.gad.cspitchonely.isSelected()
                   && refToSonogram.gad.cspitch.isSelected()) {
                 g.setColor(colorLavender);
                 g.setComposite(compositeNebular);
-                g.fillRect(xPosition, yLogPixelPos, xDiffRounded, yDiffLog); // Draws Rect
+                g.fillRect(xPosition, yLogTop, xDiffRounded, yDiffLog); // Draws Rect
                 g.setComposite(compositeNo);
               }
               if (peakTimeIsReached) // Absolute Peak
                 if (j == (refToSonogram.timeWindowLength / 2 - refToSonogram.peaky - 1)) {
                   xpointpeak = xPosition + xDiffRounded / 2 - 10;
-                  ypointpeak = yLogPixelPos + yDiffLog / 2 - 10;
+                  ypointpeak = yLogTop + yDiffLog / 2 - 10;
                 }
               // Non Logarithm View
-            } else {
+            }
+            else {
               g.fillRect(xPosition, yPosition, xDiffRounded, yDiffRounded);
               if (refToSonogram.gad.cspitchonely.isSelected()
                   && refToSonogram.gad.cspitch.isSelected()) {
@@ -904,8 +910,8 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
               double ymax = (double) (panelHeight - 69); // the max value
               double yni = ymax - yPosition; // y not inverse
               double ylog = Math.log(yni) / Math.log(ymax) * ymax; // calc log scale
-              yLogPixelPos = (int) (ymax - ylog); // reinverse
-              g.fillRect(xPosition, yLogPixelPos, xDiffRounded, yDiffRounded); // Draws Rect
+              int yLogTop = (int) (ymax - ylog); // reinverse
+              g.fillRect(xPosition, yLogTop, xDiffRounded, yDiffRounded); // Draws Rect
             } else g.fillRect(xPosition, yPosition, xDiffRounded, yDiffRounded); // Draws Rect
           }
         }
@@ -945,8 +951,8 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
               double ymax = (double) (panelHeight - 69); // the max value
               double yni = ymax - y; // y not inverse
               double ylog = Math.log(yni) / Math.log(ymax) * ymax; // calc log scale
-              yLogPixelPos = (int) (ymax - ylog); // reinverse
-              g.drawLine(40, yLogPixelPos, panelWidth - 60, (int) yLogPixelPos);
+              int yLogTop = (int) (ymax - ylog); // reinverse
+              g.drawLine(40, yLogTop, panelWidth - 60, (int) yLogTop);
               // GRID: If linear Frequency
             } else g.drawLine(40, (int) y, panelWidth - 60, (int) y);
           g.setComposite(compositeNo);
@@ -1086,14 +1092,15 @@ public class PaintPanel extends JPanel implements MouseMotionListener {
         g.setColor(colorPurple);
 
         // grid over Frequencies
+        int yLogTop;
         for (double yg = 0; yg < panelHeight - 69.0; yg += ((double) panelHeight - 70.0) / 10.0)
           // GRID:If logarithm Frequency
           if (refToSonogram.gad.cslogfr.isSelected() == true) {
             double ymaxd = (double) (panelHeight - 69); // the max value
             double yni = ymaxd - yg; // y not inverse
             double ylog = Math.log(yni) / Math.log(ymaxd) * ymaxd; // calc log scale
-            yLogPixelPos = (int) (ymaxd - ylog); // reinverse
-            g.drawLine(panelWidth - 60, (int) yLogPixelPos, panelWidth - 3, (int) yLogPixelPos);
+            yLogTop = (int) (ymaxd - ylog); // reinverse
+            g.drawLine(panelWidth - 60, (int) yLogTop, panelWidth - 3, (int) yLogTop);
           } else g.drawLine(panelWidth - 60, (int) yg, panelWidth - 3, (int) yg);
 
         // Rainbow on Edge
